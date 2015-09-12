@@ -48,12 +48,9 @@
   
 **v0.1.0**
 
-  - Fixed the calculation of:
-  
-      Sphere Of Influence
-	  
-      Planet rotationPeriod
-	  
+  - Fixed the calculation of:  
+      Sphere Of Influence	  
+      Planet rotationPeriod	  
       Orbital Parameters
 	  
   - Added "baryCenter = true" parameter to barycenters
