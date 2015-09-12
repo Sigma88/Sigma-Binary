@@ -1,0 +1,49 @@
+This tutorial covers how to use the Kopernicus feature "baryCenter"
+
+This has nothing to do with SigmaBinary, you can do it without my mod installed
+
+HOW:
+
+If you want to make a barycenter using kopernicus feature it's really simple.
+
+STEP 1
+
+create a custom planet, you just need a template, an orbit and some basic properties:
+(make sure this planet loads into ksp before adding the "baryCenter" line):
+
+## CODE ##
+
+@Kopernicus:AFTER[Kopernicus]
+{
+	Body
+	{
+		name = mySWAGbarycenter
+		Template
+		{
+			name = Mun  // any other planet will work
+		}
+		Orbit
+		{
+			// Choose your orbit, I don't think I need to explain this :)
+		}
+		Properties
+		{
+			// Choose the mass you want
+		}
+		baryCenter = true
+	}
+}
+
+## END CODE ##
+
+Pretty simple huh?
+
+Using this method you will not be able to select the barycenter in the tracking station or in map view.
+
+This is intended.
+
+Currently the barycenter shows up in the science archives (not intended),
+but I think that a future patch of Kopernicus will address that.
+
+
+Have fun baryCentering!

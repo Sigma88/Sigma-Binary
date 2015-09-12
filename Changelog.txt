@@ -1,0 +1,65 @@
+**v1.0.2**
+
+  - Hotfix updating .version file for KSP-AVC compatibility
+
+  
+**v1.0.1**
+
+  - Hotfix for RSS compatibility
+
+  
+**v1.0.0**
+
+  - Added compatibility with RSS and other Rescale Mods not 100% compatible yet
+  - Added an exception for ISRU contracts on barycenters
+  - Other minor changes to the code
+
+  
+**v0.2.4**
+
+  - removed kopernicus cache file generation for barycenters
+
+  
+**v0.2.3**
+
+  - changed the calculation of sphereOfInfluence for every body in the binary system
+  - added a check to make sure the SoI of the secondary body never reaches the primary's surface
+
+  
+**v0.2.2**
+
+  - added code to calculate mass from gravParameter if both mass and geeASL are not set
+  - changed the value of G (universal gravitational constant) from 6.67384e-11 to 6.674e-11
+
+  
+**v0.2.1**
+
+  - Fixed mass calculation from geeASL+radius (for reals this time)
+
+  
+**v0.2.0**
+
+  - Fixed mass calculation from geeASL+radius
+  - Fixed a bug which didn't allow for the use of more than one template.cfg file
+  - Added an example for the Kopernicus feature "baryCenter"
+  - template.cfg was changed, old versions won't work with this release
+  - removed "baryCenter = true" parameter from barycenters
+
+  
+**v0.1.0**
+
+  - Fixed the calculation of:
+  
+      Sphere Of Influence
+	  
+      Planet rotationPeriod
+	  
+      Orbital Parameters
+	  
+  - Added "baryCenter = true" parameter to barycenters
+  - Removed calculation of "flightGlobalIndex" since it's useless
+
+  
+**v0.0.4**
+
+ - First Release
