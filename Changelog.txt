@@ -1,3 +1,13 @@
+**v1.1.0**
+
+- Refined RSS compatibility
+- Added compatibility with finalizeOrbits
+- Removed useless code from StockFix.cfg
+- Fixed tidal lock issue in StockFix.cfg
+- Increased barycenters radius to 61m to solve a Tracking Station Bug
+- Renamed the folder from "BinaryExpansion" to "Binary"
+
+
 **v1.0.2**
 
   - Hotfix updating .version file for KSP-AVC compatibility
