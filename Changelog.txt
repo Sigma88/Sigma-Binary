@@ -1,3 +1,8 @@
+**v1.1.1**
+
+- Improved compatibility with planet packs
+
+
 **v1.1.0**
 
 - Now Requires Kopernicus Beta 0.4
