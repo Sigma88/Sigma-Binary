@@ -1,7 +1,10 @@
 # Sigma-Binary
 
-This KSP mod will help you create binary systems, for more info see the forum thread: http://forum.kerbalspaceprogram.com/threads/127820
+**This KSP mod will help you create binary systems.**
 
-This is the dev version of the mod.
 
-Download the latest release on KerbalStuff: https://kerbalstuff.com/mod/992
+KSP Forum Thread: http://forum.kerbalspaceprogram.com/threads/127820
+
+Download Latest Release: https://github.com/Sigma88/Sigma-Binary/releases/latest
+
+Dev version: https://github.com/Sigma88/Sigma-Binary/tree/Development
