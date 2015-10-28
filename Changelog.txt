@@ -1,3 +1,9 @@
+**v1.2.0**
+
+- Improved calculation of mass for planets
+- Improved compatibility with GalacticNeighborhood
+
+
 **v1.1.1**
 
 - Improved compatibility with planet packs
