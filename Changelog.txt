@@ -1,5 +1,6 @@
 **v1.2.0**
 
+- Improved definition of template parameters
 - Improved calculation of mass for planets
 - Improved compatibility with GalacticNeighborhood
 
