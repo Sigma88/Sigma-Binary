@@ -1,3 +1,8 @@
+**v1.2.1**
+
+- Bug Hotfix
+
+
 **v1.2.0**
 
 - Improved definition of template parameters
