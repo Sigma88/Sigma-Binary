@@ -1,6 +1,6 @@
 **v1.2.1**
 
-- No changes yet
+- Bug Hotfix
 
 
 **v1.2.0**
