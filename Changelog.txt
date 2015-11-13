@@ -1,3 +1,9 @@
+**v1.3.0**
+
+- Now Requires Kopernicus Beta 0.5
+- Template.cfg and DunaIke.cfg are now in separate downloads
+
+
 **v1.2.1**
 
 - Bug Hotfix
