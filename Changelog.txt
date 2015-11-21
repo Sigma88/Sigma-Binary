@@ -1,5 +1,12 @@
+**v1.3.1**
+
+- Added compatibility with templateless planets
+- Added code to remove duplicate values
+
+
 **v1.3.0**
 
+- Now Requires KSP 1.0.5
 - Now Requires Kopernicus Beta 0.5
 - Template.cfg and DunaIke.cfg are now in separate downloads
 - Folder structure changed
