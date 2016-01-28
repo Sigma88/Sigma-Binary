@@ -1,6 +1,6 @@
 **v1.3.3**
 
-- No changes yet
+- Added conversion of meanAnomalyAtEpochD (deg) to meanAnomalyAtEpoch (rad)
 
 
 **v1.3.2**
