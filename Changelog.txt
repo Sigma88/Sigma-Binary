@@ -1,3 +1,14 @@
+**v1.4.0**
+
+- Barycenter name now accounts for cbNameLater
+- Secondary orbit line is now drawn relative to the barycenter
+- template.cfg now deactivates if there are missing bodies
+- Fixed calculation of minimum SphereOfInfluence
+- Fixed calculations when finalizeOrbit is used
+- Moved clean-up of temp values from :FINAL to :FOR[SigmaCleanUp]
+- Fixed names of config files to account for linux case sensitivity
+
+
 **v1.3.3**
 
 - Added conversion of meanAnomalyAtEpochD (deg) to meanAnomalyAtEpoch (rad)
