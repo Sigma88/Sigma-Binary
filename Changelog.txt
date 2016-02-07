@@ -4,6 +4,7 @@
 - Secondary orbit line is now drawn relative to the barycenter
 - template.cfg now deactivates if there are missing bodies
 - Fixed calculation of minimum SphereOfInfluence
+- Fixed calculations when finalizeOrbit is used
 - Moved clean-up of temp values from :FINAL to :FOR[SigmaCleanUp]
 - Fixed names of config files to account for linux case sensitivity
 
