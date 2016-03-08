@@ -33,6 +33,13 @@ namespace SigmaBinaryPlugin
                 set { sigmabinary.primaryLocked = value; }
             }
 
+            [ParserTarget("redrawOrbit", optional = true)]
+            public bool redrawOrbit
+            {
+                get { return sigmabinary.redrawOrbit; }
+                set { sigmabinary.redrawOrbit = value; }
+            }
+
             void IParserEventSubscriber.Apply(ConfigNode node)
             {
                 sigmabinary = generatedBody.celestialBody.gameObject.AddComponent<SigmaBinary>();
