@@ -4,9 +4,6 @@ Kopernicus.OnDemand.dll
 Assembly-CSharp.dll
 Assembly-CSharp-firstpass.dll
 UnityEngine.dll
-[Source]\SigmaBinary\.vs
-*.gitignore
-[Source]\.gitignore
 *.rar
 *.zip
 
