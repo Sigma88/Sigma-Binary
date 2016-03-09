@@ -84,9 +84,9 @@ namespace SigmaBinaryPlugin
                     }
                 }
                 
-
+                
                 // Set Barycenter
-
+                
                 sbBarycenter.orbitDriver.orbit = new Orbit(sbPrimary.orbit.inclination, sbPrimary.orbit.eccentricity, sbPrimary.orbit.semiMajorAxis, sbPrimary.orbit.LAN, sbPrimary.orbit.argumentOfPeriapsis, sbPrimary.orbit.meanAnomalyAtEpoch, sbPrimary.orbit.epoch, body);
                 sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                 sbBarycenter.orbit.period = sbPrimary.orbit.period;
@@ -94,10 +94,30 @@ namespace SigmaBinaryPlugin
                 sbBarycenter.Mass = body.Mass + sbPrimary.Mass;
                 sbBarycenter.rotationPeriod = body.orbit.period;
                 sbBarycenter.orbitDriver.orbitColor = sbPrimary.orbitDriver.orbitColor;
+                if (!Kopernicus.Templates.description.ContainsKey(sbBarycenter.name))
+                {
+                    sbBarycenter.description = "This is the barycenter of the ";
+                    if (!Kopernicus.Templates.cbNameLater.ContainsKey(sbPrimary.name))
+                    {
+                        sbBarycenter.description = sbBarycenter.description + sbPrimary.cbNameLater;
+                    }
+                    else
+                    {
+                        sbBarycenter.description = sbBarycenter.description + sbPrimary.name;
+                    }
+                    if (!Kopernicus.Templates.cbNameLater.ContainsKey(body.name))
+                    {
+                        sbBarycenter.description = sbBarycenter.description + "-" + body.cbNameLater + " system.";
+                    }
+                    else
+                    {
+                        sbBarycenter.description = sbBarycenter.description + "-" + body.name + " system.";
+                    }
+                }
                 
-
+                
                 // Set Primary
-
+                
                 sbPrimary.orbitDriver.orbit = new Orbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis * body.Mass / (body.Mass + body.orbit.referenceBody.Mass), body.orbit.LAN, body.orbit.argumentOfPeriapsis + 180d, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbPrimary);
                 sbPrimary.orbit.referenceBody = sbBarycenter;
                 sbPrimary.orbit.period = body.orbit.period;
