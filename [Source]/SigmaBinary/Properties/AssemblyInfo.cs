@@ -10,5 +10,5 @@
 [assembly: AssemblyCulture("")]
 [assembly: KSPAssembly("SigmaBinary", 1, 0)]
 [assembly: KSPAssemblyDependency("Kopernicus", 1, 0)]
-[assembly: AssemblyVersion("2.0.0")]
+[assembly: AssemblyVersion("1.0.0")]
 

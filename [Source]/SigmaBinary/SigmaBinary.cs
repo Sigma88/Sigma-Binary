@@ -14,7 +14,6 @@ namespace SigmaBinaryPlugin
     {
         public class SigmaBinary : MonoBehaviour
         {
-
             // SigmaBinary
 
             public bool sbEnabled = true;
@@ -26,7 +25,10 @@ namespace SigmaBinaryPlugin
 
             public string sbName;
             public string description;
-
+            public bool selectable = true;
+            public Color color;
+            public bool hasColor;
+            
 
             // Bodies
 
@@ -41,7 +43,7 @@ namespace SigmaBinaryPlugin
 
 
                 // Set sb CelestialBodies
-
+                
                 sbPrimary = body.orbit.referenceBody;
 
                 foreach (CelestialBody sb in FlightGlobals.Bodies)
@@ -61,8 +63,8 @@ namespace SigmaBinaryPlugin
                         }
                     }
                 }
-                
 
+                
                 // Remove Finalize Orbit
 
                 if (Kopernicus.Templates.finalizeBodies.Contains(body.name))
@@ -71,7 +73,7 @@ namespace SigmaBinaryPlugin
                     // Fix sphereOfInfluence
                     if (!Kopernicus.Templates.sphereOfInfluence.ContainsKey(body.name))
                     {
-                        body.sphereOfInfluence = Math.Max(body.orbit.semiMajorAxis * Math.Pow(body.Mass / body.orbit.referenceBody.Mass, 0.4), Math.Max(body.Radius * Kopernicus.Templates.SOIMinRadiusMult, body.Radius + Kopernicus.Templates.SOIMinAltitude));
+                        body.sphereOfInfluence = Math.Max(body.orbit.semiMajorAxis * Math.Pow(body.Mass / sbPrimary.Mass, 0.4), Math.Max(body.Radius * Kopernicus.Templates.SOIMinRadiusMult, body.Radius + Kopernicus.Templates.SOIMinAltitude));
                     }
                 }
                 if (Kopernicus.Templates.finalizeBodies.Contains(sbPrimary.name))
@@ -83,10 +85,10 @@ namespace SigmaBinaryPlugin
                         sbPrimary.sphereOfInfluence = Math.Max(sbPrimary.orbit.semiMajorAxis * Math.Pow(sbPrimary.Mass / sbPrimary.orbit.referenceBody.Mass, 0.4), Math.Max(sbPrimary.Radius * Kopernicus.Templates.SOIMinRadiusMult, sbPrimary.Radius + Kopernicus.Templates.SOIMinAltitude));
                     }
                 }
-                
+
                 
                 // Set Barycenter
-                
+
                 sbBarycenter.orbitDriver.orbit = new Orbit(sbPrimary.orbit.inclination, sbPrimary.orbit.eccentricity, sbPrimary.orbit.semiMajorAxis, sbPrimary.orbit.LAN, sbPrimary.orbit.argumentOfPeriapsis, sbPrimary.orbit.meanAnomalyAtEpoch, sbPrimary.orbit.epoch, body);
                 sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                 sbBarycenter.orbit.period = sbPrimary.orbit.period;
@@ -94,41 +96,63 @@ namespace SigmaBinaryPlugin
                 sbBarycenter.Mass = body.Mass + sbPrimary.Mass;
                 sbBarycenter.rotationPeriod = body.orbit.period;
                 sbBarycenter.orbitDriver.orbitColor = sbPrimary.orbitDriver.orbitColor;
-                if (!Kopernicus.Templates.description.ContainsKey(sbBarycenter.name))
+                if (sbPrimary.GetComponent<NameChanger>() || body.GetComponent<NameChanger>())
                 {
-                    sbBarycenter.description = "This is the barycenter of the ";
-                    if (!Kopernicus.Templates.cbNameLater.ContainsKey(sbPrimary.name))
-                    {
-                        sbBarycenter.description = sbBarycenter.description + sbPrimary.cbNameLater;
-                    }
+                    NameChanger changer = sbBarycenter.gameObject.AddComponent<NameChanger>();
+                    changer.oldName = sbBarycenter.name;
+
+                    if (sbPrimary.GetComponent<NameChanger>())
+                        changer.newName = sbPrimary.GetComponent<NameChanger>().newName;
                     else
-                    {
-                        sbBarycenter.description = sbBarycenter.description + sbPrimary.name;
-                    }
-                    if (!Kopernicus.Templates.cbNameLater.ContainsKey(body.name))
-                    {
-                        sbBarycenter.description = sbBarycenter.description + "-" + body.cbNameLater + " system.";
-                    }
+                        changer.newName = sbPrimary.name;
+                    if (body.GetComponent<NameChanger>())
+                        changer.newName = sbBarycenter.GetComponent<NameChanger>().newName + body.GetComponent<NameChanger>().newName;
                     else
-                    {
-                        sbBarycenter.description = sbBarycenter.description + "-" + body.name + " system.";
-                    }
+                        changer.newName = sbBarycenter.GetComponent<NameChanger>().newName + body.name;
                 }
-                
-                
+                // Barycenter Properties
+                if (!selectable)
+                    Kopernicus.Templates.notSelectable.Add(sbBarycenter.name);
+
+                if (description == null)
+                {
+                    sbBarycenter.bodyDescription = "This is the barycenter of the ";
+                    if (sbPrimary.GetComponent<NameChanger>())
+                        sbBarycenter.bodyDescription = sbBarycenter.bodyDescription + sbPrimary.GetComponent<NameChanger>().newName;
+                    else
+                        sbBarycenter.bodyDescription = sbBarycenter.bodyDescription + sbPrimary.name;
+                    if (body.GetComponent<NameChanger>())
+                        sbBarycenter.bodyDescription = sbBarycenter.bodyDescription + "-" + body.GetComponent<NameChanger>().newName;
+                    else
+                        sbBarycenter.bodyDescription = sbBarycenter.bodyDescription + "-" + body.name + " system.";
+                }
+                else
+                {
+                    sbBarycenter.bodyDescription = description;
+                }
+                // Barycenter Orbit
+                if (hasColor)
+                {
+                    sbBarycenter.orbitDriver.orbitColor = color;
+                }
+
+
                 // Set Primary
-                
+
+                if (sbPrimary.tidallyLocked)
+                    sbPrimary.rotationPeriod = sbPrimary.orbit.period;
+                sbPrimary.tidallyLocked = false;
                 sbPrimary.orbitDriver.orbit = new Orbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis * body.Mass / (body.Mass + body.orbit.referenceBody.Mass), body.orbit.LAN, body.orbit.argumentOfPeriapsis + 180d, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbPrimary);
                 sbPrimary.orbit.referenceBody = sbBarycenter;
                 sbPrimary.orbit.period = body.orbit.period;
                 sbPrimary.orbit.ObTAtEpoch = body.orbit.ObTAtEpoch;
-
+                
                 if (primaryLocked)
                 {
                     sbPrimary.rotationPeriod = body.orbit.period;
                 }
-                
 
+                
                 // Set Secondary Orbit
                 if (redrawOrbit && sbOrbit)
                 {
@@ -141,10 +165,10 @@ namespace SigmaBinaryPlugin
                     }
                     Kopernicus.Templates.drawMode.Add(body.name, OrbitRenderer.DrawMode.REDRAW_AND_FOLLOW);
                 }
-                
+
 
                 // Set SphereOfInfluence for Barycenter and Primary
-
+                
                 if (Kopernicus.Templates.sphereOfInfluence.ContainsKey(sbPrimary.name))
                 {
                     sbPrimary.sphereOfInfluence = Kopernicus.Templates.sphereOfInfluence[sbPrimary.name];
@@ -153,14 +177,14 @@ namespace SigmaBinaryPlugin
                 sbBarycenter.sphereOfInfluence = sbPrimary.sphereOfInfluence;
                 Kopernicus.Templates.sphereOfInfluence.Add(sbBarycenter.name, sbBarycenter.sphereOfInfluence);
                 sbPrimary.sphereOfInfluence = sbPrimary.orbit.semiMajorAxis * (sbPrimary.orbit.eccentricity + 1) + sbBarycenter.sphereOfInfluence;
-
                 
+
                 // Reorder Trackingstation Bodies
 
                 List<MapObject> trackingstation = new List<MapObject>();
                 foreach (MapObject m in PlanetariumCamera.fetch.targets)
                 {
-                    if (m.name != sbBarycenter.name && m.name != sbPrimary.name && m.name != body.name)
+                    if (m.name != sbBarycenter.name && m.name != sbPrimary.name ) //&& m.name != body.name)
                     {
                         trackingstation.Add(m);
                     }
@@ -168,19 +192,16 @@ namespace SigmaBinaryPlugin
                     {
                         trackingstation.Add(PlanetariumCamera.fetch.targets.Find(d => d.name == sbBarycenter.name));
                         trackingstation.Add(PlanetariumCamera.fetch.targets.Find(d => d.name == sbPrimary.name));
-                        trackingstation.Add(PlanetariumCamera.fetch.targets.Find(d => d.name == body.name));
+                       // trackingstation.Add(PlanetariumCamera.fetch.targets.Find(d => d.name == body.name));
                     }
                 }
                 PlanetariumCamera.fetch.targets.Clear();
                 PlanetariumCamera.fetch.targets.AddRange(trackingstation);
-                
 
                 // Log
                 Debug.Log("--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbBarycenter.orbit.referenceBody.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + body.name);
-
-
+                
             }
         }
     }
 }
-
