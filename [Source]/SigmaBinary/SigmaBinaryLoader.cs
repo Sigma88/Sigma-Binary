@@ -18,6 +18,15 @@ namespace SigmaBinaryPlugin
         public class SigmaBinaryLoader : ExternalParserTargetLoader, IParserEventSubscriber
         {
             public SigmaBinary sigmabinary { get; set; }
+            public static Dictionary<string, CelestialBody> sigmabinaryLoadAfter = new Dictionary<string, CelestialBody>();
+            public static Dictionary<string, string> sigmabinaryName = new Dictionary<string, string>();
+            public static Dictionary<string, bool> sigmabinaryPrimaryLocked = new Dictionary<string, bool>();
+            public static Dictionary<string, bool> sigmabinaryRedrawOrbit = new Dictionary<string, bool>();
+            public static Dictionary<string, string> sigmabinaryDescription = new Dictionary<string, string>();
+            public static Dictionary<string, bool> sigmabinarySelectable = new Dictionary<string, bool>();
+            public static Dictionary<string, Color> sigmabinaryColor = new Dictionary<string, Color>();
+            public static Dictionary<string, EnumParser<OrbitRenderer.DrawMode>> sigmabinaryMode = new Dictionary<string, EnumParser<OrbitRenderer.DrawMode>>();
+            public static Dictionary<string, EnumParser<OrbitRenderer.DrawIcons>> sigmabinaryIcon = new Dictionary<string, EnumParser<OrbitRenderer.DrawIcons>>();
 
             [ParserTarget("name", optional = true)]
             public string sbName
@@ -31,6 +40,13 @@ namespace SigmaBinaryPlugin
             {
                 get { return sigmabinary.primaryLocked; }
                 set { sigmabinary.primaryLocked = value; }
+            }
+
+            [ParserTarget("after", optional = true)]
+            public string after
+            {
+                get { return sigmabinary.after; }
+                set { sigmabinary.after = value; }
             }
 
             [ParserTarget("redrawOrbit", optional = true)]
@@ -100,26 +116,21 @@ namespace SigmaBinaryPlugin
             [ParserTarget("mode", optional = true)]
             public EnumParser<OrbitRenderer.DrawMode> mode
             {
-                set { Kopernicus.Templates.drawMode.Add(sigmabinary.sbName, value); }
+                set { SigmaBinaryLoader.sigmabinaryMode.Add(sigmabinary.sbName, value); }
             }
 
             // Orbit Icon Mode
             [ParserTarget("icon", optional = true)]
             public EnumParser<OrbitRenderer.DrawIcons> icon
             {
-                set { Kopernicus.Templates.drawIcons.Add(sigmabinary.sbName, value); }
+                set { SigmaBinaryLoader.sigmabinaryIcon.Add(sigmabinary.sbName, value); }
             }
 
             // Orbit Color
             [ParserTarget("color", optional = true)]
             public ColorParser color
             {
-                get { return sigmabinary.color; }
-                set
-                {
-                    sigmabinary.hasColor = true;
-                    sigmabinary.color = value;
-                }
+                set { SigmaBinaryLoader.sigmabinaryColor.Add(generatedBody.name, value); }
             }
 
             void IParserEventSubscriber.Apply(ConfigNode node)
