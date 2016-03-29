@@ -1,8 +1,9 @@
 Sigma Binary by Sigma88 is released under the following license:
 
 
-Creative Commons, Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+Creative Commons - Attribution-NonCommercial-ShareAlike 4.0 International
+http://creativecommons.org/licenses/by-nc-sa/4.0/
 
-link: http://creativecommons.org/licenses/by-nc-sa/4.0/
 
-For more info visit the KSP Forum Thread: http://forum.kerbalspaceprogram.com/index.php?/topic/115114-/
+For more info visit the KSP Forum Thread:
+http://forum.kerbalspaceprogram.com/index.php?/topic/115114-/
