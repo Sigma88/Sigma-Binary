@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArchivesFixer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SigmaBinary.cs" />
     <Compile Include="SigmaBinaryLoader.cs" />
