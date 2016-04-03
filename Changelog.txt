@@ -1,3 +1,16 @@
+**v1.4.9**
+
+- Reworked all cfg files
+- Removed the need of template.cfg files
+- Moved the majority of features into SigmaBinary.dll
+- Barycenters now do not show up into the science archives
+- Added the option to choose the name of the barycenter
+- Added the option to choose the description of the barycenter
+- Added the option to choose the orbit color of the barycenter
+- Added the option to tidally lock the primary to the secondary
+- Added the option to disable the redrawn orbits for secondary bodies
+
+
 **v1.4.0**
 
 - Barycenter name now accounts for cbNameLater
