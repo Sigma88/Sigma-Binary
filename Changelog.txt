@@ -1,3 +1,9 @@
+**v1.4.9b**
+
+- Fixed removal of bodies from the science archives
+- Changed mass displayed for the barycenter
+
+
 **v1.4.9**
 
 - Reworked all cfg files
