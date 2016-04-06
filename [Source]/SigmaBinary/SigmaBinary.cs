@@ -107,7 +107,7 @@ namespace SigmaBinaryPlugin
                     sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                     sbBarycenter.orbit.period = sbPrimary.orbit.period;
                     sbBarycenter.orbit.ObTAtEpoch = sbPrimary.orbit.ObTAtEpoch;
-                    sbBarycenter.Mass = body.Mass + sbPrimary.Mass;
+                    sbBarycenter.GeeASL = (body.Mass + sbPrimary.Mass) * 6.674e-11d / Math.Pow(sbBarycenter.Radius, 2) / 9.81d;
                     sbBarycenter.rotationPeriod = body.orbit.period;
                     sbBarycenter.orbitDriver.orbitColor = sbPrimary.orbitDriver.orbitColor;
 

@@ -37,7 +37,7 @@ namespace SigmaBinaryPlugin
             }
 
             [ParserTarget("primaryLocked", optional = true)]
-            public bool primaryLocked
+            public NumericParser<bool> primaryLocked
             {
                 get { return sigmabinary.primaryLocked; }
                 set { sigmabinary.primaryLocked = value; }
@@ -51,7 +51,7 @@ namespace SigmaBinaryPlugin
             }
 
             [ParserTarget("redrawOrbit", optional = true)]
-            public bool redrawOrbit
+            public NumericParser<bool> redrawOrbit
             {
                 get { return sigmabinary.redrawOrbit; }
                 set { sigmabinary.redrawOrbit = value; }
