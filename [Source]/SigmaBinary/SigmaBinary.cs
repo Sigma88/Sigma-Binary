@@ -64,7 +64,6 @@ namespace SigmaBinaryPlugin
                         if (sb.bodyName == sbName)
                         {
                             sbBarycenter = sb;
-                            SigmaBinaryLoader.ArchivesFixerList.Add(sb.name);
                         }
                     }
                     if (redrawOrbit)
@@ -176,19 +175,20 @@ namespace SigmaBinaryPlugin
                     {
                         sbOrbit.orbitDriver.orbit = new Orbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis - sbPrimary.orbit.semiMajorAxis, body.orbit.LAN, body.orbit.argumentOfPeriapsis, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbOrbit);
                         sbOrbit.orbit.referenceBody = sbBarycenter;
-                        sbOrbit.orbitDriver.orbitColor = body.orbitDriver.orbitColor;
+                        sbOrbit.orbit.period = body.orbit.period;
+                        sbOrbit.orbit.ObTAtEpoch = body.orbit.ObTAtEpoch;
 
                         if (body.GetComponent<NameChanger>())
                         {
                             if (Kopernicus.Templates.drawMode.ContainsKey(body.GetComponent<NameChanger>().oldName))
                                 Kopernicus.Templates.drawMode.Remove(body.GetComponent<NameChanger>().oldName);
-                            Kopernicus.Templates.drawMode.Add(body.GetComponent<NameChanger>().oldName, OrbitRenderer.DrawMode.REDRAW_AND_FOLLOW);
+                            Kopernicus.Templates.drawMode.Add(body.GetComponent<NameChanger>().oldName, OrbitRenderer.DrawMode.OFF);
                         }
                         else
                         {
                             if (Kopernicus.Templates.drawMode.ContainsKey(body.name))
                                 Kopernicus.Templates.drawMode.Remove(body.name);
-                            Kopernicus.Templates.drawMode.Add(body.name, OrbitRenderer.DrawMode.REDRAW_AND_FOLLOW);
+                            Kopernicus.Templates.drawMode.Add(body.name, OrbitRenderer.DrawMode.OFF);
                         }
                     }
 
