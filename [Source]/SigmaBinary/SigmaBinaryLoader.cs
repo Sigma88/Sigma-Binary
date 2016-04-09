@@ -69,28 +69,29 @@ namespace SigmaBinaryPlugin
 
             void IParserEventSubscriber.PostApply(ConfigNode node)
             {
-                Debug.Log("SigmaBinaryLoaderLog: Starting PostApply for body " + generatedBody.name);
+                Debug.Log("SigmaBinaryLoaderLog: Starting PostApply for generatedBody " + generatedBody.name);
                 // Set Fake Orbit Color
                 sigmabinaryColor.Add(sigmabinary.sbName + "Orbit", generatedBody.orbitRenderer.orbitColor);
+                Debug.Log("SigmaBinaryLoaderLog: Added Color for fake orbit - sigmabinaryColor.Add(" + sigmabinary.sbName + "Orbit, " + generatedBody.orbitRenderer.orbitColor);
 
                 // Unless we have a custom color
                 if (!sigmabinaryColor.ContainsKey(sigmabinary.sbName))
                 {
-                    Debug.Log("SigmaBinaryLoaderLog: No Custom color detected for body " + sigmabinary.sbName);
+                    Debug.Log("SigmaBinaryLoaderLog: No Custom color detected for barycenter " + sigmabinary.sbName);
                     // Look for Primary Orbit Color
                     if (sigmabinaryColor.ContainsKey(ColorSwitcher.referenceSwitcher[generatedBody]))
                     {
                         Debug.Log("SigmaBinaryLoaderLog: Found color of primary body named " + ColorSwitcher.referenceSwitcher[generatedBody]);
                         // If Primary has already been loaded, take the color
                         sigmabinaryColor.Add(sigmabinary.sbName, sigmabinaryColor[ColorSwitcher.referenceSwitcher[generatedBody]]);
-                        Debug.Log("SigmaBinaryLoaderLog: the selected color is " + sigmabinaryColor[ColorSwitcher.referenceSwitcher[generatedBody]]);
+                        Debug.Log("SigmaBinaryLoaderLog: the selected color is taken added - sigmabinaryColor.Add(" + sigmabinary.sbName + ", " + sigmabinaryColor[ColorSwitcher.referenceSwitcher[generatedBody]]);
                     }
                     else
                     {
                         Debug.Log("SigmaBinaryLoaderLog: No colors stored for primary body named " + ColorSwitcher.referenceSwitcher[generatedBody]);
                         // Otherwise request the color
                         ColorSwitcher.colorSwitcher.Add(ColorSwitcher.referenceSwitcher[generatedBody], sigmabinary.sbName);
-                        Debug.Log("SigmaBinaryLoaderLog: Requested color for body " + sigmabinary.sbName);
+                        Debug.Log("SigmaBinaryLoaderLog: Requested color for the barycenter - ColorSwitcher.colorSwitcher.Add(" + ColorSwitcher.referenceSwitcher[generatedBody] + ", " + sigmabinary.sbName);
                     }
                 }
                 else
@@ -99,7 +100,7 @@ namespace SigmaBinaryPlugin
                     Debug.Log("SigmaBinaryLoaderLog: Found Custom color " + sigmabinaryColor[sigmabinary.sbName].ToString() + " detected for body " + sigmabinary.sbName);
                 }
 
-                Debug.Log("SigmaBinaryLoaderLog: Ending PostApply for body " + generatedBody.name);
+                Debug.Log("SigmaBinaryLoaderLog: Ending PostApply for generatedBody " + generatedBody.name);
             }
 
             public SigmaBinaryLoader()

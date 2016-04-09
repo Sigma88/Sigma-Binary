@@ -32,36 +32,36 @@ namespace SigmaBinaryPlugin
             void IParserEventSubscriber.PostApply(ConfigNode node)
             {
                 // Damn you Thomas! *FACEPALM*
-                Debug.Log("ColorSwitcherLog: Starting PostApply for body " + generatedBody.name);
+                Debug.Log("ColorSwitcherLog: Starting PostApply for generatedBody " + generatedBody.name);
 
                 // If the color is stored in "sigmabinaryColor" apply the color to the current orbit
                 if (SigmaBinaryLoader.sigmabinaryColor.ContainsKey(generatedBody.name))
                 {
-                    Debug.Log("ColorSwitcherLog: found color for body " + generatedBody.name);
-                    generatedBody.orbitRenderer.orbitColor = SigmaBinaryLoader.sigmabinaryColor[generatedBody.name];
-                    generatedBody.orbitRenderer.nodeColor = SigmaBinaryLoader.sigmabinaryColor[generatedBody.name];
-                    Debug.Log("ColorSwitcherLog: applied color " + SigmaBinaryLoader.sigmabinaryColor[generatedBody.name].ToString());
+                    Debug.Log("ColorSwitcherLog: found color for generatedBody " + generatedBody.name);
+                    generatedBody.orbitRenderer.SetColor(SigmaBinaryLoader.sigmabinaryColor[generatedBody.name]);
+                    Debug.Log("generatedBody.orbitRenderer.orbitColor = " + SigmaBinaryLoader.sigmabinaryColor[generatedBody.name]);
+                    Debug.Log("generatedBody.orbitRenderer.nodeColor = " + SigmaBinaryLoader.sigmabinaryColor[generatedBody.name]);
                 }
                 else
                 {
-                    Debug.Log("ColorSwitcherLog: no colors found for body " + generatedBody.name);
+                    Debug.Log("ColorSwitcherLog: no colors found for generatedBody " + generatedBody.name);
                     // Otherwise, This might be the color of the Primary Body
                     if (colorSwitcher.ContainsKey(generatedBody.name))
                     {
                         Debug.Log("ColorSwitcherLog: the color has been requested for body " + colorSwitcher[generatedBody.name]);
                         // if the color has been requested provide it
                         SigmaBinaryLoader.sigmabinaryColor.Add(colorSwitcher[generatedBody.name], generatedBody.orbitRenderer.orbitColor);
-                        Debug.Log("ColorSwitcherLog: provided the requested color " + generatedBody.orbitRenderer.orbitColor);
+                        Debug.Log("ColorSwitcherLog: provided the requested color - sigmabinaryColor.Add(" + colorSwitcher[generatedBody.name] + ", " + generatedBody.orbitRenderer.orbitColor);
                     }
                     else
                     {
-                        Debug.Log("ColorSwitcherLog: there was no request for the color of body " + generatedBody.name);
+                        Debug.Log("ColorSwitcherLog: there was no request for the color of generatedBody " + generatedBody.name);
                         // otherwise store it for later
                         SigmaBinaryLoader.sigmabinaryColor.Add(generatedBody.name, generatedBody.orbitRenderer.orbitColor);
-                        Debug.Log("ColorSwitcherLog: stored for later the color " + generatedBody.orbitRenderer.orbitColor);
+                        Debug.Log("ColorSwitcherLog: stored for later the color - sigmabinaryColor.Add(" + generatedBody.name + ", " + generatedBody.orbitRenderer.orbitColor);
                     }
                 }
-                Debug.Log("ColorSwitcherLog: Ending PostApply for body " + generatedBody.name);
+                Debug.Log("ColorSwitcherLog: Ending PostApply for generatedBody " + generatedBody.name);
             }
             public ColorSwitcher ()
             {
