@@ -178,9 +178,18 @@ namespace SigmaBinaryPlugin
                         sbOrbit.orbit.referenceBody = sbBarycenter;
                         sbOrbit.orbitDriver.orbitColor = body.orbitDriver.orbitColor;
 
-                        if (Kopernicus.Templates.drawMode.ContainsKey(body.name))
-                            Kopernicus.Templates.drawMode.Remove(body.name);
-                        Kopernicus.Templates.drawMode.Add(body.name, OrbitRenderer.DrawMode.REDRAW_AND_FOLLOW);
+                        if (body.GetComponent<NameChanger>())
+                        {
+                            if (Kopernicus.Templates.drawMode.ContainsKey(body.GetComponent<NameChanger>().oldName))
+                                Kopernicus.Templates.drawMode.Remove(body.GetComponent<NameChanger>().oldName);
+                            Kopernicus.Templates.drawMode.Add(body.GetComponent<NameChanger>().oldName, OrbitRenderer.DrawMode.REDRAW_AND_FOLLOW);
+                        }
+                        else
+                        {
+                            if (Kopernicus.Templates.drawMode.ContainsKey(body.name))
+                                Kopernicus.Templates.drawMode.Remove(body.name);
+                            Kopernicus.Templates.drawMode.Add(body.name, OrbitRenderer.DrawMode.REDRAW_AND_FOLLOW);
+                        }
                     }
 
 
