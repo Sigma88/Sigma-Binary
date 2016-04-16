@@ -1,3 +1,8 @@
+**v1.4.9.2**
+
+- Fixed an issue with bodies using cbNameLater
+
+
 **v1.4.9.1**
 
 - Fixed removal of bodies from the science archives
