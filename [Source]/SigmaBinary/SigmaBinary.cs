@@ -40,7 +40,7 @@ namespace SigmaBinaryPlugin
             void Start()
             {
                 CelestialBody body = GetComponent<CelestialBody>();
-                
+
                 if (!string.IsNullOrEmpty(after))
                 {
                     SigmaBinaryLoader.sigmabinaryLoadAfter.Add(after, body);
@@ -106,7 +106,7 @@ namespace SigmaBinaryPlugin
                     sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                     sbBarycenter.orbit.period = sbPrimary.orbit.period;
                     sbBarycenter.orbit.ObTAtEpoch = sbPrimary.orbit.ObTAtEpoch;
-                    sbBarycenter.GeeASL = (body.Mass + sbPrimary.Mass) * 6.674e-11d / Math.Pow(sbBarycenter.Radius, 2) / 9.81d;
+                    sbBarycenter.GeeASL = sbPrimary.Mass * Math.Pow(body.Mass / (body.Mass + sbPrimary.Mass), 3) * 6.674e-11d / Math.Pow(sbBarycenter.Radius, 2) / 9.81d;
                     sbBarycenter.rotationPeriod = body.orbit.period;
                     sbBarycenter.orbitDriver.orbitColor = sbPrimary.orbitDriver.orbitColor;
 
@@ -158,7 +158,7 @@ namespace SigmaBinaryPlugin
                     sbPrimary.orbit.referenceBody = sbBarycenter;
                     sbPrimary.orbit.period = body.orbit.period;
                     sbPrimary.orbit.ObTAtEpoch = body.orbit.ObTAtEpoch;
-                    
+
                     if (Kopernicus.Templates.drawMode.ContainsKey(sbPrimary.name))
                         Kopernicus.Templates.drawMode.Remove(sbPrimary.name);
                     if (Kopernicus.Templates.drawIcons.ContainsKey(sbPrimary.name))
@@ -202,7 +202,9 @@ namespace SigmaBinaryPlugin
                     }
                     sbBarycenter.sphereOfInfluence = sbPrimary.sphereOfInfluence;
                     Kopernicus.Templates.sphereOfInfluence.Add(sbBarycenter.name, sbBarycenter.sphereOfInfluence);
+
                     sbPrimary.sphereOfInfluence = sbPrimary.orbit.semiMajorAxis * (sbPrimary.orbit.eccentricity + 1) + sbBarycenter.sphereOfInfluence;
+                    Kopernicus.Templates.sphereOfInfluence.Add(sbPrimary.name, sbPrimary.sphereOfInfluence);
 
 
                     // Reorder Trackingstation Bodies
@@ -225,8 +227,8 @@ namespace SigmaBinaryPlugin
 
                     // Log
                     Debug.Log("--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbBarycenter.orbit.referenceBody.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + body.name);
-                    
-                    
+
+
                     if (SigmaBinaryLoader.sigmabinaryLoadAfter.ContainsKey(body.name))
                     {
                         body = SigmaBinaryLoader.sigmabinaryLoadAfter[body.name];
