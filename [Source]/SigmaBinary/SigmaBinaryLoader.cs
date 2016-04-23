@@ -18,7 +18,6 @@ namespace SigmaBinaryPlugin
         public class SigmaBinaryLoader : ExternalParserTargetLoader, IParserEventSubscriber
         {
             public SigmaBinary sigmabinary { get; set; }
-            public static List<string> ArchivesFixerList = new List<string>();
             public static Dictionary<string, CelestialBody> sigmabinaryLoadAfter = new Dictionary<string, CelestialBody>();
             public static Dictionary<string, string> sigmabinaryName = new Dictionary<string, string>();
             public static Dictionary<string, bool> sigmabinaryPrimaryLocked = new Dictionary<string, bool>();
@@ -70,6 +69,38 @@ namespace SigmaBinaryPlugin
 
             void IParserEventSubscriber.PostApply(ConfigNode node)
             {
+                //  Debug.Log("SigmaBinaryLoaderLog: Starting PostApply for generatedBody " + generatedBody.name);
+                // Set Fake Orbit Color
+                sigmabinaryColor.Add(sigmabinary.sbName + "Orbit", generatedBody.orbitRenderer.orbitColor);
+                //  Debug.Log("SigmaBinaryLoaderLog: Added Color for fake orbit - sigmabinaryColor.Add(" + sigmabinary.sbName + "Orbit, " + generatedBody.orbitRenderer.orbitColor + ")");
+
+                // Unless we have a custom color
+                if (!sigmabinaryColor.ContainsKey(sigmabinary.sbName))
+                {
+                    //  Debug.Log("SigmaBinaryLoaderLog: No Custom color detected for barycenter " + sigmabinary.sbName);
+                    // Look for Primary Orbit Color
+                    if (sigmabinaryColor.ContainsKey(ColorSwitcher.referenceSwitcher[generatedBody]))
+                    {
+                        //  Debug.Log("SigmaBinaryLoaderLog: Found color of primary body named " + ColorSwitcher.referenceSwitcher[generatedBody]);
+                        // If Primary has already been loaded, take the color
+                        sigmabinaryColor.Add(sigmabinary.sbName, sigmabinaryColor[ColorSwitcher.referenceSwitcher[generatedBody]]);
+                        //  Debug.Log("SigmaBinaryLoaderLog: the selected color is added to the list - sigmabinaryColor.Add(" + sigmabinary.sbName + ", " + sigmabinaryColor[ColorSwitcher.referenceSwitcher[generatedBody]]);
+                    }
+                    else
+                    {
+                        //  Debug.Log("SigmaBinaryLoaderLog: No colors stored for primary body named " + ColorSwitcher.referenceSwitcher[generatedBody]);
+                        // Otherwise request the color
+                        ColorSwitcher.colorSwitcher.Add(ColorSwitcher.referenceSwitcher[generatedBody], sigmabinary.sbName);
+                        //  Debug.Log("SigmaBinaryLoaderLog: Requested color for the barycenter - ColorSwitcher.colorSwitcher.Add(" + ColorSwitcher.referenceSwitcher[generatedBody] + ", " + sigmabinary.sbName);
+                    }
+                }
+                else
+                {
+                    // If we have a custom color we don't need to change anything
+                    //  Debug.Log("SigmaBinaryLoaderLog: Found Custom color " + sigmabinaryColor[sigmabinary.sbName].ToString() + " detected for body " + sigmabinary.sbName);
+                }
+
+                //  Debug.Log("SigmaBinaryLoaderLog: Ending PostApply for generatedBody " + generatedBody.name);
             }
 
             public SigmaBinaryLoader()
@@ -131,7 +162,10 @@ namespace SigmaBinaryPlugin
             [ParserTarget("color", optional = true)]
             public ColorParser color
             {
-                set { SigmaBinaryLoader.sigmabinaryColor.Add(generatedBody.name, value); }
+                set
+                {
+                    SigmaBinaryLoader.sigmabinaryColor.Add(sigmabinary.sbName, new Color(value.value.r / 2, value.value.g / 2, value.value.b / 2, value.value.r / 2));
+                }
             }
 
             void IParserEventSubscriber.Apply(ConfigNode node)
