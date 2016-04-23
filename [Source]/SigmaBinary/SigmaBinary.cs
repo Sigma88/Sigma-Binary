@@ -40,7 +40,7 @@ namespace SigmaBinaryPlugin
             void Start()
             {
                 CelestialBody body = GetComponent<CelestialBody>();
-                
+
                 if (!string.IsNullOrEmpty(after))
                 {
                     SigmaBinaryLoader.sigmabinaryLoadAfter.Add(after, body);
@@ -64,7 +64,6 @@ namespace SigmaBinaryPlugin
                         if (sb.bodyName == sbName)
                         {
                             sbBarycenter = sb;
-                            SigmaBinaryLoader.ArchivesFixerList.Add(sb.name);
                         }
                     }
                     if (redrawOrbit)
@@ -107,7 +106,7 @@ namespace SigmaBinaryPlugin
                     sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                     sbBarycenter.orbit.period = sbPrimary.orbit.period;
                     sbBarycenter.orbit.ObTAtEpoch = sbPrimary.orbit.ObTAtEpoch;
-                    sbBarycenter.GeeASL = (body.Mass + sbPrimary.Mass) * 6.674e-11d / Math.Pow(sbBarycenter.Radius, 2) / 9.81d;
+                    sbBarycenter.GeeASL = 6.674e-11d / Math.Pow(sbBarycenter.Radius, 2) / 9.81d;
                     sbBarycenter.rotationPeriod = body.orbit.period;
                     sbBarycenter.orbitDriver.orbitColor = sbPrimary.orbitDriver.orbitColor;
 
@@ -159,7 +158,7 @@ namespace SigmaBinaryPlugin
                     sbPrimary.orbit.referenceBody = sbBarycenter;
                     sbPrimary.orbit.period = body.orbit.period;
                     sbPrimary.orbit.ObTAtEpoch = body.orbit.ObTAtEpoch;
-                    
+
                     if (Kopernicus.Templates.drawMode.ContainsKey(sbPrimary.name))
                         Kopernicus.Templates.drawMode.Remove(sbPrimary.name);
                     if (Kopernicus.Templates.drawIcons.ContainsKey(sbPrimary.name))
@@ -176,19 +175,20 @@ namespace SigmaBinaryPlugin
                     {
                         sbOrbit.orbitDriver.orbit = new Orbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis - sbPrimary.orbit.semiMajorAxis, body.orbit.LAN, body.orbit.argumentOfPeriapsis, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbOrbit);
                         sbOrbit.orbit.referenceBody = sbBarycenter;
-                        sbOrbit.orbitDriver.orbitColor = body.orbitDriver.orbitColor;
+                        sbOrbit.orbit.period = body.orbit.period;
+                        sbOrbit.orbit.ObTAtEpoch = body.orbit.ObTAtEpoch;
 
                         if (body.GetComponent<NameChanger>())
                         {
                             if (Kopernicus.Templates.drawMode.ContainsKey(body.GetComponent<NameChanger>().oldName))
                                 Kopernicus.Templates.drawMode.Remove(body.GetComponent<NameChanger>().oldName);
-                            Kopernicus.Templates.drawMode.Add(body.GetComponent<NameChanger>().oldName, OrbitRenderer.DrawMode.REDRAW_AND_FOLLOW);
+                            Kopernicus.Templates.drawMode.Add(body.GetComponent<NameChanger>().oldName, OrbitRenderer.DrawMode.OFF);
                         }
                         else
                         {
                             if (Kopernicus.Templates.drawMode.ContainsKey(body.name))
                                 Kopernicus.Templates.drawMode.Remove(body.name);
-                            Kopernicus.Templates.drawMode.Add(body.name, OrbitRenderer.DrawMode.REDRAW_AND_FOLLOW);
+                            Kopernicus.Templates.drawMode.Add(body.name, OrbitRenderer.DrawMode.OFF);
                         }
                     }
 
@@ -202,7 +202,9 @@ namespace SigmaBinaryPlugin
                     }
                     sbBarycenter.sphereOfInfluence = sbPrimary.sphereOfInfluence;
                     Kopernicus.Templates.sphereOfInfluence.Add(sbBarycenter.name, sbBarycenter.sphereOfInfluence);
+
                     sbPrimary.sphereOfInfluence = sbPrimary.orbit.semiMajorAxis * (sbPrimary.orbit.eccentricity + 1) + sbBarycenter.sphereOfInfluence;
+                    Kopernicus.Templates.sphereOfInfluence.Add(sbPrimary.name, sbPrimary.sphereOfInfluence);
 
 
                     // Reorder Trackingstation Bodies
@@ -225,8 +227,8 @@ namespace SigmaBinaryPlugin
 
                     // Log
                     Debug.Log("--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbBarycenter.orbit.referenceBody.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + body.name);
-                    
-                    
+
+
                     if (SigmaBinaryLoader.sigmabinaryLoadAfter.ContainsKey(body.name))
                     {
                         body = SigmaBinaryLoader.sigmabinaryLoadAfter[body.name];
