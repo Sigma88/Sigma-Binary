@@ -16,15 +16,15 @@ namespace SigmaBinaryPlugin
 		public class ArchivesFixer : MonoBehaviour
 		{
 			void Update()
-            {
-                foreach (RDPlanetListItemContainer planetItem in Resources.FindObjectsOfTypeAll<RDPlanetListItemContainer>())
+			{
+				foreach (RDPlanetListItemContainer planetItem in Resources.FindObjectsOfTypeAll<RDPlanetListItemContainer>())
 				{
 					if (SigmaBinaryLoader.ArchivesFixerList.Contains(planetItem.label_planetName.text))
-                    {
-                        planetItem.gameObject.SetActive(false);
-                    }
+					{
+						planetItem.gameObject.SetActive(false);
+					}
 				}
-            }
+			}
 		}
 	}
 }
