@@ -64,6 +64,7 @@ namespace SigmaBinaryPlugin
                         if (sb.bodyName == sbName)
                         {
                             sbBarycenter = sb;
+                            SigmaBinaryLoader.ArchivesFixerList.Add(sb.name);
                         }
                     }
                     if (redrawOrbit)

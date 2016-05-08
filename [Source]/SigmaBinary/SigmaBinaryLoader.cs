@@ -18,6 +18,7 @@ namespace SigmaBinaryPlugin
         public class SigmaBinaryLoader : ExternalParserTargetLoader, IParserEventSubscriber
         {
             public SigmaBinary sigmabinary { get; set; }
+            public static List<string> ArchivesFixerList = new List<string>();
             public static Dictionary<string, CelestialBody> sigmabinaryLoadAfter = new Dictionary<string, CelestialBody>();
             public static Dictionary<string, string> sigmabinaryName = new Dictionary<string, string>();
             public static Dictionary<string, bool> sigmabinaryPrimaryLocked = new Dictionary<string, bool>();
