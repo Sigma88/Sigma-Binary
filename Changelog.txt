@@ -1,3 +1,8 @@
+**v1.5.3**
+
+- Added some fail-safe measures to the code
+
+
 **v1.5.2**
 
 - Fixed science archives
