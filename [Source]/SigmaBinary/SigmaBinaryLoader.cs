@@ -165,7 +165,7 @@ namespace SigmaBinaryPlugin
             {
                 set
                 {
-                    SigmaBinaryLoader.sigmabinaryColor.Add(sigmabinary.sbName, new Color(value.value.r / 2, value.value.g / 2, value.value.b / 2, value.value.r / 2));
+                    SigmaBinaryLoader.sigmabinaryColor.Add(sigmabinary.sbName, new Color(value.value.r / 2, value.value.g / 2, value.value.b / 2, value.value.a));
                 }
             }
 
