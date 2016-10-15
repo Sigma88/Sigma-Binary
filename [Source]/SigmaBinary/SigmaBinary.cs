@@ -103,13 +103,13 @@ namespace SigmaBinaryPlugin
 
                     // Set Barycenter
 
-                    sbBarycenter.orbitDriver.orbit = new Orbit(sbPrimary.orbit.inclination, sbPrimary.orbit.eccentricity, sbPrimary.orbit.semiMajorAxis, sbPrimary.orbit.LAN, sbPrimary.orbit.argumentOfPeriapsis, sbPrimary.orbit.meanAnomalyAtEpoch, sbPrimary.orbit.epoch, body);
+                    sbBarycenter.orbitDriver.orbit = new Orbit(sbPrimary.orbit.inclination, sbPrimary.orbit.eccentricity, sbPrimary.orbit.semiMajorAxis, sbPrimary.orbit.LAN, sbPrimary.orbit.argumentOfPeriapsis, sbPrimary.orbit.meanAnomalyAtEpoch, sbPrimary.orbit.epoch, sbPrimary.orbit.referenceBody);
                     sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                     sbBarycenter.orbit.period = sbPrimary.orbit.period;
+                    sbBarycenter.orbit.meanMotion = 2 * Math.PI / sbBarycenter.orbit.period;
                     sbBarycenter.orbit.ObTAtEpoch = sbPrimary.orbit.ObTAtEpoch;
-                    sbBarycenter.GeeASL = (sbPrimary.Mass / 1e5d) * 6.674e-11d / Math.Pow(sbBarycenter.Radius, 2) / 9.81d;
+                    sbBarycenter.GeeASL = (sbPrimary.Mass / 1e5d) * 6.67408e-11d / Math.Pow(sbBarycenter.Radius, 2) / 9.80665d;
                     sbBarycenter.rotationPeriod = body.orbit.period;
-                    sbBarycenter.orbitDriver.orbitColor = sbPrimary.orbitDriver.orbitColor;
 
                     // Barycenter Properties
                     if (!selectable)
@@ -152,13 +152,17 @@ namespace SigmaBinaryPlugin
 
                     // Set Primary
 
+                    sbPrimary.orbitDriver.orbit = new Orbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis * body.Mass / (body.Mass + body.orbit.referenceBody.Mass), body.orbit.LAN, body.orbit.argumentOfPeriapsis + 180d, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbBarycenter);
+                    //sbPrimary.orbit.SetOrbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis * body.Mass / (body.Mass + body.orbit.referenceBody.Mass), body.orbit.LAN, body.orbit.argumentOfPeriapsis + 180d, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbBarycenter);
+                    sbPrimary.orbit.referenceBody = sbBarycenter;
+                    sbPrimary.transform.parent = sbBarycenter.transform;
+                    sbPrimary.orbit.period = body.orbit.period;
+                    sbPrimary.orbit.meanMotion = 2 * Math.PI / sbPrimary.orbit.period;
+                    sbPrimary.orbit.ObTAtEpoch = body.orbit.ObTAtEpoch;
+
                     if (sbPrimary.tidallyLocked)
                         sbPrimary.rotationPeriod = sbPrimary.orbit.period;
                     sbPrimary.tidallyLocked = false;
-                    sbPrimary.orbitDriver.orbit = new Orbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis * body.Mass / (body.Mass + body.orbit.referenceBody.Mass), body.orbit.LAN, body.orbit.argumentOfPeriapsis + 180d, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbPrimary);
-                    sbPrimary.orbit.referenceBody = sbBarycenter;
-                    sbPrimary.orbit.period = body.orbit.period;
-                    sbPrimary.orbit.ObTAtEpoch = body.orbit.ObTAtEpoch;
 
                     if (Kopernicus.Templates.drawMode.ContainsKey(sbPrimary.name))
                         Kopernicus.Templates.drawMode.Remove(sbPrimary.name);
@@ -174,9 +178,10 @@ namespace SigmaBinaryPlugin
                     // Set Secondary Orbit
                     if (redrawOrbit && sbOrbit)
                     {
-                        sbOrbit.orbitDriver.orbit = new Orbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis - sbPrimary.orbit.semiMajorAxis, body.orbit.LAN, body.orbit.argumentOfPeriapsis, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbOrbit);
+                        sbOrbit.orbitDriver.orbit = new Orbit(body.orbit.inclination, body.orbit.eccentricity, body.orbit.semiMajorAxis - sbPrimary.orbit.semiMajorAxis, body.orbit.LAN, body.orbit.argumentOfPeriapsis, body.orbit.meanAnomalyAtEpoch, body.orbit.epoch, sbBarycenter);
                         sbOrbit.orbit.referenceBody = sbBarycenter;
                         sbOrbit.orbit.period = body.orbit.period;
+                        sbOrbit.orbit.meanMotion = 2 * Math.PI / sbOrbit.orbit.period;
                         sbOrbit.orbit.ObTAtEpoch = body.orbit.ObTAtEpoch;
 
                         if (body.GetComponent<NameChanger>())
