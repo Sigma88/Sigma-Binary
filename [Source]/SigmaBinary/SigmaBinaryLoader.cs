@@ -14,7 +14,6 @@ namespace SigmaBinaryPlugin
     [ExternalParserTarget("SigmaBinary")]
     public class SigmaBinaryLoader : ExternalParserTargetLoader, IParserEventSubscriber
     {
-        //static bool periodFixed = false;
         public PeriodFixer periodFixer { get; set; }
 
         [ParserTarget("after", optional = true)]
@@ -60,17 +59,6 @@ namespace SigmaBinaryPlugin
         void IParserEventSubscriber.Apply(ConfigNode node)
         {
             periodFixer = generatedBody.celestialBody.gameObject.GetComponent<PeriodFixer>();
-            /*
-            Debug.Log("SigmaBinaryLog: 1");
-            if (!periodFixed)
-            {
-                Debug.Log("SigmaBinaryLog: 2");
-                PSystemManager.Instance.OnPSystemReady.Add(PeriodFix);
-                Debug.Log("SigmaBinaryLog: 3");
-                periodFixed = true;
-                Debug.Log("SigmaBinaryLog: 4");
-            }
-            Debug.Log("SigmaBinaryLog: 5");*/
         }
 
         void IParserEventSubscriber.PostApply(ConfigNode node)
@@ -84,22 +72,6 @@ namespace SigmaBinaryPlugin
                 SigmaBinary.sigmabinaryLoadAfter.Remove(generatedBody.name);
             }
         }
-        /*
-        static void PeriodFix()
-        {
-            Debug.Log("SigmaBinaryLog: 6");
-            for (int i = 0; i < SigmaBinary.periodFixerList.Count(); i++)
-            {
-                Debug.Log("SigmaBinaryLog: 7");
-                CelestialBody body = PSystemManager.Instance.localBodies.Find(cb => cb.transform.name == SigmaBinary.periodFixerList.ElementAt(i).Key);
-                Debug.Log("SigmaBinaryLog: 8");
-                body.orbit.period = SigmaBinary.periodFixerList.ElementAt(i).Value;
-                Debug.Log("SigmaBinaryLog: 9");
-                body.orbit.meanMotion = 2 * Math.PI / body.orbit.period;
-                Debug.Log("SigmaBinaryLog: 10");
-            }
-            Debug.Log("SigmaBinaryLog: 11");
-        }*/
         public SigmaBinaryLoader()
         {
         }
