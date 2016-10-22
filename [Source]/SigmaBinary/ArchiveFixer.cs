@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using SigmaBinaryPlugin.Components;
 using SigmaBinaryPlugin.Configuration;
 using System;
 using System.Reflection;
@@ -19,7 +18,7 @@ namespace SigmaBinaryPlugin
 			{
 				foreach (RDPlanetListItemContainer planetItem in Resources.FindObjectsOfTypeAll<RDPlanetListItemContainer>())
 				{
-					if (SigmaBinaryLoader.ArchivesFixerList.Contains(planetItem.label_planetName.text))
+					if (SigmaBinary.ArchivesFixerList.Contains(planetItem.label_planetName.text))
 					{
 						planetItem.gameObject.SetActive(false);
 					}

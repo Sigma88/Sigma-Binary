@@ -7,8 +7,6 @@ using UnityEngine;
 using Kopernicus.Components;
 using Kopernicus.Configuration;
 
-using SigmaBinaryPlugin.Components;
-
 
 namespace SigmaBinaryPlugin
 {
@@ -30,7 +28,7 @@ namespace SigmaBinaryPlugin
             }
 
             void IParserEventSubscriber.PostApply(ConfigNode node)
-            {
+            {/*
                 //  Debug.Log("ColorSwitcherLog: Starting PostApply for generatedBody " + generatedBody.name);
 
                 // If the color is stored in "sigmabinaryColor" apply the color to the current orbit
@@ -61,7 +59,7 @@ namespace SigmaBinaryPlugin
                         //  Debug.Log("ColorSwitcherLog: stored for later the color - sigmabinaryColor.Add(" + generatedBody.name + ", " + generatedBody.orbitRenderer.orbitColor);
                     }
                 }
-                //  Debug.Log("ColorSwitcherLog: Ending PostApply for generatedBody " + generatedBody.name);
+                //  Debug.Log("ColorSwitcherLog: Ending PostApply for generatedBody " + generatedBody.name);*/
             }
             public ColorSwitcher ()
             {
