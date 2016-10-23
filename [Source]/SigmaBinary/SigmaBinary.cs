@@ -197,7 +197,7 @@ namespace SigmaBinaryPlugin
                         (
                             sbSecondary.generatedBody.orbitDriver.orbit.inclination,
                             sbSecondary.generatedBody.orbitDriver.orbit.eccentricity,
-                            sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis - sbPrimary.orbit.semiMajorAxis,
+                            sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis - sbPrimary.generatedBody.orbitDriver.orbit.semiMajorAxis,
                             sbSecondary.generatedBody.orbitDriver.orbit.LAN,
                             sbSecondary.generatedBody.orbitDriver.orbit.argumentOfPeriapsis,
                             sbSecondary.generatedBody.orbitDriver.orbit.meanAnomalyAtEpoch,
