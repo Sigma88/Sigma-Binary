@@ -58,11 +58,15 @@ namespace SigmaBinaryPlugin
 
         void IParserEventSubscriber.Apply(ConfigNode node)
         {
-            periodFixer = generatedBody.celestialBody.gameObject.GetComponent<PeriodFixer>();
+            Debug.Log("SigmaBinaryLog: SBLoader Apply START");
+            Orbit.FindClosestPoints = SigmaBinary.FindClosestPoitsReverted;
+            periodFixer = generatedBody.celestialBody.gameObject.AddComponent<PeriodFixer>();
+            Debug.Log("SigmaBinaryLog: SBLoader Apply END");
         }
 
         void IParserEventSubscriber.PostApply(ConfigNode node)
         {
+            Debug.Log("SigmaBinaryLog: SBLoader PostApply START");
             if (!SigmaBinary.sigmabinaryLoadAfter.ContainsValue(Loader.currentBody))
                 SigmaBinary.ListOfBinaries.Add(Loader.currentBody);
 
@@ -71,6 +75,7 @@ namespace SigmaBinaryPlugin
                 SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinaryLoadAfter[generatedBody.name]);
                 SigmaBinary.sigmabinaryLoadAfter.Remove(generatedBody.name);
             }
+            Debug.Log("SigmaBinaryLog: SBLoader PostApply END");
         }
         public SigmaBinaryLoader()
         {

@@ -7,7 +7,6 @@ using UnityEngine;
 using Kopernicus.Components;
 using Kopernicus.Configuration;
 
-using SigmaBinaryPlugin.Configuration;
 
 
 namespace SigmaBinaryPlugin
@@ -16,18 +15,15 @@ namespace SigmaBinaryPlugin
 	{
 		void Start()
 		{
-            Debug.Log("SigmaBinaryLog: Period Fixer");
-            CelestialBody body = GetComponent<CelestialBody>();
-            Debug.Log("SigmaBinaryLog: 1");
             foreach (CelestialBody cb in FlightGlobals.Bodies)
             {
-                Debug.Log("SigmaBinaryLog: 2");
-                cb.orbit.period = SigmaBinary.periodFixerList[body.transform.name];
-                Debug.Log("SigmaBinaryLog: 3");
-                cb.orbit.meanMotion = 2 * Math.PI / body.orbit.period;
-                Debug.Log("SigmaBinaryLog: 4");
+                if (SigmaBinary.periodFixerList.ContainsKey(cb.transform.name))
+                {
+                    cb.orbit.period = SigmaBinary.periodFixerList[cb.transform.name];
+                    cb.orbit.meanMotion = 2 * Math.PI / cb.orbit.period;
+                    cb.orbit.ObTAtEpoch = cb.orbit.meanAnomalyAtEpoch / 2 / Math.PI * cb.orbit.period;
+                }
             }
-            Debug.Log("SigmaBinaryLog: Period Fixer Ends Here");
         }
 	}
 }
