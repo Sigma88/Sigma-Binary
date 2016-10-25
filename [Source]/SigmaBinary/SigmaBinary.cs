@@ -48,17 +48,20 @@ namespace SigmaBinaryPlugin
 
                 Body sbPrimary = ListOfBodies.Find(b1 => b1.name == sbSecondary.orbit.referenceBody);
 				if (Kopernicus.Templates.orbitPatches.ContainsKey(sbSecondary.name))
-					{
-						if (Kopernicus.Templates.orbitPatches[sbSecondary.name] hasValue referenceBody)
-						sbPrimary = ListOfBodies.Find(b1 => b1.name == Kopernicus.Templates.orbitPatches[sbPrimary.name].GetValue("referenceBody"));
-					}
+				{
+					if (Kopernicus.Templates.orbitPatches[sbSecondary.name].GetValue("referenceBody") != null)
+					sbPrimary = ListOfBodies.Find(b1 => b1.name == Kopernicus.Templates.orbitPatches[sbSecondary.name].GetValue("referenceBody"));
+				}
+
                 Body sbBarycenter = ListOfBodies.Find(b0 => b0.name == sigmabinarySBName[sbSecondary]);
+
                 Body sbReference = ListOfBodies.Find(rb => rb.name == sbPrimary.orbit.referenceBody);
 				if (Kopernicus.Templates.orbitPatches.ContainsKey(sbPrimary.name))
-					{
-						if (Kopernicus.Templates.orbitPatches[sbPrimary.name] hasValue referenceBody)
-						sbReference = ListOfBodies.Find(rb => rb.name == Kopernicus.Templates.orbitPatches[sbPrimary.name].GetValue("referenceBody"));
-					}
+				{
+					if (Kopernicus.Templates.orbitPatches[sbPrimary.name].GetValue("referenceBody") != null)
+					sbReference = ListOfBodies.Find(rb => rb.name == Kopernicus.Templates.orbitPatches[sbPrimary.name].GetValue("referenceBody"));
+				}
+
                 Body sbOrbit = ListOfBodies.Find(ob => ob.name == sigmabinarySBName[sbSecondary] + "Orbit" && sigmabinaryRedrawOrbit.Contains(sbSecondary));
                 
                 if (sbPrimary == null || sbBarycenter == null || sbReference == null)
