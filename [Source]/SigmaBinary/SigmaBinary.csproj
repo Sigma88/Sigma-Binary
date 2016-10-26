@@ -63,6 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapViewFixer.cs" />
+    <Compile Include="MapViewFixer2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SigmaBinaryLoader.cs" />
     <Compile Include="SigmaBinary.cs" />

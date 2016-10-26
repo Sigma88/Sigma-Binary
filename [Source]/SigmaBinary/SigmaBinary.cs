@@ -20,6 +20,7 @@ namespace SigmaBinaryPlugin
 
         public static List<string> archivesFixerList = new List<string>();
         public static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
+        public static Dictionary<string, CelestialBody> mapViewFixerList = new Dictionary<string, CelestialBody>();
         public static string kerbinFixer;
 
         public static Dictionary<string, Body> sigmabinaryLoadAfter = new Dictionary<string, Body>();
@@ -199,6 +200,8 @@ namespace SigmaBinaryPlugin
                 /// Set Secondary Orbit
                 if (sigmabinaryRedrawOrbit.Contains(sbSecondary) && sbOrbit != null)
                 {
+                    mapViewFixerList.Add(sbOrbit.name, sbSecondary.generatedBody.celestialBody);
+
                     sbOrbit.generatedBody.orbitDriver.orbit = 
                         new Orbit
                         (
@@ -217,21 +220,13 @@ namespace SigmaBinaryPlugin
                     if (periodFixerList.ContainsKey(sbOrbit.name))
                         periodFixerList.Remove(sbOrbit.name);
                     periodFixerList.Add(sbOrbit.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbPrimary.generatedBody.celestialBody.Mass));
+
+
+
+                    if (Kopernicus.Templates.drawMode.ContainsKey(sbSecondary.generatedBody.transform.name))
+                        Kopernicus.Templates.drawMode.Remove(sbSecondary.generatedBody.transform.name);
+                    Kopernicus.Templates.drawMode.Add(sbSecondary.generatedBody.transform.name, OrbitRenderer.DrawMode.OFF);
                     
-
-
-                    if (sbSecondary.generatedBody.celestialBody.GetComponent<NameChanger>())
-                    {
-                        if (Kopernicus.Templates.drawMode.ContainsKey(sbSecondary.generatedBody.celestialBody.GetComponent<NameChanger>().oldName))
-                            Kopernicus.Templates.drawMode.Remove(sbSecondary.generatedBody.celestialBody.GetComponent<NameChanger>().oldName);
-                        Kopernicus.Templates.drawMode.Add(sbSecondary.generatedBody.celestialBody.GetComponent<NameChanger>().oldName, OrbitRenderer.DrawMode.OFF);
-                    }
-                    else
-                    {
-                        if (Kopernicus.Templates.drawMode.ContainsKey(sbSecondary.name))
-                            Kopernicus.Templates.drawMode.Remove(sbSecondary.name);
-                        Kopernicus.Templates.drawMode.Add(sbSecondary.name, OrbitRenderer.DrawMode.OFF);
-                    }
                 }
                 
 
