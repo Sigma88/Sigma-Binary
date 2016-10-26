@@ -17,13 +17,15 @@ namespace SigmaBinaryPlugin
         {
             if (SigmaBinary.kerbinFixer != null)
             {
-                FlightGlobals.Bodies.Find(k => k.transform.name == "Kerbin").orbitDriver.orbit.referenceBody = FlightGlobals.Bodies.Find(rb => rb.transform.name == SigmaBinary.kerbinFixer);
-
-
                 List<MapObject> trackingstation = new List<MapObject>();
-
                 List<string> children = new List<string>();
-                children.Add("Kerbin");
+
+
+                CelestialBody Kerbin = FlightGlobals.Bodies.Find(k => k.transform.name == "Kerbin");
+                Kerbin.orbitDriver.orbit.referenceBody = FlightGlobals.Bodies.Find(rb => rb.transform.name == SigmaBinary.kerbinFixer);
+
+
+                children.Add(Kerbin.name);
 
                 for (int count = 1; count > 0;)
                 {

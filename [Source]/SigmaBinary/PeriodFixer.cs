@@ -24,6 +24,8 @@ namespace SigmaBinaryPlugin
                     cb.orbit.ObTAtEpoch = cb.orbit.meanAnomalyAtEpoch / 2 / Math.PI * cb.orbit.period;
                     if (cb.solarRotationPeriod)
                         cb.rotationPeriod = (cb.orbit.period * cb.solarDayLength) / (cb.orbit.period - cb.solarDayLength);
+                    if (cb.tidallyLocked)
+                        cb.rotationPeriod = cb.orbit.period;
                 }
             }
         }

@@ -157,10 +157,7 @@ namespace SigmaBinaryPlugin
 
 
                 /// Set Primary
-
-                if (sbPrimary.generatedBody.celestialBody.tidallyLocked)
-                    sbPrimary.generatedBody.celestialBody.rotationPeriod = 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbPrimary.generatedBody.celestialBody.Mass);
-                sbPrimary.generatedBody.celestialBody.tidallyLocked = false;
+                
                 sbPrimary.generatedBody.orbitDriver.orbit =
                     new Orbit
                     (
