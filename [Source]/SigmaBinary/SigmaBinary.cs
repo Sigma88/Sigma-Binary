@@ -18,8 +18,9 @@ namespace SigmaBinaryPlugin
         public static List<Body> ListOfBodies = new List<Body>();
         public static List<Body> ListOfBinaries = new List<Body>();
 
-        public static List<string> ArchivesFixerList = new List<string>();
+        public static List<string> archivesFixerList = new List<string>();
         public static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
+        public static string kerbinFixer;
 
         public static Dictionary<string, Body> sigmabinaryLoadAfter = new Dictionary<string, Body>();
         public static Dictionary<Body, string> sigmabinarySBName = new Dictionary<Body, string>();
@@ -101,7 +102,7 @@ namespace SigmaBinaryPlugin
 
                 /// Set Barycenter
 
-                ArchivesFixerList.Add(sbBarycenter.name);
+                archivesFixerList.Add(sbBarycenter.name);
                 sbBarycenter.generatedBody.orbitDriver.orbit = new Orbit(sbPrimary.generatedBody.orbitDriver.orbit);
                 sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                 sbBarycenter.generatedBody.celestialBody.GeeASL = (sbPrimary.generatedBody.celestialBody.Mass + sbSecondary.generatedBody.celestialBody.Mass) /1e5* 6.674e-11d / Math.Pow(sbBarycenter.generatedBody.celestialBody.Radius, 2) / 9.80665d;
@@ -145,7 +146,6 @@ namespace SigmaBinaryPlugin
                 else
                     sbBarycenter.generatedBody.celestialBody.bodyDescription = sigmabinaryDescription[sbSecondary];
                     
-                Debug.Log("SigmaBinaryLog: Description <OK>");
 
                 // DrawMode and DrawIcons
 
@@ -249,19 +249,16 @@ namespace SigmaBinaryPlugin
                 {
                     Kopernicus.Templates.sphereOfInfluence.Add(sbPrimary.name, sbBarycenter.generatedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(sbPrimary.generatedBody.celestialBody.Mass / sbReference.generatedBody.celestialBody.Mass, 0.4));
                 }
-                Kopernicus.Templates.sphereOfInfluence.Add(sbBarycenter.name, /*sbBarycenter.generatedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow((sbPrimary.generatedBody.celestialBody.Mass + sbSecondary.generatedBody.celestialBody.Mass) / sbReference.generatedBody.celestialBody.Mass, 0.4)); //*/Kopernicus.Templates.sphereOfInfluence[sbPrimary.name]);
+                Kopernicus.Templates.sphereOfInfluence.Add(sbBarycenter.name, Kopernicus.Templates.sphereOfInfluence[sbPrimary.name]);
                 Kopernicus.Templates.sphereOfInfluence[sbPrimary.name] = sbPrimary.generatedBody.orbitDriver.orbit.semiMajorAxis * (sbBarycenter.generatedBody.orbitDriver.orbit.eccentricity + 1) + Kopernicus.Templates.sphereOfInfluence[sbBarycenter.name];
                 
                 
 
 				if (sbPrimary.name == "Kerbin")
 				{
-					ConfigNode fixKerbin = new ConfigNode()
-					fixKerbin.AddValue("referenceBody", sbBarycenter.name);
-					if (Kopernicus.Templates.orbitPatches.ContainsKey("Kerbin")
-						Kopernicus.Templates.orbitPatches.Remove("Kerbin");
-					Kopernicus.Templates.orbitPatches.Add("Kerbin", fixKerbin);
-				}
+                    kerbinFixer = sbPrimary.orbit.referenceBody;
+                    sbPrimary.orbit.referenceBody = "Sun";
+                }
 
 
                 /// Binary System Completed
@@ -272,7 +269,7 @@ namespace SigmaBinaryPlugin
                 Debug.Log("--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbReference.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + sbSecondary.name);
             }
         }
-        public static int FindClosestPoitsReverted(Orbit p, Orbit s, ref double CD, ref double CCD, ref double FFp, ref double FFs, ref double SFp, ref double SFs, double epsilon, int maxIterations, ref int iterationCount)
+        public static int FindClosestPointsReverted(Orbit p, Orbit s, ref double CD, ref double CCD, ref double FFp, ref double FFs, ref double SFp, ref double SFs, double epsilon, int maxIterations, ref int iterationCount)
         {
             Orbit.FindClosestPoints_old(p, s, ref CD, ref CCD, ref FFp, ref FFs, ref SFp, ref SFs, epsilon, maxIterations, ref iterationCount);
             return 2;

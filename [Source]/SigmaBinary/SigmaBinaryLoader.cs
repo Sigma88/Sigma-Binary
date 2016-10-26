@@ -15,6 +15,7 @@ namespace SigmaBinaryPlugin
     public class SigmaBinaryLoader : ExternalParserTargetLoader, IParserEventSubscriber
     {
         public PeriodFixer periodFixer { get; set; }
+        public KerbinFixer kerbinFixer { get; set; }
 
         [ParserTarget("after", optional = true)]
         public string after
@@ -58,15 +59,13 @@ namespace SigmaBinaryPlugin
 
         void IParserEventSubscriber.Apply(ConfigNode node)
         {
-            Debug.Log("SigmaBinaryLog: SBLoader Apply START");
-            Orbit.FindClosestPoints = SigmaBinary.FindClosestPoitsReverted;
+            Orbit.FindClosestPoints = SigmaBinary.FindClosestPointsReverted;
             periodFixer = generatedBody.celestialBody.gameObject.AddComponent<PeriodFixer>();
-            Debug.Log("SigmaBinaryLog: SBLoader Apply END");
+            kerbinFixer = generatedBody.celestialBody.gameObject.AddComponent<KerbinFixer>();
         }
 
         void IParserEventSubscriber.PostApply(ConfigNode node)
         {
-            Debug.Log("SigmaBinaryLog: SBLoader PostApply START");
             if (!SigmaBinary.sigmabinaryLoadAfter.ContainsValue(Loader.currentBody))
                 SigmaBinary.ListOfBinaries.Add(Loader.currentBody);
 
@@ -75,7 +74,6 @@ namespace SigmaBinaryPlugin
                 SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinaryLoadAfter[generatedBody.name]);
                 SigmaBinary.sigmabinaryLoadAfter.Remove(generatedBody.name);
             }
-            Debug.Log("SigmaBinaryLog: SBLoader PostApply END");
         }
         public SigmaBinaryLoader()
         {

@@ -18,7 +18,7 @@ namespace SigmaBinaryPlugin
 			{
 				foreach (RDPlanetListItemContainer planetItem in Resources.FindObjectsOfTypeAll<RDPlanetListItemContainer>())
 				{
-					if (SigmaBinary.ArchivesFixerList.Contains(planetItem.label_planetName.text))
+					if (SigmaBinary.archivesFixerList.Contains(planetItem.label_planetName.text))
 					{
 						planetItem.gameObject.SetActive(false);
 					}
