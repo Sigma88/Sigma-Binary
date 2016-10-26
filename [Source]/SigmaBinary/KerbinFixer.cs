@@ -54,6 +54,7 @@ namespace SigmaBinaryPlugin
                 }
                 PlanetariumCamera.fetch.targets.Clear();
                 PlanetariumCamera.fetch.targets.AddRange(trackingstation);
+                SigmaBinary.kerbinFixer = null;
             }
         }
     }
