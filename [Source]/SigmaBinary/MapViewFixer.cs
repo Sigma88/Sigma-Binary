@@ -47,7 +47,7 @@ namespace SigmaBinaryPlugin
 
                         if (SigmaBinary.mapViewFixerList.ContainsKey(body.transform.name))
                         {
-                            CelestialBody body2 = PSystemManager.Instance.localBodies.Find(b => b.transform.name == SigmaBinary.mapViewFixerList[body.transform.name].transform.name);
+                            CelestialBody body2 = PSystemManager.Instance.localBodies.Find(b => b.transform.name == SigmaBinary.mapViewFixerList[body.transform.name]);
 
                             ((MapContextMenu)fields[1].GetValue(targeter)).Dismiss();
                             

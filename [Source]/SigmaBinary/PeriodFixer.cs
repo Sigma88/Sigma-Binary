@@ -22,10 +22,11 @@ namespace SigmaBinaryPlugin
                     cb.orbit.period = SigmaBinary.periodFixerList[cb.transform.name];
                     cb.orbit.meanMotion = 2 * Math.PI / cb.orbit.period;
                     cb.orbit.ObTAtEpoch = cb.orbit.meanAnomalyAtEpoch / 2 / Math.PI * cb.orbit.period;
-                    if (cb.solarRotationPeriod)
-                        cb.rotationPeriod = (cb.orbit.period * cb.solarDayLength) / (cb.orbit.period - cb.solarDayLength);
                     if (cb.tidallyLocked)
                         cb.rotationPeriod = cb.orbit.period;
+
+
+                    SigmaBinary.periodFixerList.Remove(cb.transform.name);
                 }
             }
         }

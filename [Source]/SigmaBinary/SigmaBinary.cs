@@ -20,7 +20,7 @@ namespace SigmaBinaryPlugin
 
         public static List<string> archivesFixerList = new List<string>();
         public static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
-        public static Dictionary<string, CelestialBody> mapViewFixerList = new Dictionary<string, CelestialBody>();
+        public static Dictionary<string, string> mapViewFixerList = new Dictionary<string, string>();
         public static string kerbinFixer;
 
         public static Dictionary<string, Body> sigmabinaryLoadAfter = new Dictionary<string, Body>();
@@ -105,7 +105,7 @@ namespace SigmaBinaryPlugin
                 
                 if (periodFixerList.ContainsKey(sbBarycenter.name))
                     periodFixerList.Remove(sbBarycenter.name);
-                periodFixerList.Add(sbPrimary.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbPrimary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbReference.generatedBody.celestialBody.Mass));
+                periodFixerList.Add(sbBarycenter.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbPrimary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbReference.generatedBody.celestialBody.Mass));
                 
 
                 // Orbit Color
@@ -183,21 +183,27 @@ namespace SigmaBinaryPlugin
                 if (Kopernicus.Templates.drawIcons.ContainsKey(sbPrimary.name))
                     Kopernicus.Templates.drawIcons.Remove(sbPrimary.name);
 
-                
+
                 // Primary Locked
 
+                if (sbPrimary.generatedBody.celestialBody.solarRotationPeriod)
+                {
+                    sbPrimary.generatedBody.celestialBody.solarRotationPeriod = false;
+                    sbPrimary.generatedBody.celestialBody.rotationPeriod = (periodFixerList[sbBarycenter.name] * sbPrimary.generatedBody.celestialBody.rotationPeriod) / (periodFixerList[sbBarycenter.name] + sbPrimary.generatedBody.celestialBody.rotationPeriod);
+                }
                 if (sigmabinaryPrimaryLocked.ContainsKey(sbSecondary))
                 {
-                    sbPrimary.generatedBody.celestialBody.rotationPeriod = periodFixerList[sbBarycenter.name];
+                    sbPrimary.generatedBody.celestialBody.solarRotationPeriod = false;
+                    sbPrimary.generatedBody.celestialBody.rotationPeriod = periodFixerList[sbPrimary.name];
                 }
-                
+
 
 
 
                 /// Set Secondary Orbit
                 if (sigmabinaryRedrawOrbit.Contains(sbSecondary) && sbOrbit != null)
                 {
-                    mapViewFixerList.Add(sbOrbit.name, sbSecondary.generatedBody.celestialBody);
+                    mapViewFixerList.Add(sbOrbit.name, sbSecondary.name);
 
                     sbOrbit.generatedBody.orbitDriver.orbit = 
                         new Orbit
