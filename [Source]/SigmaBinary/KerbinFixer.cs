@@ -16,46 +16,64 @@ namespace SigmaBinaryPlugin
         void Start()
         {
             if (SigmaBinary.kerbinFixer != null)
+                FlightGlobals.Bodies.Find(k => k.transform.name == "Kerbin").orbitDriver.orbit.referenceBody = FlightGlobals.Bodies.Find(rb => rb.transform.name == SigmaBinary.kerbinFixer);
+        }
+    }
+
+    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    public class TrackingStationFixer : MonoBehaviour
+    {
+        void Start()
+        {
+            if (SigmaBinary.kerbinFixer != null)
             {
                 List<MapObject> trackingstation = new List<MapObject>();
-                List<string> children = new List<string>();
-
+                List<CelestialBody> children = new List<CelestialBody>();
 
                 CelestialBody Kerbin = FlightGlobals.Bodies.Find(k => k.transform.name == "Kerbin");
-                Kerbin.orbitDriver.orbit.referenceBody = FlightGlobals.Bodies.Find(rb => rb.transform.name == SigmaBinary.kerbinFixer);
 
+                
+                children.Add(Kerbin);
 
-                children.Add(Kerbin.name);
 
                 for (int count = 1; count > 0;)
                 {
                     foreach (CelestialBody b in FlightGlobals.Bodies)
                     {
                         count = 0;
-                        if (children.Contains(b.referenceBody.name))
+                        if (children.Contains(b.referenceBody))
                         {
-                            children.Add(b.name);
+                            children.Add(b);
                             count++;
                         }
                     }
                 }
+
+
                 foreach (MapObject m in PlanetariumCamera.fetch.targets)
                 {
-                    if (!children.Contains(m.name) && m.name != SigmaBinary.kerbinFixer + "Orbit")
+                    if (m != null)
                     {
-                        trackingstation.Add(m);
-                    }
-
-                    if (m.name == SigmaBinary.kerbinFixer)
-                    {
-                        foreach (string k in children)
+                        if (!children.Contains(m.celestialBody))
                         {
-                            trackingstation.Add(PlanetariumCamera.fetch.targets.Find(x => x.name == k));
+                            trackingstation.Add(m);
+                        }
+
+                        if (m.name == SigmaBinary.kerbinFixer)
+                        {
+                            foreach (CelestialBody c in children)
+                            {
+                                trackingstation.Add(PlanetariumCamera.fetch.targets.Find(x => x.celestialBody == c));
+                            }
                         }
                     }
                 }
+
+
                 PlanetariumCamera.fetch.targets.Clear();
                 PlanetariumCamera.fetch.targets.AddRange(trackingstation);
+
+
                 SigmaBinary.kerbinFixer = null;
             }
         }
