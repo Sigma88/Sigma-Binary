@@ -42,30 +42,26 @@ namespace SigmaBinaryPlugin
 
         void IParserEventSubscriber.PostApply(ConfigNode node)
         {
+
             ListOfBodies.Add(Loader.currentBody);
 
             foreach (Body sbSecondary in ListOfBinaries)
             {
+
                 /// Loading the Bodies
-                sbSecondary.orbit.referenceBody = OrbitPatcher(sbSecondary);
 
-                Body sbPrimary = ListOfBodies.Find(b1 => b1.name == sbSecondary.orbit.referenceBody);
-                sbPrimary.orbit.referenceBody = OrbitPatcher(sbPrimary);
-
+                Body sbPrimary = ListOfBodies.Find(b1 => b1.name == OrbitPatcher(sbSecondary));
                 Body sbBarycenter = ListOfBodies.Find(b0 => b0.name == sigmabinarySBName[sbSecondary]);
-
-                Body sbReference = ListOfBodies.Find(rb => rb.name == sbPrimary.orbit.referenceBody);
-                if (sbReference.name != "Sun")
-                    sbPrimary.orbit.referenceBody = OrbitPatcher(sbReference);
-
+                Body sbReference = ListOfBodies.Find(rb => rb.name == OrbitPatcher(sbPrimary));
                 Body sbOrbit = ListOfBodies.Find(ob => ob.name == sigmabinarySBName[sbSecondary] + "Orbit" && sigmabinaryRedrawOrbit.Contains(sbSecondary));
+
 
                 if (sbPrimary == null || sbBarycenter == null || sbReference == null)
                     break;
                 if (sbOrbit == null && sigmabinaryRedrawOrbit.Contains(sbSecondary))
                     break;
 
-                
+
 
 
                 /// Generating Binary System
@@ -152,12 +148,12 @@ namespace SigmaBinaryPlugin
                     Kopernicus.Templates.drawMode.Add(sbBarycenter.name, sigmabinaryMode[sbSecondary]);
                 if (sigmabinaryIcon.ContainsKey(sbSecondary))
                     Kopernicus.Templates.drawIcons.Add(sbBarycenter.name, sigmabinaryIcon[sbSecondary]);
-                
 
+                
 
 
                 /// Set Primary
-                
+
                 sbPrimary.generatedBody.orbitDriver.orbit =
                     new Orbit
                     (
@@ -175,7 +171,6 @@ namespace SigmaBinaryPlugin
                 if (periodFixerList.ContainsKey(sbPrimary.name))
                     periodFixerList.Remove(sbPrimary.name);
                 periodFixerList.Add(sbPrimary.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbPrimary.generatedBody.celestialBody.Mass));
-
                 
 
                 if (Kopernicus.Templates.drawMode.ContainsKey(sbPrimary.name))
@@ -201,6 +196,7 @@ namespace SigmaBinaryPlugin
 
 
                 /// Set Secondary Orbit
+
                 if (sigmabinaryRedrawOrbit.Contains(sbSecondary) && sbOrbit != null)
                 {
                     mapViewFixerList.Add(sbOrbit.name, sbSecondary.name);
@@ -224,16 +220,16 @@ namespace SigmaBinaryPlugin
                         periodFixerList.Remove(sbOrbit.name);
                     periodFixerList.Add(sbOrbit.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbPrimary.generatedBody.celestialBody.Mass));
 
-
+                    
 
                     if (Kopernicus.Templates.drawMode.ContainsKey(sbSecondary.generatedBody.transform.name))
                         Kopernicus.Templates.drawMode.Remove(sbSecondary.generatedBody.transform.name);
                     Kopernicus.Templates.drawMode.Add(sbSecondary.generatedBody.transform.name, OrbitRenderer.DrawMode.OFF);
                     
                 }
+
+
                 
-
-
 
                 /// Set SphereOfInfluence for Barycenter and Primary
 
@@ -243,16 +239,22 @@ namespace SigmaBinaryPlugin
                 }
                 Kopernicus.Templates.sphereOfInfluence.Add(sbBarycenter.name, Kopernicus.Templates.sphereOfInfluence[sbPrimary.name]);
                 Kopernicus.Templates.sphereOfInfluence[sbPrimary.name] = sbPrimary.generatedBody.orbitDriver.orbit.semiMajorAxis * (sbBarycenter.generatedBody.orbitDriver.orbit.eccentricity + 1) + Kopernicus.Templates.sphereOfInfluence[sbBarycenter.name];
-
                 
 
                 if (sbPrimary.name == "Kerbin")
-				{
+                {
+                    Kopernicus.Templates.orbitPatches.Remove("Kerbin");
                     kerbinFixer = sbPrimary.orbit.referenceBody;
                     sbPrimary.orbit.referenceBody = "Sun";
                 }
-
+                if (sbSecondary.name == "Kerbin")
+                {
+                    sbPrimary.orbit.referenceBody = "Sun";
+                }
                 
+
+
+
                 /// Binary System Completed
 
                 ListOfBinaries.Remove(sbSecondary);
@@ -261,6 +263,7 @@ namespace SigmaBinaryPlugin
                 Debug.Log("\nSigmaBinaryLog:\n\n--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbReference.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + sbSecondary.name);
             }
         }
+
         public static int FindClosestPointsReverted(Orbit p, Orbit s, ref double CD, ref double CCD, ref double FFp, ref double FFs, ref double SFp, ref double SFs, double epsilon, int maxIterations, ref int iterationCount)
         {
             Orbit.FindClosestPoints_old(p, s, ref CD, ref CCD, ref FFp, ref FFs, ref SFp, ref SFs, epsilon, maxIterations, ref iterationCount);
@@ -269,17 +272,38 @@ namespace SigmaBinaryPlugin
 
         public static string OrbitPatcher(Body body)
         {
-            if (Kopernicus.Templates.orbitPatches.ContainsKey(body.name))
+            if (Kopernicus.Templates.orbitPatches.ContainsKey(body.name) && Kopernicus.Templates.orbitPatches[body.name].GetValue("sbPatched") != "true")
             {
-                ConfigNode patch = Kopernicus.Templates.orbitPatches[body.name];
                 OrbitLoader loader = new OrbitLoader(body.generatedBody.celestialBody);
+                ConfigNode patch = new ConfigNode();
+                patch.AddData(Kopernicus.Templates.orbitPatches[body.name]);
+
+
                 Parser.LoadObjectFromConfigurationNode(loader, patch);
-                body.generatedBody.celestialBody.orbitDriver.orbit = loader.orbit;
-                Kopernicus.Templates.orbitPatches.Remove(body.name);
+                body.generatedBody.celestialBody.orbitDriver.orbit = new Orbit(loader.orbit);
+                
+
+                Kopernicus.Templates.orbitPatches[body.name].ClearValues();
+
+
                 if (patch.GetValue("referenceBody") != null)
                     body.orbit.referenceBody = patch.GetValue("referenceBody");
+
+                if (patch.GetValue("referenceBody") != null && body.name == "Kerbin")
+                {
+                        Kopernicus.Templates.orbitPatches[body.name].AddValue("referenceBody", patch.GetValue("referenceBody"));
+                        Kopernicus.Templates.orbitPatches[body.name].AddValue("sbPatched", "true");
+                }
+                else
+                {
+                    Kopernicus.Templates.orbitPatches.Remove(body.name);
+                }
+
+                // Fix sphereOfInfluence
+                if (!Kopernicus.Templates.sphereOfInfluence.ContainsKey(body.name))
+                    body.generatedBody.celestialBody.sphereOfInfluence = body.generatedBody.celestialBody.orbit.semiMajorAxis * Math.Pow(body.generatedBody.celestialBody.Mass / ListOfBodies.Find(rb => rb.name == body.orbit.referenceBody).generatedBody.celestialBody.Mass, 0.4);
             }
-                return body.orbit.referenceBody;
+            return body.orbit.referenceBody;
         }
 
         public SigmaBinary()
