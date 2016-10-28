@@ -298,10 +298,6 @@ namespace SigmaBinaryPlugin
                 {
                     Kopernicus.Templates.orbitPatches.Remove(body.name);
                 }
-
-                // Fix sphereOfInfluence
-                if (!Kopernicus.Templates.sphereOfInfluence.ContainsKey(body.name))
-                    body.generatedBody.celestialBody.sphereOfInfluence = body.generatedBody.celestialBody.orbit.semiMajorAxis * Math.Pow(body.generatedBody.celestialBody.Mass / ListOfBodies.Find(rb => rb.name == body.orbit.referenceBody).generatedBody.celestialBody.Mass, 0.4);
             }
             return body.orbit.referenceBody;
         }
