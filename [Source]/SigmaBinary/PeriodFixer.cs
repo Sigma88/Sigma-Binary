@@ -11,10 +11,10 @@ using Kopernicus.Configuration;
 
 namespace SigmaBinaryPlugin
 {
-	public class PeriodFixer : MonoBehaviour
-	{
-		void Start()
-		{
+    public class PeriodFixer : MonoBehaviour
+    {
+        void Start()
+        {
             foreach (CelestialBody cb in FlightGlobals.Bodies)
             {
                 if (SigmaBinary.periodFixerList.ContainsKey(cb.transform.name))
@@ -30,5 +30,5 @@ namespace SigmaBinaryPlugin
                 }
             }
         }
-	}
+    }
 }
