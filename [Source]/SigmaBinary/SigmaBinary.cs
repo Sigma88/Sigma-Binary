@@ -201,6 +201,7 @@ namespace SigmaBinaryPlugin
                 {
                     mapViewFixerList.Add(sbOrbit.name, sbSecondary.name);
 
+
                     sbOrbit.generatedBody.orbitDriver.orbit = 
                         new Orbit
                         (
@@ -216,10 +217,10 @@ namespace SigmaBinaryPlugin
                     sbOrbit.orbit.referenceBody = sbBarycenter.name;
                     sbOrbit.generatedBody.orbitRenderer.orbitColor = sbSecondary.generatedBody.orbitRenderer.orbitColor;
 
+
                     if (periodFixerList.ContainsKey(sbOrbit.name))
                         periodFixerList.Remove(sbOrbit.name);
                     periodFixerList.Add(sbOrbit.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbPrimary.generatedBody.celestialBody.Mass));
-
                     
 
                     if (Kopernicus.Templates.drawMode.ContainsKey(sbSecondary.generatedBody.transform.name))
@@ -243,12 +244,14 @@ namespace SigmaBinaryPlugin
 
                 if (sbPrimary.name == "Kerbin")
                 {
+                    // Bypass PostSpawnOrbit
                     Kopernicus.Templates.orbitPatches.Remove("Kerbin");
                     kerbinFixer = sbPrimary.orbit.referenceBody;
                     sbPrimary.orbit.referenceBody = "Sun";
                 }
                 if (sbSecondary.name == "Kerbin")
                 {
+                    // Let Kopernicus handle this with PostSpawnOrbit
                     sbPrimary.orbit.referenceBody = "Sun";
                 }
                 
@@ -261,6 +264,7 @@ namespace SigmaBinaryPlugin
 
                 // Log
                 Debug.Log("\nSigmaBinaryLog:\n\n--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbReference.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + sbSecondary.name);
+
             }
         }
 
@@ -291,8 +295,9 @@ namespace SigmaBinaryPlugin
 
                 if (patch.GetValue("referenceBody") != null && body.name == "Kerbin")
                 {
-                        Kopernicus.Templates.orbitPatches[body.name].AddValue("referenceBody", patch.GetValue("referenceBody"));
-                        Kopernicus.Templates.orbitPatches[body.name].AddValue("sbPatched", "true");
+                    // Keep the ConfigNode for Kerbin's referenceBody in case Kerbin is the sbSecondary
+                    Kopernicus.Templates.orbitPatches[body.name].AddValue("referenceBody", patch.GetValue("referenceBody"));
+                    Kopernicus.Templates.orbitPatches[body.name].AddValue("sbPatched", "true");
                 }
                 else
                 {
