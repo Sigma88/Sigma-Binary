@@ -14,7 +14,7 @@ using KSP.UI.Screens.Mapview.MapContextMenuOptions;
 namespace SigmaBinaryPlugin
 {
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class RuntimeUtility : MonoBehaviour
+    public class MapViewFixer : MonoBehaviour
     {
         private FieldInfo[] fields;
         

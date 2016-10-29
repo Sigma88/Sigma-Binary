@@ -18,7 +18,7 @@ namespace SigmaBinaryPlugin
         public static List<Body> ListOfBodies = new List<Body>();
         public static List<Body> ListOfBinaries = new List<Body>();
 
-        public static List<string> archivesFixerList = new List<string>();
+        public static Dictionary<string, float> archivesFixerList = new Dictionary<string, float>();
         public static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
         public static Dictionary<string, string> mapViewFixerList = new Dictionary<string, string>();
         public static string kerbinFixer;
@@ -93,7 +93,6 @@ namespace SigmaBinaryPlugin
 
                 /// Set Barycenter
 
-                archivesFixerList.Add(sbBarycenter.name);
                 sbBarycenter.generatedBody.orbitDriver.orbit = new Orbit(sbPrimary.generatedBody.orbitDriver.orbit);
                 sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                 sbBarycenter.generatedBody.celestialBody.GeeASL = (sbPrimary.generatedBody.celestialBody.Mass + sbSecondary.generatedBody.celestialBody.Mass) /1e5* 6.674e-11d / Math.Pow(sbBarycenter.generatedBody.celestialBody.Radius, 2) / 9.80665d;
@@ -149,11 +148,12 @@ namespace SigmaBinaryPlugin
                 if (sigmabinaryIcon.ContainsKey(sbSecondary))
                     Kopernicus.Templates.drawIcons.Add(sbBarycenter.name, sigmabinaryIcon[sbSecondary]);
 
-                
+
 
 
                 /// Set Primary
 
+                archivesFixerList.Add(sbPrimary.name, 0f);
                 sbPrimary.generatedBody.orbitDriver.orbit =
                     new Orbit
                     (
