@@ -6,6 +6,7 @@ using UnityEngine;
 
 using Kopernicus.Components;
 using Kopernicus.Configuration;
+using Kopernicus.OnDemand;
 
 
 
@@ -254,13 +255,14 @@ namespace SigmaBinaryPlugin
                     // Let Kopernicus handle this with PostSpawnOrbit
                     sbPrimary.orbit.referenceBody = "Sun";
                 }
-                
+
 
 
 
                 /// Binary System Completed
 
                 ListOfBinaries.Remove(sbSecondary);
+                TextureFixer(sbPrimary, sbSecondary);
 
                 // Log
                 Debug.Log("\nSigmaBinaryLog:\n\n--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbReference.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + sbSecondary.name);
@@ -310,6 +312,37 @@ namespace SigmaBinaryPlugin
 
             }
             return body.orbit.referenceBody;
+        }
+
+        public static int TextureFixer(Body body1, Body body2)
+        {
+            Debug.Log("SigmaBinaryLog: 1");
+            Texture texture1 = body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex");
+            Texture texture2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex");
+            body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", texture2);
+            body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", texture1);
+
+
+            /*
+            Texture2D normals1 = body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_BumpMap") as Texture2D;
+            ScaledSpaceDemand demand2 = body1.generatedBody.scaledVersion.AddComponent<ScaledSpaceDemand>();
+            Texture2D texture2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex") as Texture2D;
+            Texture2D normals2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_BumpMap") as Texture2D;
+            ScaledSpaceDemand demand1 = body2.generatedBody.scaledVersion.AddComponent<ScaledSpaceDemand>();
+            Debug.Log("SigmaBinaryLog: 2");
+            if (texture1 != null)
+                demand1.texture = texture1.name;
+            if (normals1 != null)
+                demand1.normals = normals1.name;
+            if (texture2 != null)
+                demand2.texture = texture2.name;
+            if (normals2 != null)
+                demand2.normals = normals2.name;
+            Debug.Log("SigmaBinaryLog: demand1.texture = " + demand1.texture);
+            Debug.Log("SigmaBinaryLog: demand1.normals = " + demand1.normals);
+            Debug.Log("SigmaBinaryLog: demand2.texture = " + demand2.texture);
+            Debug.Log("SigmaBinaryLog: demand2.normals = " + demand2.normals);*/
+            return 1;
         }
 
         public SigmaBinary()
