@@ -34,8 +34,6 @@ namespace SigmaBinaryPlugin
 
             foreach (RDPlanetListItemContainer item in itemsList)
             {
-                Debug.Log("SigmaBinaryLog: item.name = " + item.name);
-                Debug.Log("SigmaBinaryLog: item.label = " + item.label_planetName.text);
                 if (SigmaBinary.archivesFixerList.ContainsKey(item.label_planetName.text))
                 {
                     if (item.hierarchy_level == 2)
