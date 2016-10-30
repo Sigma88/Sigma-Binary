@@ -346,13 +346,8 @@ namespace SigmaBinaryPlugin
         {
             if (DateTime.Today.Day == 14 && DateTime.Today.Month == 2)
             {
-                Texture2DParser texture = new Texture2DParser();
-                texture.SetFromString("BUILTIN/NewMunSurfaceMapDiffuse");
-                Texture2D MainTex = texture.value as Texture2D;
-
-                Texture2DParser normals = new Texture2DParser();
-                normals.SetFromString("BUILTIN/NewMunSurfaceMapNormals");
-                Texture2D BumpMap = texture.value as Texture2D;
+                Texture2D MainTex = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "NewMunSurfaceMapDiffuse").FirstOrDefault() as Texture2D;
+                Texture2D BumpMap = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "NewMunSurfaceMapNormals").FirstOrDefault() as Texture2D;
 
                 foreach (Body b in ListOfBodies)
                 {
@@ -369,6 +364,11 @@ namespace SigmaBinaryPlugin
                             demand.texture = MainTex.name;
                             demand.normals = BumpMap.name;
                         }
+
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(0, 0));
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(1, 1));
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureOffset("_BumpMap", new Vector2(0, 0));
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_BumpMap", new Vector2(1, 1));
                     }
                 }
             }
@@ -379,36 +379,26 @@ namespace SigmaBinaryPlugin
 
                 if (type1.value != BodyType.Star && type2.value != BodyType.Star)
                 {
-                    Texture2D texture1 = body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex") as Texture2D;
-                    Texture2D texture2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex") as Texture2D;
-                    Texture2D normals1 = body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_BumpMap") as Texture2D;
-                    Texture2D normals2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_BumpMap") as Texture2D;
-
-                    body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", texture2);
-                    body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", texture1);
-                    body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", normals2);
-                    body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", normals1);
+                    Material material1 = new Material(body1.generatedBody.scaledVersion.GetComponent<Renderer>().material);
+                    Material material2 = new Material(body2.generatedBody.scaledVersion.GetComponent<Renderer>().material);
+                    body1.generatedBody.scaledVersion.GetComponent<Renderer>().material = material2;
+                    body2.generatedBody.scaledVersion.GetComponent<Renderer>().material = material1;
 
                     if (OnDemandStorage.useOnDemand)
                     {
-                        ScaledSpaceDemand demand1 = body2.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
-                        ScaledSpaceDemand demand2 = body1.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
-                        demand1.texture = texture1.name;
-                        demand1.normals = texture1.name;
-                        demand2.texture = texture2.name;
-                        demand2.normals = texture2.name;
+                        ScaledSpaceDemand demand1 = body1.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
+                        ScaledSpaceDemand demand2 = body2.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
+                        demand1.texture = material2.GetTexture("_MainTex").name;
+                        demand1.normals = material2.GetTexture("_BumpMap").name;
+                        demand2.texture = material1.GetTexture("_MainTex").name;
+                        demand2.normals = material1.GetTexture("_BumpMap").name;
                     }
                 }
             }
             if (DateTime.Today.Day == 22 && DateTime.Today.Month == 4)
             {
-                Texture2DParser texture = new Texture2DParser();
-                texture.SetFromString("BUILTIN/KerbinScaledSpace300");
-                Texture2D MainTex = texture.value as Texture2D;
-
-                Texture2DParser normals = new Texture2DParser();
-                normals.SetFromString("BUILTIN/KerbinScaledSpace401");
-                Texture2D BumpMap = texture.value as Texture2D;
+                Texture2D MainTex = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "KerbinScaledSpace300").FirstOrDefault() as Texture2D;
+                Texture2D BumpMap = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "KerbinScaledSpace401").FirstOrDefault() as Texture2D;
 
                 foreach (Body b in ListOfBodies)
                 {
@@ -425,6 +415,11 @@ namespace SigmaBinaryPlugin
                             demand.texture = MainTex.name;
                             demand.normals = BumpMap.name;
                         }
+
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(0, 0));
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(1, 1));
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureOffset("_BumpMap", new Vector2(0, 0));
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_BumpMap", new Vector2(1, 1));
                     }
                 }
             }
