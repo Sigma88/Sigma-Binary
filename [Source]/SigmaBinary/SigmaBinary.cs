@@ -48,7 +48,7 @@ namespace SigmaBinaryPlugin
 
             foreach (Body sbSecondary in ListOfBinaries)
             {
-
+                
                 /// Loading the Bodies
 
                 Body sbPrimary = ListOfBodies.Find(b1 => b1.name == OrbitPatcher(sbSecondary));
@@ -90,10 +90,10 @@ namespace SigmaBinaryPlugin
                 }
 
 
-
+                
 
                 /// Set Barycenter
-
+                
                 sbBarycenter.generatedBody.orbitDriver.orbit = new Orbit(sbPrimary.generatedBody.orbitDriver.orbit);
                 sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                 sbBarycenter.generatedBody.celestialBody.GeeASL = (sbPrimary.generatedBody.celestialBody.Mass + sbSecondary.generatedBody.celestialBody.Mass) /1e5* 6.674e-11d / Math.Pow(sbBarycenter.generatedBody.celestialBody.Radius, 2) / 9.80665d;
@@ -178,7 +178,7 @@ namespace SigmaBinaryPlugin
                     Kopernicus.Templates.drawMode.Remove(sbPrimary.name);
                 if (Kopernicus.Templates.drawIcons.ContainsKey(sbPrimary.name))
                     Kopernicus.Templates.drawIcons.Remove(sbPrimary.name);
-
+                
 
                 // Primary Locked
 
@@ -255,7 +255,7 @@ namespace SigmaBinaryPlugin
                     // Let Kopernicus handle this with PostSpawnOrbit
                     sbPrimary.orbit.referenceBody = "Sun";
                 }
-
+                
 
 
 
@@ -278,15 +278,42 @@ namespace SigmaBinaryPlugin
 
         public static string OrbitPatcher(Body body)
         {
+            if (body.generatedBody.orbitDriver.orbit.referenceBody == null)
+                body.generatedBody.orbitDriver.orbit.referenceBody = ListOfBodies.Find(rb => rb.name == body.orbit.referenceBody).generatedBody.celestialBody;
+            
             if (Kopernicus.Templates.orbitPatches.ContainsKey(body.name) && Kopernicus.Templates.orbitPatches[body.name].GetValue("sbPatched") != "true")
             {
-                OrbitLoader loader = new OrbitLoader(body.generatedBody.celestialBody);
                 ConfigNode patch = new ConfigNode();
-                patch.AddData(Kopernicus.Templates.orbitPatches[body.name]);
+                if (body.generatedBody.celestialBody.orbit != null)
+                {
+                    OrbitLoader loader = new OrbitLoader(body.generatedBody.celestialBody);
+                    patch.AddData(Kopernicus.Templates.orbitPatches[body.name]);
+
+                    
+                    Parser.LoadObjectFromConfigurationNode(loader, patch);
+                    body.generatedBody.celestialBody.orbitDriver.orbit = new Orbit(loader.orbit);
+                }
+                else
+                {
+                    OrbitLoader loader = new OrbitLoader();
+                    loader.orbit = new Orbit();
+                    loader.orbit.referenceBody = body.generatedBody.orbitDriver.orbit.referenceBody;
+                    patch.AddData(Kopernicus.Templates.orbitPatches[body.name]);
 
 
-                Parser.LoadObjectFromConfigurationNode(loader, patch);
-                body.generatedBody.celestialBody.orbitDriver.orbit = new Orbit(loader.orbit);
+                    Parser.LoadObjectFromConfigurationNode(loader, patch);
+                    if (!patch.HasValue("inclination")) loader.orbit.inclination = 0;
+                    if (!patch.HasValue("eccentricity")) loader.orbit.eccentricity = 0;
+                    if (!patch.HasValue("semiMajorAxis")) loader.orbit.semiMajorAxis = 0;
+                    if (!patch.HasValue("longitudeOfAscendingNode")) loader.orbit.LAN = 0;
+                    if (!patch.HasValue("argumentOfPeriapsis")) loader.orbit.argumentOfPeriapsis = 0;
+                    if (!patch.HasValue("meanAnomalyAtEpoch") && !patch.HasValue("meanAnomalyAtEpochD")) loader.orbit.meanAnomalyAtEpoch = 0;
+                    if (!patch.HasValue("epoch")) loader.orbit.epoch = 0;
+
+
+                    body.generatedBody.celestialBody.orbitDriver = new OrbitDriver();
+                    body.generatedBody.celestialBody.orbitDriver.orbit = new Orbit(loader.orbit);
+                }
                 
 
                 Kopernicus.Templates.orbitPatches[body.name].ClearValues();
