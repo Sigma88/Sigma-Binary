@@ -48,9 +48,9 @@ namespace SigmaBinaryPlugin
 
             foreach (Body sbSecondary in ListOfBinaries)
             {
-                
-                /// Loading the Bodies
 
+                /// Loading the Bodies
+                
                 Body sbPrimary = ListOfBodies.Find(b1 => b1.name == OrbitPatcher(sbSecondary));
                 Body sbBarycenter = ListOfBodies.Find(b0 => b0.name == sigmabinarySBName[sbSecondary]);
                 Body sbReference = ListOfBodies.Find(rb => rb.name == OrbitPatcher(sbPrimary));
@@ -178,8 +178,8 @@ namespace SigmaBinaryPlugin
                     Kopernicus.Templates.drawMode.Remove(sbPrimary.name);
                 if (Kopernicus.Templates.drawIcons.ContainsKey(sbPrimary.name))
                     Kopernicus.Templates.drawIcons.Remove(sbPrimary.name);
-                
 
+                
                 // Primary Locked
 
                 if (sbPrimary.generatedBody.celestialBody.solarRotationPeriod)
@@ -230,8 +230,8 @@ namespace SigmaBinaryPlugin
                     
                 }
 
-
                 
+
 
                 /// Set SphereOfInfluence for Barycenter and Primary
 
@@ -255,9 +255,9 @@ namespace SigmaBinaryPlugin
                     // Let Kopernicus handle this with PostSpawnOrbit
                     sbPrimary.orbit.referenceBody = "Sun";
                 }
+
+
                 
-
-
 
                 /// Binary System Completed
 
@@ -343,16 +343,94 @@ namespace SigmaBinaryPlugin
 
         public static int TextureFixer(Body body1, Body body2)
         {
+            if (DateTime.Today.Day == 14 && DateTime.Today.Month == 2)
+            {
+                Texture2DParser texture = new Texture2DParser();
+                texture.SetFromString("BUILTIN/NewMunSurfaceMapDiffuse");
+                Texture2D MainTex = texture.value as Texture2D;
+
+                Texture2DParser normals = new Texture2DParser();
+                normals.SetFromString("BUILTIN/NewMunSurfaceMapNormals");
+                Texture2D BumpMap = texture.value as Texture2D;
+
+                foreach (Body b in ListOfBodies)
+                {
+                    EnumParser<BodyType> type = new EnumParser<BodyType>(b.template == null ? BodyType.Atmospheric : b.template.type);
+
+                    if (type != BodyType.Star)
+                    {
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", MainTex);
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", BumpMap);
+
+                        if (OnDemandStorage.useOnDemand)
+                        {
+                            ScaledSpaceDemand demand = b.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
+                            demand.texture = MainTex.name;
+                            demand.normals = BumpMap.name;
+                        }
+                    }
+                }
+            }
             if (DateTime.Today.Day == 1 && DateTime.Today.Month == 4)
             {
-                Texture texture1 = body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex");
-                Texture texture2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex");
-                Texture normals1 = body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_BumpMap");
-                Texture normals2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_BumpMap");
-                body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", texture2);
-                body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", texture1);
-                body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", normals2);
-                body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", normals1);
+                EnumParser<BodyType> type1 = new EnumParser<BodyType>(body1.template == null ? BodyType.Atmospheric : body1.template.type);
+                EnumParser<BodyType> type2 = new EnumParser<BodyType>(body2.template == null ? BodyType.Atmospheric : body2.template.type);
+
+                if (type1.value != BodyType.Star && type2.value != BodyType.Star)
+                {
+                    Texture2D texture1 = body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex") as Texture2D;
+                    Texture2D texture2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_MainTex") as Texture2D;
+                    Texture2D normals1 = body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_BumpMap") as Texture2D;
+                    Texture2D normals2 = body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTexture("_BumpMap") as Texture2D;
+
+                    body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", texture2);
+                    body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", texture1);
+                    body1.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", normals2);
+                    body2.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", normals1);
+
+                    if (OnDemandStorage.useOnDemand)
+                    {
+                        ScaledSpaceDemand demand1 = body2.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
+                        ScaledSpaceDemand demand2 = body1.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
+                        demand1.texture = texture1.name;
+                        demand1.normals = texture1.name;
+                        demand2.texture = texture2.name;
+                        demand2.normals = texture2.name;
+                    }
+                }
+            }
+            if (DateTime.Today.Day == 22 && DateTime.Today.Month == 4)
+            {
+                Texture2DParser texture = new Texture2DParser();
+                texture.SetFromString("BUILTIN/KerbinScaledSpace300");
+                Texture2D MainTex = texture.value as Texture2D;
+
+                Texture2DParser normals = new Texture2DParser();
+                normals.SetFromString("BUILTIN/KerbinScaledSpace401");
+                Texture2D BumpMap = texture.value as Texture2D;
+
+                foreach (Body b in ListOfBodies)
+                {
+                    EnumParser<BodyType> type = new EnumParser<BodyType>(b.template == null ? BodyType.Atmospheric : b.template.type);
+
+                    if (type != BodyType.Star)
+                    {
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", MainTex);
+                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", BumpMap);
+
+                        if (OnDemandStorage.useOnDemand)
+                        {
+                            ScaledSpaceDemand demand = b.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
+                            demand.texture = MainTex.name;
+                            demand.normals = BumpMap.name;
+                        }
+                    }
+                }
+            }
+            if (DateTime.Today.Day == 25 && DateTime.Today.Month == 05)
+            {
+                ListOfBodies.Find(x => x.name == "Sun").generatedBody.celestialBody.bodyDescription = "\n\n\n                        DON'T\n                        PANIC";
+                ListOfBodies.Find(x => x.name == "Kerbin").generatedBody.celestialBody.bodyDescription = "Mostly harmless.";
             }
             return 1;
         }
