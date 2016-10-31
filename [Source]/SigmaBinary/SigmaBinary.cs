@@ -279,7 +279,7 @@ namespace SigmaBinaryPlugin
 
         public string OrbitPatcher(Body body)
         {
-
+            // This if is here to make sure stars don't give us trouble
             if (body.generatedBody.orbitDriver.orbit.referenceBody == null)
                 body.generatedBody.orbitDriver.orbit.referenceBody = ListOfBodies.Find(rb => rb.name == body.orbit.referenceBody).generatedBody.celestialBody;
 
@@ -294,6 +294,7 @@ namespace SigmaBinaryPlugin
                     Parser.LoadObjectFromConfigurationNode(loader, patch);
                     body.generatedBody.orbitDriver.orbit = new Orbit(loader.orbit);
                 }
+                // This "else" is here to make sure stars don't give us trouble
                 else
                 {
                     OrbitLoader loader = new OrbitLoader();
@@ -333,7 +334,7 @@ namespace SigmaBinaryPlugin
 
                 // Fix sphereOfInfluence
                 if (!Kopernicus.Templates.sphereOfInfluence.ContainsKey(body.name))
-                    body.generatedBody.celestialBody.sphereOfInfluence = body.generatedBody.celestialBody.orbit.semiMajorAxis * Math.Pow(body.generatedBody.celestialBody.Mass / ListOfBodies.Find(rb => rb.name == body.orbit.referenceBody).generatedBody.celestialBody.Mass, 0.4);
+                    body.generatedBody.celestialBody.sphereOfInfluence = body.generatedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(body.generatedBody.celestialBody.Mass / ListOfBodies.Find(rb => rb.name == body.orbit.referenceBody).generatedBody.celestialBody.Mass, 0.4);
 
             }
             return body.orbit.referenceBody;
