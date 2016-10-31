@@ -17,7 +17,7 @@ namespace SigmaBinaryPlugin
     {
 
         public static List<Body> ListOfBodies = new List<Body>();
-        public static List<Body> ListOfBinaries = new List<Body>();
+        public static Dictionary<string, Body> ListOfBinaries = new Dictionary<string, Body>();
 
         public static Dictionary<string, float> archivesFixerList = new Dictionary<string, float>();
         public static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
@@ -45,24 +45,24 @@ namespace SigmaBinaryPlugin
         {
 
             ListOfBodies.Add(Loader.currentBody);
-            
-            for (int loop = 0; ListOfBinaries.Count > 0; loop++)
+
+            if (ListOfBinaries.ContainsKey(Loader.currentBody.name))
             {
                 
                 /// Loading the Bodies
 
-                Body sbSecondary = ListOfBinaries.First();
+                Body sbSecondary = ListOfBinaries[Loader.currentBody.name];
                 Body sbPrimary = ListOfBodies.Find(b1 => b1.name == OrbitPatcher(sbSecondary));
                 Body sbBarycenter = ListOfBodies.Find(b0 => b0.name == sigmabinarySBName[sbSecondary]);
                 Body sbReference = ListOfBodies.Find(rb => rb.name == OrbitPatcher(sbPrimary));
                 Body sbOrbit = ListOfBodies.Find(ob => ob.name == sigmabinarySBName[sbSecondary] + "Orbit" && sigmabinaryRedrawOrbit.Contains(sbSecondary));
 
-
+                /*
                 if (sbPrimary == null || sbBarycenter == null || sbReference == null)
                     break;
                 if (sbOrbit == null && sigmabinaryRedrawOrbit.Contains(sbSecondary))
                     break;
-                
+                */
 
 
 
@@ -262,12 +262,12 @@ namespace SigmaBinaryPlugin
 
                 /// Binary System Completed
 
-                ListOfBinaries.Remove(sbSecondary);
+                ListOfBinaries.Remove(ListOfBinaries.First(x => x.Value == sbSecondary).Key);
                 LateFixes.TextureFixer(sbPrimary, sbSecondary, ListOfBodies);
 
                 // Log
                 Debug.Log("\nSigmaBinaryLog:\n\n--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbReference.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + sbSecondary.name);
-
+                
             }
         }
 
@@ -301,7 +301,6 @@ namespace SigmaBinaryPlugin
                     loader.orbit.referenceBody = body.generatedBody.orbitDriver.orbit.referenceBody;
                     patch.AddData(Kopernicus.Templates.orbitPatches[body.name]);
 
-                    
                     Parser.LoadObjectFromConfigurationNode(loader, patch);
                     if (!patch.HasValue("inclination")) loader.orbit.inclination = 0;
                     if (!patch.HasValue("eccentricity")) loader.orbit.eccentricity = 0;
@@ -310,7 +309,6 @@ namespace SigmaBinaryPlugin
                     if (!patch.HasValue("argumentOfPeriapsis")) loader.orbit.argumentOfPeriapsis = 0;
                     if (!patch.HasValue("meanAnomalyAtEpoch") && !patch.HasValue("meanAnomalyAtEpochD")) loader.orbit.meanAnomalyAtEpoch = 0;
                     if (!patch.HasValue("epoch")) loader.orbit.epoch = 0;
-                    
 
                     body.generatedBody.orbitDriver.orbit = new Orbit(loader.orbit);
                 }
