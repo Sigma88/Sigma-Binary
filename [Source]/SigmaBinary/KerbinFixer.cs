@@ -28,12 +28,9 @@ namespace SigmaBinaryPlugin
             if (SigmaBinary.kerbinFixer != null)
             {
                 List<MapObject> trackingstation = new List<MapObject>();
-                List<CelestialBody> children = new List<CelestialBody>();
-
-                CelestialBody Kerbin = FlightGlobals.Bodies.Find(k => k.transform.name == "Kerbin");
-
+                List<string> children = new List<string>();
                 
-                children.Add(Kerbin);
+                children.Add("Kerbin");
 
 
                 for (int count = 1; count > 0;)
@@ -41,9 +38,10 @@ namespace SigmaBinaryPlugin
                     foreach (CelestialBody b in FlightGlobals.Bodies)
                     {
                         count = 0;
-                        if (children.Contains(b.referenceBody))
+                        if (children.Contains(b.referenceBody.transform.name))
                         {
-                            children.Add(b);
+                            children.Add(b.transform.name);
+                            Debug.Log("SigmaBinaryLog: child = " + b.transform.name);
                             count++;
                         }
                     }
@@ -54,16 +52,18 @@ namespace SigmaBinaryPlugin
                 {
                     if (m != null)
                     {
-                        if (!children.Contains(m.celestialBody))
+                        if (!children.Contains(m.celestialBody.transform.name))
                         {
                             trackingstation.Add(m);
+                            Debug.Log("SigmaBinaryLog: added " + m.celestialBody.transform.name);
                         }
 
-                        if (m.name == SigmaBinary.kerbinFixer)
+                        if (m.celestialBody.transform.name == SigmaBinary.kerbinFixer)
                         {
-                            foreach (CelestialBody c in children)
+                            foreach (string c in children)
                             {
-                                trackingstation.Add(PlanetariumCamera.fetch.targets.Find(x => x.celestialBody == c));
+                                trackingstation.Add(PlanetariumCamera.fetch.targets.Find(t => t.celestialBody.transform.name == c));
+                                Debug.Log("SigmaBinaryLog: added " + PlanetariumCamera.fetch.targets.Find(t => t.celestialBody.transform.name == c).transform.name);
                             }
                         }
                     }
