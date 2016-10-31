@@ -45,7 +45,7 @@ namespace SigmaBinaryPlugin
         {
 
             ListOfBodies.Add(Loader.currentBody);
-
+            
             for (int loop = 0; ListOfBinaries.Count > 0; loop++)
             {
                 
@@ -263,7 +263,7 @@ namespace SigmaBinaryPlugin
                 /// Binary System Completed
 
                 ListOfBinaries.Remove(sbSecondary);
-                TextureFixer(sbPrimary, sbSecondary);
+                LateFixes.TextureFixer(sbPrimary, sbSecondary, ListOfBodies);
 
                 // Log
                 Debug.Log("\nSigmaBinaryLog:\n\n--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbReference.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + sbSecondary.name);
@@ -340,105 +340,6 @@ namespace SigmaBinaryPlugin
                 
             }
             return body.orbit.referenceBody;
-        }
-
-        public static int TextureFixer(Body body1, Body body2)
-        {
-            if (DateTime.Today.Day == 14 && DateTime.Today.Month == 2)
-            {
-                Texture2D MainTex = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "NewMunSurfaceMapDiffuse").FirstOrDefault() as Texture2D;
-                Texture2D BumpMap = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "NewMunSurfaceMapNormals").FirstOrDefault() as Texture2D;
-
-                foreach (Body b in ListOfBodies)
-                {
-                    EnumParser<BodyType> type = new EnumParser<BodyType>(b.template == null ? BodyType.Atmospheric : b.template.type);
-
-                    if (type != BodyType.Star)
-                    {
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", MainTex);
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", BumpMap);
-
-                        if (OnDemandStorage.useOnDemand)
-                        {
-                            ScaledSpaceDemand demand = b.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
-                            demand.texture = MainTex.name;
-                            demand.normals = BumpMap.name;
-                        }
-
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(0, 0));
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(1, 1));
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureOffset("_BumpMap", new Vector2(0, 0));
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_BumpMap", new Vector2(1, 1));
-                    }
-                }
-            }
-            if (DateTime.Today.Day == 1 && DateTime.Today.Month == 4)
-            {
-                EnumParser<BodyType> type1 = new EnumParser<BodyType>(body1.template == null ? BodyType.Atmospheric : body1.template.type);
-                EnumParser<BodyType> type2 = new EnumParser<BodyType>(body2.template == null ? BodyType.Atmospheric : body2.template.type);
-
-                if (type1.value != BodyType.Star && type2.value != BodyType.Star)
-                {
-                    Material material1 = new Material(body1.generatedBody.scaledVersion.GetComponent<Renderer>().material);
-                    Material material2 = new Material(body2.generatedBody.scaledVersion.GetComponent<Renderer>().material);
-                    body1.generatedBody.scaledVersion.GetComponent<Renderer>().material = material2;
-                    body2.generatedBody.scaledVersion.GetComponent<Renderer>().material = material1;
-
-                    if (OnDemandStorage.useOnDemand)
-                    {
-                        ScaledSpaceDemand demand1 = body1.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
-                        ScaledSpaceDemand demand2 = body2.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
-                        demand1.texture = material2.GetTexture("_MainTex").name;
-                        demand1.normals = material2.GetTexture("_BumpMap").name;
-                        demand2.texture = material1.GetTexture("_MainTex").name;
-                        demand2.normals = material1.GetTexture("_BumpMap").name;
-                    }
-                }
-            }
-            if (DateTime.Today.Day == 22 && DateTime.Today.Month == 4)
-            {
-                Texture2D MainTex = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "KerbinScaledSpace300").FirstOrDefault() as Texture2D;
-                Texture2D BumpMap = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "KerbinScaledSpace401").FirstOrDefault() as Texture2D;
-
-                foreach (Body b in ListOfBodies)
-                {
-                    EnumParser<BodyType> type = new EnumParser<BodyType>(b.template == null ? BodyType.Atmospheric : b.template.type);
-
-                    if (type != BodyType.Star)
-                    {
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_MainTex", MainTex);
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTexture("_BumpMap", BumpMap);
-
-                        if (OnDemandStorage.useOnDemand)
-                        {
-                            ScaledSpaceDemand demand = b.generatedBody.scaledVersion.GetComponent<ScaledSpaceDemand>();
-                            demand.texture = MainTex.name;
-                            demand.normals = BumpMap.name;
-                        }
-
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(0, 0));
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(1, 1));
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureOffset("_BumpMap", new Vector2(0, 0));
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_BumpMap", new Vector2(1, 1));
-                    }
-                }
-            }
-            if (DateTime.Today.Day == 25 && DateTime.Today.Month == 05)
-            {
-                ListOfBodies.Find(x => x.name == "Sun").generatedBody.celestialBody.bodyDescription = "\n\n\n                        DON'T\n                        PANIC";
-                ListOfBodies.Find(x => x.name == "Kerbin").generatedBody.celestialBody.bodyDescription = "Mostly harmless.";
-            }
-            if (DateTime.Today.Day == 31 && DateTime.Today.Month == 10)
-            {
-                foreach (Body b in ListOfBodies)
-                {
-                    if (b.generatedBody.orbitRenderer != null)
-                    {
-                        b.generatedBody.orbitRenderer.SetColor(new Color(0.5f, 0.25f, 0f, 1f));
-                    }
-                }
-            }
-            return 1;
         }
 
         public SigmaBinary()
