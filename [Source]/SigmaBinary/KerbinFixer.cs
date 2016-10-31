@@ -41,7 +41,6 @@ namespace SigmaBinaryPlugin
                         if (children.Contains(b.referenceBody.transform.name))
                         {
                             children.Add(b.transform.name);
-                            Debug.Log("SigmaBinaryLog: child = " + b.transform.name);
                             count++;
                         }
                     }
@@ -55,7 +54,6 @@ namespace SigmaBinaryPlugin
                         if (!children.Contains(m.celestialBody.transform.name))
                         {
                             trackingstation.Add(m);
-                            Debug.Log("SigmaBinaryLog: added " + m.celestialBody.transform.name);
                         }
 
                         if (m.celestialBody.transform.name == SigmaBinary.kerbinFixer)
@@ -63,7 +61,6 @@ namespace SigmaBinaryPlugin
                             foreach (string c in children)
                             {
                                 trackingstation.Add(PlanetariumCamera.fetch.targets.Find(t => t.celestialBody.transform.name == c));
-                                Debug.Log("SigmaBinaryLog: added " + PlanetariumCamera.fetch.targets.Find(t => t.celestialBody.transform.name == c).transform.name);
                             }
                         }
                     }
@@ -72,9 +69,6 @@ namespace SigmaBinaryPlugin
 
                 PlanetariumCamera.fetch.targets.Clear();
                 PlanetariumCamera.fetch.targets.AddRange(trackingstation);
-
-
-                SigmaBinary.kerbinFixer = null;
             }
         }
     }

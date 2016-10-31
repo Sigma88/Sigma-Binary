@@ -277,7 +277,7 @@ namespace SigmaBinaryPlugin
             return 2;
         }
 
-        public static string OrbitPatcher(Body body)
+        public string OrbitPatcher(Body body)
         {
 
             if (body.generatedBody.orbitDriver.orbit.referenceBody == null)
@@ -288,11 +288,11 @@ namespace SigmaBinaryPlugin
                 ConfigNode patch = new ConfigNode();
                 if (body.generatedBody.celestialBody.orbit != null)
                 {
-                    OrbitLoader loader = new OrbitLoader(body.generatedBody.celestialBody);
+                    OrbitLoader loader = new OrbitLoader();
                     patch.AddData(Kopernicus.Templates.orbitPatches[body.name]);
                     
                     Parser.LoadObjectFromConfigurationNode(loader, patch);
-                    body.generatedBody.celestialBody.orbitDriver.orbit = new Orbit(loader.orbit);
+                    body.generatedBody.orbitDriver.orbit = new Orbit(loader.orbit);
                 }
                 else
                 {
@@ -312,13 +312,12 @@ namespace SigmaBinaryPlugin
                     if (!patch.HasValue("epoch")) loader.orbit.epoch = 0;
                     
 
-                    body.generatedBody.celestialBody.orbitDriver = new OrbitDriver();
-                    body.generatedBody.celestialBody.orbitDriver.orbit = new Orbit(loader.orbit);
+                    body.generatedBody.orbitDriver.orbit = new Orbit(loader.orbit);
                 }
-                
+
 
                 Kopernicus.Templates.orbitPatches[body.name].ClearValues();
-                
+
 
                 if (patch.GetValue("referenceBody") != null)
                     body.orbit.referenceBody = patch.GetValue("referenceBody");
@@ -333,11 +332,11 @@ namespace SigmaBinaryPlugin
                 {
                     Kopernicus.Templates.orbitPatches.Remove(body.name);
                 }
-                
+
                 // Fix sphereOfInfluence
                 if (!Kopernicus.Templates.sphereOfInfluence.ContainsKey(body.name))
                     body.generatedBody.celestialBody.sphereOfInfluence = body.generatedBody.celestialBody.orbit.semiMajorAxis * Math.Pow(body.generatedBody.celestialBody.Mass / ListOfBodies.Find(rb => rb.name == body.orbit.referenceBody).generatedBody.celestialBody.Mass, 0.4);
-                
+
             }
             return body.orbit.referenceBody;
         }
