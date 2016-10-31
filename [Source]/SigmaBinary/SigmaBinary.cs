@@ -195,16 +195,16 @@ namespace SigmaBinaryPlugin
                 }
 
 
-                
+
 
                 /// Set Secondary Orbit
 
                 if (sigmabinaryRedrawOrbit.Contains(sbSecondary) && sbOrbit != null)
                 {
+
                     mapViewFixerList.Add(sbOrbit.name, sbSecondary.name);
 
-
-                    sbOrbit.generatedBody.orbitDriver.orbit = 
+                    sbOrbit.generatedBody.orbitDriver.orbit =
                         new Orbit
                         (
                             sbSecondary.generatedBody.orbitDriver.orbit.inclination,
@@ -223,12 +223,12 @@ namespace SigmaBinaryPlugin
                     if (periodFixerList.ContainsKey(sbOrbit.name))
                         periodFixerList.Remove(sbOrbit.name);
                     periodFixerList.Add(sbOrbit.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbPrimary.generatedBody.celestialBody.Mass));
-                    
+
 
                     if (Kopernicus.Templates.drawMode.ContainsKey(sbSecondary.generatedBody.transform.name))
                         Kopernicus.Templates.drawMode.Remove(sbSecondary.generatedBody.transform.name);
                     Kopernicus.Templates.drawMode.Add(sbSecondary.generatedBody.transform.name, OrbitRenderer.DrawMode.OFF);
-                    
+
                 }
 
                 
