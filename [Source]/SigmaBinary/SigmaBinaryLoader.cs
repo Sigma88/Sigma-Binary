@@ -26,6 +26,10 @@ namespace SigmaBinaryPlugin
         [ParserTarget("name", optional = true)]
         public string sbName
         {
+            get
+            {
+                return sbName;
+            }
             set
             {
                 SigmaBinary.sigmabinarySBName.Add(Loader.currentBody, value);
@@ -42,6 +46,10 @@ namespace SigmaBinaryPlugin
         [ParserTarget("redrawOrbit", optional = true)]
         public NumericParser<bool> redrawOrbit
         {
+            get
+            {
+                return redrawOrbit;
+            }
             set
             {
                 if (!value)
@@ -66,12 +74,18 @@ namespace SigmaBinaryPlugin
 
         void IParserEventSubscriber.PostApply(ConfigNode node)
         {
+            /// listOfBinaries = Dictionary ( string sbOrbit.name  or  sbBarycenter.name, sbSecondary )
+
+
+
+
             if (!SigmaBinary.sigmabinaryLoadAfter.ContainsValue(Loader.currentBody))
-                SigmaBinary.ListOfBinaries.Add(Loader.currentBody);
+                SigmaBinary.ListOfBinaries.Add(sbName + (redrawOrbit.value ? "Orbit":""), Loader.currentBody);
 
             if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(generatedBody.name))
             {
-                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinaryLoadAfter[generatedBody.name]);
+                Body body = SigmaBinary.sigmabinaryLoadAfter[generatedBody.name];
+                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[body] + (SigmaBinary.sigmabinaryRedrawOrbit.Contains(body) ? "Orbit" : ""), body);
                 SigmaBinary.sigmabinaryLoadAfter.Remove(generatedBody.name);
             }
         }
