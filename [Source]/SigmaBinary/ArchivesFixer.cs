@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Threading;
 using System.Reflection;
 using System.Linq;
 using KSP.UI.Screens;
+using KSP.UI;
 using Kopernicus.Components;
 
 namespace SigmaBinaryPlugin
@@ -29,8 +31,80 @@ namespace SigmaBinaryPlugin
             FieldInfo s2 = typeof(RDPlanetListItemContainer).GetFields(BindingFlags.Instance | BindingFlags.NonPublic).Skip(2).First();
             FieldInfo s3 = typeof(RDPlanetListItemContainer).GetFields(BindingFlags.Instance | BindingFlags.NonPublic).Skip(3).First();
 
+
             List<RDPlanetListItemContainer> itemsList = new List<RDPlanetListItemContainer>();
             itemsList.AddRange(Resources.FindObjectsOfTypeAll<RDPlanetListItemContainer>());
+
+            RDPlanetListItemContainer kerbin = itemsList.Find(k => k.label_planetName.text == "Kerbin");
+
+
+
+            if (SigmaBinary.kerbinFixer != null)
+            {
+
+                // Move Kerbin and its moons
+
+                var KF = Resources.FindObjectsOfTypeAll<RDArchivesController>().First();
+                RDPlanetListItemContainer kerbinFixer = itemsList.Find(k => k.label_planetName.text == SigmaBinary.kerbinFixer);
+
+                int target = KF.planetList.GetIndex(kerbinFixer.gameObject.GetComponentInChildren<UIListItem>());
+                int index = KF.planetList.GetIndex(kerbin.gameObject.GetComponentInChildren<UIListItem>());
+
+                List<UIListItem> planets = new List<UIListItem>();
+                foreach (RDPlanetListItemContainer planet in itemsList)
+                {
+                    if (planet.hierarchy_level == 1)
+                        planets.Add(planet.gameObject.GetComponent<UIListItem>());
+                }
+
+                for (int i = 1; i > 0; i++)
+                {
+                    UIListItem item = KF.planetList.GetUilistItemAt(index);
+                    if (i > 1 && planets.Contains(item))
+                        break;
+                    KF.planetList.RemoveItem(index);
+                    KF.planetList.InsertItem(item, target);
+                    if (index > target)
+                        index++;
+                }
+
+
+
+
+                // Fix Kerbin entry size
+
+                if (kerbinFixer.hierarchy_level > 1)
+                {
+                    List<RDPlanetListItemContainer> children = (List<RDPlanetListItemContainer>)s1.GetValue(kerbin.parent);
+                    children.Remove(kerbin);
+                    s1.SetValue(kerbin.parent, children);
+
+                    children = (List<RDPlanetListItemContainer>)s1.GetValue(kerbin.parent);
+
+                    if (SigmaBinary.archivesFixerList[kerbin.label_planetName.text] == 0)
+                        SigmaBinary.archivesFixerList[kerbin.label_planetName.text] = (float)s2.GetValue(kerbin) / 1.6f;
+
+                    kerbin.planet.transform.localScale = new Vector3(SigmaBinary.archivesFixerList[kerbin.label_planetName.text], SigmaBinary.archivesFixerList[kerbin.label_planetName.text], SigmaBinary.archivesFixerList[kerbin.label_planetName.text]);
+
+                    s2.SetValue(kerbin, SigmaBinary.archivesFixerList[kerbin.label_planetName.text]);
+                    s3.SetValue(kerbin, 1.1f * SigmaBinary.archivesFixerList[kerbin.label_planetName.text]);
+
+                    kerbin.layoutElement.preferredHeight = 60f;
+                }
+                kerbinFixer.AddChild(kerbin);
+                kerbin.hierarchy_level = kerbinFixer.hierarchy_level + 1;
+
+
+
+                /// Hide all and Show planets
+
+                foreach (RDPlanetListItemContainer item in itemsList)
+                {
+                    if (item.hierarchy_level > 1)
+                        item.Hide();
+                }
+
+            }
 
             foreach (RDPlanetListItemContainer item in itemsList)
             {
@@ -39,7 +113,7 @@ namespace SigmaBinaryPlugin
                     if (item.hierarchy_level == 2)
                     {
                         if (SigmaBinary.archivesFixerList[item.label_planetName.text] == 0)
-                            SigmaBinary.archivesFixerList[item.label_planetName.text] = 1.6f * (float)s2.GetValue(item);
+                            SigmaBinary.archivesFixerList[item.label_planetName.text] = item.label_planetName.text != "Kerbin" ? 1.6f * (float)s2.GetValue(item) : (float)s2.GetValue(item);
 
                         item.planet.transform.localScale = new Vector3(SigmaBinary.archivesFixerList[item.label_planetName.text], SigmaBinary.archivesFixerList[item.label_planetName.text], SigmaBinary.archivesFixerList[item.label_planetName.text]);
 
@@ -57,11 +131,13 @@ namespace SigmaBinaryPlugin
                     {
                         item.parent.gameObject.SetActive(false);
                         List<RDPlanetListItemContainer> children = (List<RDPlanetListItemContainer>)s1.GetValue(item.parent.parent);
-
                         children.Remove(item.parent);
                         s1.SetValue(item.parent.parent, children);
-
+                        
                         item.parent.parent.AddChild(item);
+
+                        children = (List<RDPlanetListItemContainer>)s1.GetValue(item.parent);
+
                         item.hierarchy_level = item.hierarchy_level - 1;
                     }
                 }
