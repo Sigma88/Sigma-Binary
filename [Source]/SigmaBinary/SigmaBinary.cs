@@ -19,7 +19,7 @@ namespace SigmaBinaryPlugin
         public static List<Body> ListOfBodies = new List<Body>();
         public static Dictionary<string, Body> ListOfBinaries = new Dictionary<string, Body>();
 
-        public static Dictionary<string, float> archivesFixerList = new Dictionary<string, float>();
+        public static Dictionary<string, string[]> archivesFixerList = new Dictionary<string, string[]>();
         public static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
         public static Dictionary<string, string> mapViewFixerList = new Dictionary<string, string>();
         public static string kerbinFixer;
@@ -150,12 +150,12 @@ namespace SigmaBinaryPlugin
                 if (sigmabinaryIcon.ContainsKey(sbSecondary))
                     Kopernicus.Templates.drawIcons.Add(sbBarycenter.name, sigmabinaryIcon[sbSecondary]);
 
-                
+
 
 
                 /// Set Primary
 
-                archivesFixerList.Add(sbPrimary.name, 0f);
+                archivesFixerList.Add(sbPrimary.name, new string[] { sbBarycenter.name, sbReference.name });
                 sbPrimary.generatedBody.orbitDriver.orbit =
                     new Orbit
                     (
