@@ -17,12 +17,6 @@ namespace SigmaBinaryPlugin
         public PeriodFixer periodFixer { get; set; }
         public KerbinFixer kerbinFixer { get; set; }
 
-        [ParserTarget("after", optional = true)]
-        public string after
-        {
-            set { SigmaBinary.sigmabinaryLoadAfter.Add(value, Loader.currentBody); }
-        }
-
         [ParserTarget("name", optional = true)]
         public string sbName
         {
@@ -30,6 +24,21 @@ namespace SigmaBinaryPlugin
             {
                 SigmaBinary.sigmabinarySBName.Add(Loader.currentBody, value);
                 SigmaBinary.sigmabinaryRedrawOrbit.Add(Loader.currentBody);
+                Debug.Log("SigmaBinaryLog: Loader.currentBody = " + Loader.currentBody.name);
+            }
+        }
+
+        [ParserTarget("after", optional = true)]
+        public string after
+        {
+            set
+            {
+                if (!SigmaBinary.ListOfBinaries.ContainsValue(SigmaBinary.ListOfBodies.Find(b => b.name == value)))
+                {
+                    Debug.Log("SigmaBinaryLog: has to load after = " + value);
+                    SigmaBinary.sigmabinaryLoadAfter.Add(value, Loader.currentBody);
+                    Debug.Log("SigmaBinaryLog: added to loadafter");
+                }
             }
         }
 
@@ -67,18 +76,26 @@ namespace SigmaBinaryPlugin
         void IParserEventSubscriber.PostApply(ConfigNode node)
         {
             /// listOfBinaries = Dictionary ( string sbOrbit.name  or  sbBarycenter.name, sbSecondary )
-
-
-
-
             if (!SigmaBinary.sigmabinaryLoadAfter.ContainsValue(Loader.currentBody))
-                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[Loader.currentBody] + (SigmaBinary.sigmabinaryRedrawOrbit.Contains(Loader.currentBody) ? "Orbit" : ""), Loader.currentBody);
-
-            if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(generatedBody.name))
             {
-                Body body = SigmaBinary.sigmabinaryLoadAfter[generatedBody.name];
-                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[body] + (SigmaBinary.sigmabinaryRedrawOrbit.Contains(body) ? "Orbit" : ""), body);
-                SigmaBinary.sigmabinaryLoadAfter.Remove(generatedBody.name);
+                Debug.Log("SigmaBinaryLog: Loader.currentBody " + Loader.currentBody.name + " has to be loaded now");
+                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[Loader.currentBody], Loader.currentBody);
+                Debug.Log("SigmaBinaryLog: added (" + SigmaBinary.sigmabinarySBName[Loader.currentBody] + ", " + Loader.currentBody.name + ") to lisOfBinaries");
+                LoadAfter(Loader.currentBody);
+            }
+        }
+        public void LoadAfter(Body currentBody)
+        {
+            Debug.Log("SigmaBinaryLog: LOAD AFTER BODY " + currentBody.name);
+            if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(currentBody.name))
+            {
+                Body body = SigmaBinary.sigmabinaryLoadAfter[currentBody.name];
+                Debug.Log("SigmaBinaryLog: body " + SigmaBinary.sigmabinaryLoadAfter[currentBody.name].name + " has to load now");
+                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[body], body);
+                Debug.Log("SigmaBinaryLog: added (" + SigmaBinary.sigmabinarySBName[body] + ", " + body.name + ") to lisOfBinaries");
+                SigmaBinary.sigmabinaryLoadAfter.Remove(currentBody.name);
+                Debug.Log("SigmaBinaryLog: body removed from loadAfter");
+                LoadAfter(body);
             }
         }
         public SigmaBinaryLoader()
