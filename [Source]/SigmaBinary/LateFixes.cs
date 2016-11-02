@@ -20,6 +20,14 @@ namespace SigmaBinaryPlugin
     {
         public static void TextureFixer(Body body1, Body body2, List<Body> list)
         {
+            if (DateTime.Today.Day == 26 && DateTime.Today.Month == 1)
+            {
+                foreach (Body b in list)
+                {
+                    b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(b.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_MainTex").x, -b.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_MainTex").y));
+                    b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_BumpMap", new Vector2(b.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_BumpMap").x, -b.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_BumpMap").y));
+                }
+            }
             if (DateTime.Today.Day == 14 && DateTime.Today.Month == 2)
             {
                 Texture2D MainTex = Resources.FindObjectsOfTypeAll<Texture>().Where(tex => tex.name == "NewMunSurfaceMapDiffuse").FirstOrDefault() as Texture2D;
@@ -215,6 +223,63 @@ namespace SigmaBinaryPlugin
                 "<b><color=#FF80FF>Leia Kerman:</color></b>\nYou are actually goint INTO an asteroid field?"
             };
             Resources.FindObjectsOfTypeAll<RDArchivesController>().First().instructorText.text = q[r.Next(q.Length)];
+        }
+    }
+    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+    public class UpdateFixes : MonoBehaviour
+    {
+        public string cd = null;
+        void Update()
+        {
+            if(DateTime.Today.Day == 31 && DateTime.Today.Month == 12)
+            {
+                if (DateTime.Now.Hour > 11)
+                {
+                    cd = "<b><color=#DB8310>Wernher von Kerman:</color></b>\nCountdown for New Year's Day will start in less than ";
+                    if (DateTime.Now.Hour < 23)
+                        cd = cd + (24 - DateTime.Now.Hour) + " hours";
+                    else if (DateTime.Now.Minute < 30)
+                        cd = cd + "an hour";
+                    else if (DateTime.Now.Minute < 45)
+                        cd = cd + "half an hour";
+                    else if (DateTime.Now.Minute < 50)
+                        cd = cd + "15 minutes";
+                    else if (DateTime.Now.Minute < 55)
+                        cd = cd + "10 minutes";
+                    else if (DateTime.Now.Minute < 59)
+                        cd = cd + "5 minutes";
+
+                    cd = cd + ", don't miss it!";
+
+                    if (DateTime.Now.Hour == 23 && DateTime.Now.Minute == 59 && DateTime.Now.Second < 30)
+                        cd = "<b><color=#DB8310>Wernher von Kerman:</color>\nJust " + (60 - DateTime.Now.Second) + " seconds until midnight!</b>";
+                    else if (DateTime.Now.Hour == 23 && DateTime.Now.Minute == 59)
+                        cd = "<b><color=#DB8310>Wernher von Kerman:</color>\n<size=" + (3 * DateTime.Now.Second - 70) + ">" + (60 - DateTime.Now.Second) + "</size></b>";
+                }
+                string text = Resources.FindObjectsOfTypeAll<RDArchivesController>().First().instructorText.text;
+                if (text != cd)
+                {
+                    text = cd;
+                    Resources.FindObjectsOfTypeAll<RDArchivesController>().First().instructorText.text = text;
+                }
+            }
+            if (DateTime.Today.Day == 1 && DateTime.Today.Month == 1)
+            {
+                if(DateTime.Now.Hour == 0)
+                {
+                    cd = "<b><color=#DB8310>Wernher von Kerman:</color></b>\n<size=50>Happy New Year!</size>";
+                }
+                else
+                {
+                    cd = "<b><color=#DB8310>Wernher von Kerman:</color></b>\nHappy New Year!";
+                }
+                string text = Resources.FindObjectsOfTypeAll<RDArchivesController>().First().instructorText.text;
+                if (text != cd)
+                {
+                    text = cd;
+                    Resources.FindObjectsOfTypeAll<RDArchivesController>().First().instructorText.text = text;
+                }
+            }
         }
     }
 }
