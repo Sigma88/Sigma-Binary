@@ -15,7 +15,7 @@ namespace SigmaBinaryPlugin
     [ExternalParserTarget("Properties")]
     public class SigmaBinary : ExternalParserTargetLoader, IParserEventSubscriber
     {
-
+        
         public static List<Body> ListOfBodies = new List<Body>();
         public static Dictionary<string, Body> ListOfBinaries = new Dictionary<string, Body>();
 
@@ -27,7 +27,7 @@ namespace SigmaBinaryPlugin
 
         public static Dictionary<string, Body> sigmabinaryLoadAfter = new Dictionary<string, Body>();
         public static Dictionary<Body, string> sigmabinarySBName = new Dictionary<Body, string>();
-        public static Dictionary<Body, bool> sigmabinaryPrimaryLocked = new Dictionary<Body, bool>();
+        public static List<Body> sigmabinaryPrimaryLocked = new List<Body>();
         public static List<Body> sigmabinaryRedrawOrbit = new List<Body>();
         public static Dictionary<Body, string> sigmabinaryDescription = new Dictionary<Body, string>();
         public static Dictionary<Body, Color> sigmabinaryOrbitColor = new Dictionary<Body, Color>();
@@ -50,7 +50,7 @@ namespace SigmaBinaryPlugin
             for (int i = 0; i < ListOfBinaries.Count;)
             {
                 /// Loading the Bodies
-
+                
                 Body sbSecondary = ListOfBinaries.First().Value;
                 Body sbPrimary = ListOfBodies.Find(b1 => b1.name == OrbitPatcher(sbSecondary));
                 Body sbBarycenter = ListOfBodies.Find(b0 => b0.name == sigmabinarySBName[sbSecondary]);
@@ -65,9 +65,9 @@ namespace SigmaBinaryPlugin
                     break;
                 if (sbOrbit == null && sigmabinaryRedrawOrbit.Contains(sbSecondary))
                     break;
-
-
                 
+                
+
 
                 /// Generating Binary System
 
@@ -115,13 +115,13 @@ namespace SigmaBinaryPlugin
                     sbBarycenter.generatedBody.orbitRenderer.SetColor(sigmabinaryOrbitColor[sbSecondary]);
                 else
                     sbBarycenter.generatedBody.orbitRenderer.orbitColor = sbPrimary.generatedBody.orbitRenderer.orbitColor;
-                
 
+                
                 // Icon Color
 
-                if (sigmabinaryOrbitColor.ContainsKey(sbSecondary))
+                if (sigmabinaryIconColor.ContainsKey(sbSecondary))
                     sbBarycenter.generatedBody.orbitRenderer.nodeColor = sigmabinaryIconColor[sbSecondary];
-                else if (!sigmabinaryOrbitColor.ContainsKey(sbSecondary))
+                else
                     sbBarycenter.generatedBody.orbitRenderer.nodeColor = sbPrimary.generatedBody.orbitRenderer.nodeColor;
                 
 
@@ -144,7 +144,7 @@ namespace SigmaBinaryPlugin
                 
 
                 // DrawMode and DrawIcons
-                    
+
                 if (sigmabinaryMode.ContainsKey(sbSecondary))
                 {
                     if (Kopernicus.Templates.drawMode.ContainsKey(sbBarycenter.name))
@@ -171,7 +171,7 @@ namespace SigmaBinaryPlugin
                     Kopernicus.Templates.drawIcons.Add(sbBarycenter.name, Kopernicus.Templates.drawIcons[sbPrimary.name]);
                     Kopernicus.Templates.drawIcons.Remove(sbPrimary.name);
                 }
-                
+
                 
 
 
@@ -198,8 +198,6 @@ namespace SigmaBinaryPlugin
                 periodFixerList.Add(sbPrimary.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.generatedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / sbPrimary.generatedBody.celestialBody.Mass));
                 
 
-
-
                 // Primary Locked
 
                 if (sbPrimary.generatedBody.celestialBody.solarRotationPeriod)
@@ -207,14 +205,14 @@ namespace SigmaBinaryPlugin
                     sbPrimary.generatedBody.celestialBody.solarRotationPeriod = false;
                     sbPrimary.generatedBody.celestialBody.rotationPeriod = (periodFixerList[sbBarycenter.name] * sbPrimary.generatedBody.celestialBody.rotationPeriod) / (periodFixerList[sbBarycenter.name] + sbPrimary.generatedBody.celestialBody.rotationPeriod);
                 }
-                if (sigmabinaryPrimaryLocked.ContainsKey(sbSecondary))
+                if (sigmabinaryPrimaryLocked.Contains(sbSecondary))
                 {
                     sbPrimary.generatedBody.celestialBody.solarRotationPeriod = false;
                     sbPrimary.generatedBody.celestialBody.rotationPeriod = periodFixerList[sbPrimary.name];
                 }
 
-                
 
+                
 
                 /// Set Secondary Orbit
 
@@ -247,8 +245,8 @@ namespace SigmaBinaryPlugin
                     Kopernicus.Templates.drawMode.Add(sbSecondary.generatedBody.transform.name, OrbitRenderer.DrawMode.OFF);
 
                 }
-
                 
+
 
 
                 /// Set SphereOfInfluence for Barycenter and Primary
@@ -259,8 +257,8 @@ namespace SigmaBinaryPlugin
                 }
                 Kopernicus.Templates.sphereOfInfluence.Add(sbBarycenter.name, Kopernicus.Templates.sphereOfInfluence[sbPrimary.name]);
                 Kopernicus.Templates.sphereOfInfluence[sbPrimary.name] = sbPrimary.generatedBody.orbitDriver.orbit.semiMajorAxis * (sbBarycenter.generatedBody.orbitDriver.orbit.eccentricity + 1) + Kopernicus.Templates.sphereOfInfluence[sbBarycenter.name];
-                
 
+                
                 if (sbPrimary.name == "Kerbin")
                 {
                     // Bypass PostSpawnOrbit
@@ -273,8 +271,8 @@ namespace SigmaBinaryPlugin
                     // Let Kopernicus handle this with PostSpawnOrbit
                     sbPrimary.orbit.referenceBody = "Sun";
                 }
-                
 
+                
 
 
                 /// Binary System Completed

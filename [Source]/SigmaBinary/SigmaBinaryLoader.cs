@@ -24,7 +24,6 @@ namespace SigmaBinaryPlugin
             {
                 SigmaBinary.sigmabinarySBName.Add(Loader.currentBody, value);
                 SigmaBinary.sigmabinaryRedrawOrbit.Add(Loader.currentBody);
-                Debug.Log("SigmaBinaryLog: Loader.currentBody = " + Loader.currentBody.name);
             }
         }
 
@@ -34,18 +33,18 @@ namespace SigmaBinaryPlugin
             set
             {
                 if (!SigmaBinary.ListOfBinaries.ContainsValue(SigmaBinary.ListOfBodies.Find(b => b.name == value)))
-                {
-                    Debug.Log("SigmaBinaryLog: has to load after = " + value);
                     SigmaBinary.sigmabinaryLoadAfter.Add(value, Loader.currentBody);
-                    Debug.Log("SigmaBinaryLog: added to loadafter");
-                }
             }
         }
 
         [ParserTarget("primaryLocked", optional = true)]
         public NumericParser<bool> primaryLocked
         {
-            set { SigmaBinary.sigmabinaryPrimaryLocked.Add(Loader.currentBody, value); }
+            set
+            {
+                if (value)
+                    SigmaBinary.sigmabinaryPrimaryLocked.Add(Loader.currentBody);
+            }
         }
 
         [ParserTarget("redrawOrbit", optional = true)]
@@ -54,9 +53,7 @@ namespace SigmaBinaryPlugin
             set
             {
                 if (!value)
-                {
                     SigmaBinary.sigmabinaryRedrawOrbit.Remove(Loader.currentBody);
-                }
             }
         }
 
@@ -75,26 +72,19 @@ namespace SigmaBinaryPlugin
 
         void IParserEventSubscriber.PostApply(ConfigNode node)
         {
-            /// listOfBinaries = Dictionary ( string sbOrbit.name  or  sbBarycenter.name, sbSecondary )
             if (!SigmaBinary.sigmabinaryLoadAfter.ContainsValue(Loader.currentBody))
             {
-                Debug.Log("SigmaBinaryLog: Loader.currentBody " + Loader.currentBody.name + " has to be loaded now");
                 SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[Loader.currentBody], Loader.currentBody);
-                Debug.Log("SigmaBinaryLog: added (" + SigmaBinary.sigmabinarySBName[Loader.currentBody] + ", " + Loader.currentBody.name + ") to lisOfBinaries");
                 LoadAfter(Loader.currentBody);
             }
         }
         public void LoadAfter(Body currentBody)
         {
-            Debug.Log("SigmaBinaryLog: LOAD AFTER BODY " + currentBody.name);
             if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(currentBody.name))
             {
                 Body body = SigmaBinary.sigmabinaryLoadAfter[currentBody.name];
-                Debug.Log("SigmaBinaryLog: body " + SigmaBinary.sigmabinaryLoadAfter[currentBody.name].name + " has to load now");
                 SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[body], body);
-                Debug.Log("SigmaBinaryLog: added (" + SigmaBinary.sigmabinarySBName[body] + ", " + body.name + ") to lisOfBinaries");
                 SigmaBinary.sigmabinaryLoadAfter.Remove(currentBody.name);
-                Debug.Log("SigmaBinaryLog: body removed from loadAfter");
                 LoadAfter(body);
             }
         }
@@ -109,7 +99,10 @@ namespace SigmaBinaryPlugin
         [ParserTarget("description", optional = true)]
         public string description
         {
-            set { SigmaBinary.sigmabinaryDescription.Add(Loader.currentBody, value); }
+            set
+            {
+                SigmaBinary.sigmabinaryDescription.Add(Loader.currentBody, value);
+            }
         }
 
         void IParserEventSubscriber.Apply(ConfigNode node)
@@ -130,14 +123,20 @@ namespace SigmaBinaryPlugin
         [ParserTarget("mode", optional = true)]
         public EnumParser<OrbitRenderer.DrawMode> mode
         {
-            set { SigmaBinary.sigmabinaryMode.Add(Loader.currentBody, value); }
+            set
+            {
+                SigmaBinary.sigmabinaryMode.Add(Loader.currentBody, value);
+            }
         }
 
         // Orbit Icon Mode
         [ParserTarget("icon", optional = true)]
         public EnumParser<OrbitRenderer.DrawIcons> icon
         {
-            set { SigmaBinary.sigmabinaryIcon.Add(Loader.currentBody, value); }
+            set
+            {
+                SigmaBinary.sigmabinaryIcon.Add(Loader.currentBody, value);
+            }
         }
 
         // Orbit Color
@@ -146,7 +145,7 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                SigmaBinary.sigmabinaryOrbitColor.Add(Loader.currentBody, value);
+                SigmaBinary.sigmabinaryOrbitColor.Add(Loader.currentBody, value.value);
             }
         }
 
@@ -156,7 +155,7 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                SigmaBinary.sigmabinaryOrbitColor.Add(Loader.currentBody, value);
+                SigmaBinary.sigmabinaryIconColor.Add(Loader.currentBody, value.value);
             }
         }
 
