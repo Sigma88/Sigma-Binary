@@ -121,7 +121,7 @@ namespace SigmaBinaryPlugin
 
                 if (sigmabinaryIconColor.ContainsKey(sbSecondary))
                     sbBarycenter.generatedBody.orbitRenderer.nodeColor = sigmabinaryIconColor[sbSecondary];
-                else
+                else if (!sigmabinaryOrbitColor.ContainsKey(sbSecondary))
                     sbBarycenter.generatedBody.orbitRenderer.nodeColor = sbPrimary.generatedBody.orbitRenderer.nodeColor;
                 
 
