@@ -220,14 +220,16 @@ namespace SigmaBinaryPlugin
                 string[] q =
                 new string[]
                 {
-                "<b><color=#10B2DA>Obi Wan Kerman:</color></b>\nMay the Force be with you.",
-                "<b><color=#DA1010>Darth Kerman:</color></b>\nYou have failed me for the last time...",
-                "<b><color=#DB8310>Admiral Akbar Kerman:</color></b>\nIt's a trap!",
-                "<b><color=#10DA53>Yoda Kerman:</color></b>\nDo. Or do not. There is no try.",
-                "<b><color=#868686>Han Solo Kerman:</color></b>\nNever tell me the odds.",
-                "<b><color=#946936>Chewbacca Kerman:</color></b>\nRrraarrwhhgwwr.",
-                "<b><color=#6F2D30>Palpatine Kerman:</color></b>\nThere is a great disturbance in the Force.",
-                "<b><color=#FF80FF>Leia Kerman:</color></b>\nYou are actually goint INTO an asteroid field?"
+                    "<b><color=#10B2DA>Obi Wan Kerman:</color></b>\nMay the Force be with you.",
+                    "<b><color=#DA1010>Vader Kerman:</color></b>\nI find your lack of faith disturbing.",
+                    "<b><color=#DB8310>Akbar Kerman:</color></b>\nIt's a trap!",
+                    "<b><color=#10DA53>Yoda Kerman:</color></b>\nDo. Or do not. There is no try.",
+                    "<b><color=#946936>Han Kerman:</color></b>\nNever tell me the odds.",
+                    "<b><color=#663300>Chewbacca Kerman:</color></b>\nRrraarrwhhgwwr.",
+                    "<b><color=#6F2D30>Palpatine Kerman:</color></b>\nThere is a great disturbance in the Force.",
+                    "<b><color=#FF80FF>Leia Kerman:</color></b>\nYou are actually goint INTO an asteroid field?",
+                    "<b><color=#FFF881>C-3PO Kerman:</color></b>\nDon't get technical with me. What mission? What are you talking about? I've just about had enough of you.",
+                    "<b><color=#8080FF>R2-D2 Kerman:</color></b>\nBeep Bloop, Blop Bleep Boop."
                 };
                 Resources.FindObjectsOfTypeAll<RDArchivesController>().First().instructorText.text = q[r.Next(q.Length)];
             }
