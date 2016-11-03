@@ -7,180 +7,169 @@ using UnityEngine;
 using Kopernicus.Components;
 using Kopernicus.Configuration;
 
-using SigmaBinaryPlugin.Components;
 
 
 namespace SigmaBinaryPlugin
 {
-    namespace Configuration
+    [ExternalParserTarget("SigmaBinary")]
+    public class SigmaBinaryLoader : ExternalParserTargetLoader, IParserEventSubscriber
     {
-        [ExternalParserTarget("SigmaBinary")]
-        public class SigmaBinaryLoader : ExternalParserTargetLoader, IParserEventSubscriber
+        public PeriodFixer periodFixer { get; set; }
+        public KerbinFixer kerbinFixer { get; set; }
+
+        [ParserTarget("name", optional = true)]
+        public string sbName
         {
-            public SigmaBinary sigmabinary { get; set; }
-            public static List<string> ArchivesFixerList = new List<string>();
-            public static Dictionary<string, CelestialBody> sigmabinaryLoadAfter = new Dictionary<string, CelestialBody>();
-            public static Dictionary<string, string> sigmabinaryName = new Dictionary<string, string>();
-            public static Dictionary<string, bool> sigmabinaryPrimaryLocked = new Dictionary<string, bool>();
-            public static Dictionary<string, bool> sigmabinaryRedrawOrbit = new Dictionary<string, bool>();
-            public static Dictionary<string, string> sigmabinaryDescription = new Dictionary<string, string>();
-            public static Dictionary<string, bool> sigmabinarySelectable = new Dictionary<string, bool>();
-            public static Dictionary<string, Color> sigmabinaryColor = new Dictionary<string, Color>();
-            public static Dictionary<string, EnumParser<OrbitRenderer.DrawMode>> sigmabinaryMode = new Dictionary<string, EnumParser<OrbitRenderer.DrawMode>>();
-            public static Dictionary<string, EnumParser<OrbitRenderer.DrawIcons>> sigmabinaryIcon = new Dictionary<string, EnumParser<OrbitRenderer.DrawIcons>>();
-
-            [ParserTarget("name", optional = true)]
-            public string sbName
+            set
             {
-                get { return sigmabinary.sbName; }
-                set { sigmabinary.sbName = value; }
-            }
-
-            [ParserTarget("primaryLocked", optional = true)]
-            public NumericParser<bool> primaryLocked
-            {
-                get { return sigmabinary.primaryLocked; }
-                set { sigmabinary.primaryLocked = value; }
-            }
-
-            [ParserTarget("after", optional = true)]
-            public string after
-            {
-                get { return sigmabinary.after; }
-                set { sigmabinary.after = value; }
-            }
-
-            [ParserTarget("redrawOrbit", optional = true)]
-            public NumericParser<bool> redrawOrbit
-            {
-                get { return sigmabinary.redrawOrbit; }
-                set { sigmabinary.redrawOrbit = value; }
-            }
-            
-            [ParserTarget("Properties", optional = true, allowMerge = true)]
-            public SigmaBinaryPropertiesLoader sigmabinaryproperties { get; set; }
-
-            [ParserTarget("Orbit", optional = true, allowMerge = true)]
-            public SigmaBinaryOrbitLoader sigmabinaryorbit { get; set; }
-            
-            void IParserEventSubscriber.Apply(ConfigNode node)
-            {
-                sigmabinary = generatedBody.celestialBody.gameObject.AddComponent<SigmaBinary>();
-            }
-
-            void IParserEventSubscriber.PostApply(ConfigNode node)
-            {
-                //  Debug.Log("SigmaBinaryLoaderLog: Starting PostApply for generatedBody " + generatedBody.name);
-                // Set Fake Orbit Color
-                sigmabinaryColor.Add(sigmabinary.sbName + "Orbit", generatedBody.orbitRenderer.orbitColor);
-                //  Debug.Log("SigmaBinaryLoaderLog: Added Color for fake orbit - sigmabinaryColor.Add(" + sigmabinary.sbName + "Orbit, " + generatedBody.orbitRenderer.orbitColor + ")");
-
-                // Unless we have a custom color
-                if (!sigmabinaryColor.ContainsKey(sigmabinary.sbName))
-                {
-                    //  Debug.Log("SigmaBinaryLoaderLog: No Custom color detected for barycenter " + sigmabinary.sbName);
-                    // Look for Primary Orbit Color
-                    if (sigmabinaryColor.ContainsKey(ColorSwitcher.referenceSwitcher[generatedBody]))
-                    {
-                        //  Debug.Log("SigmaBinaryLoaderLog: Found color of primary body named " + ColorSwitcher.referenceSwitcher[generatedBody]);
-                        // If Primary has already been loaded, take the color
-                        sigmabinaryColor.Add(sigmabinary.sbName, sigmabinaryColor[ColorSwitcher.referenceSwitcher[generatedBody]]);
-                        //  Debug.Log("SigmaBinaryLoaderLog: the selected color is added to the list - sigmabinaryColor.Add(" + sigmabinary.sbName + ", " + sigmabinaryColor[ColorSwitcher.referenceSwitcher[generatedBody]]);
-                    }
-                    else
-                    {
-                        //  Debug.Log("SigmaBinaryLoaderLog: No colors stored for primary body named " + ColorSwitcher.referenceSwitcher[generatedBody]);
-                        // Otherwise request the color
-                        ColorSwitcher.colorSwitcher.Add(ColorSwitcher.referenceSwitcher[generatedBody], sigmabinary.sbName);
-                        //  Debug.Log("SigmaBinaryLoaderLog: Requested color for the barycenter - ColorSwitcher.colorSwitcher.Add(" + ColorSwitcher.referenceSwitcher[generatedBody] + ", " + sigmabinary.sbName);
-                    }
-                }
-                else
-                {
-                    // If we have a custom color we don't need to change anything
-                    //  Debug.Log("SigmaBinaryLoaderLog: Found Custom color " + sigmabinaryColor[sigmabinary.sbName].ToString() + " detected for body " + sigmabinary.sbName);
-                }
-
-                //  Debug.Log("SigmaBinaryLoaderLog: Ending PostApply for generatedBody " + generatedBody.name);
-            }
-
-            public SigmaBinaryLoader()
-            {
+                SigmaBinary.sigmabinarySBName.Add(Loader.currentBody, value);
+                SigmaBinary.sigmabinaryRedrawOrbit.Add(Loader.currentBody);
             }
         }
-        public class SigmaBinaryPropertiesLoader : BaseLoader, IParserEventSubscriber
+
+        [ParserTarget("after", optional = true)]
+        public string after
         {
-            public SigmaBinary sigmabinary { get; set; }
-
-            // description for the body
-            [ParserTarget("description", optional = true)]
-            public string description
+            set
             {
-                get { return sigmabinary.description; }
-                set { sigmabinary.description = value; }
-            }
-            
-            // If the body should be unselectable
-            [ParserTarget("selectable", optional = true)]
-            public NumericParser<bool> selectable
-            {
-                get { return sigmabinary.selectable; }
-                set { sigmabinary.selectable = value; }
-            }
-
-            void IParserEventSubscriber.Apply(ConfigNode node)
-            {
-                sigmabinary = generatedBody.celestialBody.gameObject.GetComponent<SigmaBinary>();
-            }
-
-            void IParserEventSubscriber.PostApply(ConfigNode node)
-            {
-            }
-
-            public SigmaBinaryPropertiesLoader()
-            {
+                if (!SigmaBinary.ListOfBinaries.ContainsValue(SigmaBinary.ListOfBodies.Find(b => b.name == value)))
+                    SigmaBinary.sigmabinaryLoadAfter.Add(value, Loader.currentBody);
             }
         }
-        public class SigmaBinaryOrbitLoader : BaseLoader, IParserEventSubscriber
+
+        [ParserTarget("primaryLocked", optional = true)]
+        public NumericParser<bool> primaryLocked
         {
-            public SigmaBinary sigmabinary { get; set; }
-
-            // Orbit Draw Mode
-            [ParserTarget("mode", optional = true)]
-            public EnumParser<OrbitRenderer.DrawMode> mode
+            set
             {
-                set { SigmaBinaryLoader.sigmabinaryMode.Add(sigmabinary.sbName, value); }
+                if (value)
+                    SigmaBinary.sigmabinaryPrimaryLocked.Add(Loader.currentBody);
             }
+        }
 
-            // Orbit Icon Mode
-            [ParserTarget("icon", optional = true)]
-            public EnumParser<OrbitRenderer.DrawIcons> icon
+        [ParserTarget("redrawOrbit", optional = true)]
+        public NumericParser<bool> redrawOrbit
+        {
+            set
             {
-                set { SigmaBinaryLoader.sigmabinaryIcon.Add(sigmabinary.sbName, value); }
+                if (!value)
+                    SigmaBinary.sigmabinaryRedrawOrbit.Remove(Loader.currentBody);
             }
+        }
 
-            // Orbit Color
-            [ParserTarget("color", optional = true)]
-            public ColorParser color
-            {
-                set
-                {
-                    SigmaBinaryLoader.sigmabinaryColor.Add(sigmabinary.sbName, new Color(value.value.r / 2, value.value.g / 2, value.value.b / 2, value.value.a));
-                }
-            }
+        [ParserTarget("Properties", optional = true, allowMerge = true)]
+        public SigmaBinaryPropertiesLoader sigmabinaryproperties { get; set; }
 
-            void IParserEventSubscriber.Apply(ConfigNode node)
-            {
-                sigmabinary = generatedBody.celestialBody.gameObject.GetComponent<SigmaBinary>();
-            }
+        [ParserTarget("Orbit", optional = true, allowMerge = true)]
+        public SigmaBinaryOrbitLoader sigmabinaryorbit { get; set; }
 
-            void IParserEventSubscriber.PostApply(ConfigNode node)
-            {
-            }
+        void IParserEventSubscriber.Apply(ConfigNode node)
+        {
+            Orbit.FindClosestPoints = SigmaBinary.FindClosestPointsReverted;
+            periodFixer = generatedBody.celestialBody.gameObject.AddComponent<PeriodFixer>();
+            kerbinFixer = generatedBody.celestialBody.gameObject.AddComponent<KerbinFixer>();
+        }
 
-            public SigmaBinaryOrbitLoader()
+        void IParserEventSubscriber.PostApply(ConfigNode node)
+        {
+            if (!SigmaBinary.sigmabinaryLoadAfter.ContainsValue(Loader.currentBody))
             {
+                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[Loader.currentBody], Loader.currentBody);
+                LoadAfter(Loader.currentBody);
             }
+        }
+        public void LoadAfter(Body currentBody)
+        {
+            if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(currentBody.name))
+            {
+                Body body = SigmaBinary.sigmabinaryLoadAfter[currentBody.name];
+                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[body], body);
+                SigmaBinary.sigmabinaryLoadAfter.Remove(currentBody.name);
+                LoadAfter(body);
+            }
+        }
+        public SigmaBinaryLoader()
+        {
         }
     }
+
+    public class SigmaBinaryPropertiesLoader : BaseLoader, IParserEventSubscriber
+    {
+        // description for the body
+        [ParserTarget("description", optional = true)]
+        public string description
+        {
+            set
+            {
+                SigmaBinary.sigmabinaryDescription.Add(Loader.currentBody, value);
+            }
+        }
+
+        void IParserEventSubscriber.Apply(ConfigNode node)
+        {
+        }
+
+        void IParserEventSubscriber.PostApply(ConfigNode node)
+        {
+        }
+
+        public SigmaBinaryPropertiesLoader()
+        {
+        }
+    }
+    public class SigmaBinaryOrbitLoader : BaseLoader, IParserEventSubscriber
+    {
+        // Orbit Draw Mode
+        [ParserTarget("mode", optional = true)]
+        public EnumParser<OrbitRenderer.DrawMode> mode
+        {
+            set
+            {
+                SigmaBinary.sigmabinaryMode.Add(Loader.currentBody, value);
+            }
+        }
+
+        // Orbit Icon Mode
+        [ParserTarget("icon", optional = true)]
+        public EnumParser<OrbitRenderer.DrawIcons> icon
+        {
+            set
+            {
+                SigmaBinary.sigmabinaryIcon.Add(Loader.currentBody, value);
+            }
+        }
+
+        // Orbit Color
+        [ParserTarget("color", optional = true)]
+        public ColorParser color
+        {
+            set
+            {
+                SigmaBinary.sigmabinaryOrbitColor.Add(Loader.currentBody, value.value);
+            }
+        }
+
+        // Orbit iconColor
+        [ParserTarget("iconColor", optional = true)]
+        public ColorParser iconColor
+        {
+            set
+            {
+                SigmaBinary.sigmabinaryIconColor.Add(Loader.currentBody, value.value);
+            }
+        }
+
+        void IParserEventSubscriber.Apply(ConfigNode node)
+        {
+        }
+
+        void IParserEventSubscriber.PostApply(ConfigNode node)
+        {
+        }
+
+        public SigmaBinaryOrbitLoader()
+        {
+        }
+    }
+
 }

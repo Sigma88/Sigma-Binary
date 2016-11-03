@@ -63,11 +63,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchiveFixer.cs" />
-    <Compile Include="ColorSwitcher.cs" />
+    <Compile Include="MapViewFixer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SigmaBinary.cs" />
     <Compile Include="SigmaBinaryLoader.cs" />
+    <Compile Include="SigmaBinary.cs" />
+    <Compile Include="ArchivesFixer.cs" />
+    <Compile Include="KerbinFixer.cs" />
+    <Compile Include="PeriodFixer.cs" />
+    <Compile Include="LateFixes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
