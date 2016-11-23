@@ -1,6 +1,7 @@
 **v1.6.1**
 
 - Fixed Kopernicus compatibility (again)
+- Fixed KSP-AVC compatibility
 
 
 **v1.6.0**
