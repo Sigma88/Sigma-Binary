@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
+using Kopernicus;
 using Kopernicus.Components;
 using Kopernicus.Configuration;
 using Kopernicus.OnDemand;
-using System.Threading;
-using System.Reflection;
+
 using KSP.UI.Screens;
 
 
@@ -76,11 +76,11 @@ namespace SigmaBinaryPlugin
                             else
                                 pBody.generatedBody.celestialBody.gameObject.AddComponent<NameChanger>().newName = "3.1415";
                         }
-                        else if (Kopernicus.Templates.orbitPatches.ContainsKey(pBody.name) && Kopernicus.Templates.orbitPatches[pBody.name].GetValue("referenceBody") == "Sun")
+                        else if (pBody.generatedBody.celestialBody.Has("orbitPatches") && pBody.generatedBody.celestialBody.Get<ConfigNode>("orbitPatches").GetValue("referenceBody") == "Sun")
                         {
                             pList.Add(pBody.generatedBody.celestialBody, pBody.generatedBody.orbitDriver.orbit.semiMajorAxis);
                         }
-                        else if (pBody.orbit.referenceBody == "Sun" && !(Kopernicus.Templates.orbitPatches.ContainsKey(pBody.name) && Kopernicus.Templates.orbitPatches[pBody.name].GetValue("referenceBody") != "Sun"))
+                        else if (pBody.orbit.referenceBody == "Sun" && !(pBody.generatedBody.celestialBody.Has("orbitPatches") && pBody.generatedBody.celestialBody.Get<ConfigNode>("orbitPatches").GetValue("referenceBody") != "Sun"))
                         {
                             if (!(pBody.name == "Kerbin" && SigmaBinary.kerbinFixer != "Sun"))
                             {
@@ -88,10 +88,10 @@ namespace SigmaBinaryPlugin
                             }
                         }
 
-                        if (pList.ContainsKey(pBody.generatedBody.celestialBody) && Kopernicus.Templates.orbitPatches.ContainsKey(pBody.name) && Kopernicus.Templates.orbitPatches[pBody.name].GetValue("semiMajorAxis") != null)
+                        if (pList.ContainsKey(pBody.generatedBody.celestialBody) && pBody.generatedBody.celestialBody.Has("orbitPatches") && pBody.generatedBody.celestialBody.Get<ConfigNode>("orbitPatches").GetValue("semiMajorAxis") != null)
                         {
                             NumericParser<double> sma = new NumericParser<double>();
-                            sma.SetFromString(Kopernicus.Templates.orbitPatches[pBody.name].GetValue("semiMajorAxis"));
+                            sma.SetFromString(pBody.generatedBody.celestialBody.Get<ConfigNode>("orbitPatches").GetValue("semiMajorAxis"));
                             pList[pBody.generatedBody.celestialBody] = sma.value;
                         }
                     }
