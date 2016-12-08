@@ -1,12 +1,9 @@
 using System.Collections.Generic;
-using UnityEngine;
-using System;
-using System.Threading;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
+using UnityEngine;
 using KSP.UI.Screens;
-using KSP.UI;
-using Kopernicus.Components;
+
 
 namespace SigmaBinaryPlugin
 {
@@ -22,7 +19,7 @@ namespace SigmaBinaryPlugin
             }
         }
     }
-    
+
     public class ArchivesFixer : MonoBehaviour
     {
         void Start()

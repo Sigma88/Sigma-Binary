@@ -1,15 +1,10 @@
- 
-using UnityEngine;
-using Kopernicus.Components;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using JetBrains.Annotations;
-using Kopernicus.Configuration;
-using KSP.UI.Screens;
+using UnityEngine;
 using KSP.UI.Screens.Mapview;
 using KSP.UI.Screens.Mapview.MapContextMenuOptions;
+using Kopernicus.Components;
+
 
 namespace SigmaBinaryPlugin
 {
@@ -17,12 +12,12 @@ namespace SigmaBinaryPlugin
     public class MapViewFixer : MonoBehaviour
     {
         private FieldInfo[] fields;
-        
+
         void Awake()
         {
             DontDestroyOnLoad(this);
         }
-        
+
         void LateUpdate()
         {
             if (MapView.MapIsEnabled)
@@ -37,8 +32,8 @@ namespace SigmaBinaryPlugin
                 if (FlightGlobals.ActiveVessel != null)
                 {
                     OrbitTargeter targeter = FlightGlobals.ActiveVessel.orbitTargeter;
-                    
-                    Int32 mode = (Int32)fields[0].GetValue(targeter);
+
+                    int mode = (int)fields[0].GetValue(targeter);
                     if (mode == 2)
                     {
                         OrbitRenderer.OrbitCastHit cast = (OrbitRenderer.OrbitCastHit)fields[2].GetValue(targeter);
@@ -50,7 +45,7 @@ namespace SigmaBinaryPlugin
                             CelestialBody body2 = PSystemManager.Instance.localBodies.Find(b => b.transform.name == SigmaBinary.mapViewFixerList[body.transform.name]);
 
                             ((MapContextMenu)fields[1].GetValue(targeter)).Dismiss();
-                            
+
                             MapContextMenu context =
                                 MapContextMenu.Create
                                 (

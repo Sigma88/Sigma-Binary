@@ -1,18 +1,11 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-using UnityEngine;
-
-using Kopernicus.Components;
+using Kopernicus;
 using Kopernicus.Configuration;
-
 
 
 namespace SigmaBinaryPlugin
 {
-    [ExternalParserTarget("SigmaBinary")]
-    public class SigmaBinaryLoader : ExternalParserTargetLoader, IParserEventSubscriber
+    [ParserTargetExternal("Body", "SigmaBinary")]
+    public class SigmaBinaryLoader : BaseLoader, IParserEventSubscriber
     {
         public PeriodFixer periodFixer { get; set; }
         public KerbinFixer kerbinFixer { get; set; }
@@ -78,6 +71,7 @@ namespace SigmaBinaryPlugin
                 LoadAfter(Loader.currentBody);
             }
         }
+
         public void LoadAfter(Body currentBody)
         {
             if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(currentBody.name))
@@ -88,6 +82,7 @@ namespace SigmaBinaryPlugin
                 LoadAfter(body);
             }
         }
+
         public SigmaBinaryLoader()
         {
         }
@@ -171,5 +166,4 @@ namespace SigmaBinaryPlugin
         {
         }
     }
-
 }
