@@ -1,8 +1,8 @@
 {
 	"NAME": "Sigma Binary",
-	"URL": "https://raw.githubusercontent.com/Sigma88/Sigma-Binary/master/GameData/Sigma/Binary/SigmaBinary.version",
+	"URL": "https://raw.githubusercontent.com/Sigma88/Sigma-Binary/master/GameData/Sigma/Binary/Sigma-Binary.version",
 	"DOWNLOAD": "http://forum.kerbalspaceprogram.com/index.php?/topic/115114-0",
-	"CHANGE_LOG_URL": "https://github.com/Sigma88/Sigma-Binary/raw/master/Changelog.txt",
+	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/Sigma88/Sigma-Binary/master/Changelog.txt",
 	"GITHUB":
 	{
 		"USERNAME": "Sigma88",
@@ -20,6 +20,6 @@
 	{
 		"MAJOR": 1,
 		"MINOR": 2,
-		"PATCH": 1
+		"PATCH": 2
 	}
 }
