@@ -1,12 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using UnityEngine;
-
-using Kopernicus.Components;
-using Kopernicus.Configuration;
-
 
 
 namespace SigmaBinaryPlugin
@@ -29,9 +22,8 @@ namespace SigmaBinaryPlugin
             {
                 List<MapObject> trackingstation = new List<MapObject>();
                 List<string> children = new List<string>();
-                
-                children.Add("Kerbin");
 
+                children.Add("Kerbin");
 
                 for (int count = 1; count > 0;)
                 {
@@ -45,7 +37,6 @@ namespace SigmaBinaryPlugin
                         }
                     }
                 }
-
 
                 foreach (MapObject m in PlanetariumCamera.fetch.targets)
                 {
@@ -65,7 +56,6 @@ namespace SigmaBinaryPlugin
                         }
                     }
                 }
-
 
                 PlanetariumCamera.fetch.targets.Clear();
                 PlanetariumCamera.fetch.targets.AddRange(trackingstation);

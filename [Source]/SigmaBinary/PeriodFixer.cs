@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using UnityEngine;
-
-using Kopernicus.Components;
-using Kopernicus.Configuration;
-
 
 
 namespace SigmaBinaryPlugin
@@ -32,3 +25,4 @@ namespace SigmaBinaryPlugin
         }
     }
 }
+

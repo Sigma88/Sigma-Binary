@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-
 using UnityEngine;
-
 using Kopernicus.Components;
 using Kopernicus.Configuration;
-using Kopernicus.OnDemand;
 using Kopernicus;
-
 
 
 namespace SigmaBinaryPlugin
 {
-    [ExternalParserTarget("Properties")]
-    public class SigmaBinary : ExternalParserTargetLoader, IParserEventSubscriber
+    [ParserTargetExternal("Body", "Properties")]
+    public class SigmaBinary : BaseLoader, IParserEventSubscriber
     {
 
         public static List<Body> ListOfBodies = new List<Body>();
@@ -35,8 +31,6 @@ namespace SigmaBinaryPlugin
         public static Dictionary<Body, Color> sigmabinaryIconColor = new Dictionary<Body, Color>();
         public static Dictionary<Body, EnumParser<OrbitRenderer.DrawMode>> sigmabinaryMode = new Dictionary<Body, EnumParser<OrbitRenderer.DrawMode>>();
         public static Dictionary<Body, EnumParser<OrbitRenderer.DrawIcons>> sigmabinaryIcon = new Dictionary<Body, EnumParser<OrbitRenderer.DrawIcons>>();
-
-
 
 
         void IParserEventSubscriber.Apply(ConfigNode node)
@@ -77,7 +71,6 @@ namespace SigmaBinaryPlugin
 
 
 
-
                 /// Generating Binary System
 
 
@@ -101,7 +94,6 @@ namespace SigmaBinaryPlugin
                         cbPrimary.Set("sphereOfInfluence", Math.Max(sbPrimary.orbit.semiMajorAxis * Math.Pow(cbPrimary.Mass / cbReference.Mass, 0.4), Math.Max(cbPrimary.Radius * Kopernicus.Templates.SOIMinRadiusMult, cbPrimary.Radius + Kopernicus.Templates.SOIMinAltitude)));
                     }
                 }
-
 
 
 
@@ -175,7 +167,6 @@ namespace SigmaBinaryPlugin
 
 
 
-
                 /// Set Primary
 
                 if (!archivesFixerList.ContainsKey(sbPrimary.name))
@@ -214,7 +205,6 @@ namespace SigmaBinaryPlugin
 
 
 
-
                 /// Set Secondary Orbit
 
                 if (sigmabinaryRedrawOrbit.Contains(sbSecondary))
@@ -247,7 +237,6 @@ namespace SigmaBinaryPlugin
 
 
 
-
                 /// Set SphereOfInfluence for Barycenter and Primary
 
                 if (!cbPrimary.Has("sphereOfInfluence"))
@@ -270,7 +259,6 @@ namespace SigmaBinaryPlugin
                     // Let Kopernicus handle this with PostSpawnOrbit
                     sbPrimary.orbit.referenceBody = "Sun";
                 }
-
 
 
 
