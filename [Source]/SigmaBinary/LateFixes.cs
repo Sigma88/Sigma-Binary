@@ -207,6 +207,7 @@ namespace SigmaBinaryPlugin
             if (DateTime.Today.Day == 4 && DateTime.Today.Month == 5)
                 GameEvents.onGUIRnDComplexSpawn.Add(InstructorFixer);
         }
+
         void InstructorFixer()
         {
             System.Random r = new System.Random();
@@ -231,7 +232,7 @@ namespace SigmaBinaryPlugin
         public string cd = null;
         void Update()
         {
-            if(DateTime.Today.Day == 31 && DateTime.Today.Month == 12)
+            if (DateTime.Today.Day == 31 && DateTime.Today.Month == 12)
             {
                 if (DateTime.Now.Hour > 11)
                 {
@@ -265,7 +266,7 @@ namespace SigmaBinaryPlugin
             }
             if (DateTime.Today.Day == 1 && DateTime.Today.Month == 1)
             {
-                if(DateTime.Now.Hour == 0)
+                if (DateTime.Now.Hour == 0)
                 {
                     cd = "<b><color=#DB8310>Wernher von Kerman:</color></b>\n<size=50>Happy New Year!</size>";
                 }
