@@ -3,7 +3,7 @@
 **This KSP mod will help you create binary systems.**
 
 
-KSP Forum Thread: http://forum.kerbalspaceprogram.com/threads/127820
+KSP Forum Thread: http://forum.kerbalspaceprogram.com/index.php?/topic/115114-0/
 
 Download Latest Release: https://github.com/Sigma88/Sigma-Binary/releases/latest
 
