@@ -9,7 +9,7 @@ using Kopernicus;
 
 namespace SigmaBinaryPlugin
 {
-    [ParserTargetExternal("Body", "Properties")]
+    [ParserTargetExternal("Body", "Properties", "Kopernicus")]
     public class SigmaBinary : BaseLoader, IParserEventSubscriber
     {
 
