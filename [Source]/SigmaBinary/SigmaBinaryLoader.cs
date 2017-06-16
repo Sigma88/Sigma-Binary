@@ -4,7 +4,7 @@ using Kopernicus.Configuration;
 
 namespace SigmaBinaryPlugin
 {
-    [ParserTargetExternal("Body", "SigmaBinary")]
+    [ParserTargetExternal("Body", "SigmaBinary", "Kopernicus")]
     public class SigmaBinaryLoader : BaseLoader, IParserEventSubscriber
     {
         public PeriodFixer periodFixer { get; set; }

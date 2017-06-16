@@ -9,10 +9,9 @@ using Kopernicus;
 
 namespace SigmaBinaryPlugin
 {
-    [ParserTargetExternal("Body", "Properties")]
+    [ParserTargetExternal("Body", "Properties", "Kopernicus")]
     public class SigmaBinary : BaseLoader, IParserEventSubscriber
     {
-
         public static List<Body> ListOfBodies = new List<Body>();
         public static Dictionary<string, Body> ListOfBinaries = new Dictionary<string, Body>();
 
