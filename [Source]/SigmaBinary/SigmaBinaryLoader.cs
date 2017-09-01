@@ -58,7 +58,8 @@ namespace SigmaBinaryPlugin
 
         void IParserEventSubscriber.Apply(ConfigNode node)
         {
-            Orbit.FindClosestPoints = SigmaBinary.FindClosestPointsReverted;
+            Orbit.FindClosestPoints = new Orbit.FindClosestPointsDelegate(EncounterMathFixer.FindClosestPointsRevertedCauseNewOneSucks);
+            PatchedConics.CheckEncounter = new PatchedConics.CheckEncounterDelegate(EncounterMathFixer.CheckEncounterButDontBitchAboutIt);
             periodFixer = generatedBody.celestialBody.gameObject.AddComponent<PeriodFixer>();
             kerbinFixer = generatedBody.celestialBody.gameObject.AddComponent<KerbinFixer>();
         }
