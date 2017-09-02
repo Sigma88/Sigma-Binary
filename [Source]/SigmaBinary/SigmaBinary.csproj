@@ -40,6 +40,7 @@
     <Compile Include="KerbinFixer.cs" />
     <Compile Include="PeriodFixer.cs" />
     <Compile Include="LateFixes.cs" />
+    <Compile Include="Version.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
