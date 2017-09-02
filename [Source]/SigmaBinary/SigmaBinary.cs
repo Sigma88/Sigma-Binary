@@ -262,23 +262,6 @@ namespace SigmaBinaryPlugin
 
 
 
-                /// Add Contracts Exceptions
-
-                if (ContractSystem.ContractWeights.ContainsKey(sbBarycenter.name))
-                    ContractSystem.ContractWeights[sbBarycenter.name] = 0;
-                else
-                    ContractSystem.ContractWeights.Add(sbBarycenter.name, 0);
-
-                if (sigmabinaryRedrawOrbit.Contains(sbSecondary))
-                {
-                    if (ContractSystem.ContractWeights.ContainsKey(sbBarycenter.name))
-                        ContractSystem.ContractWeights[sbOrbit.name] = 0;
-                    else
-                        ContractSystem.ContractWeights.Add(sbOrbit.name, 0);
-                }
-                
-
-
                 /// Binary System Completed
 
                 ListOfBinaries.Remove(ListOfBinaries.First(x => x.Value == sbSecondary).Key);
