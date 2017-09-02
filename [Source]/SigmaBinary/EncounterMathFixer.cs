@@ -44,6 +44,13 @@ namespace SigmaBinaryPlugin
             double dTforTrueAnomaly2 = p.GetDTforTrueAnomaly(sEVp, 0.0);
             double num3 = dTforTrueAnomaly + startEpoch;
             double num4 = dTforTrueAnomaly2 + startEpoch;
+
+            // avoid bad numbers
+            if (double.IsInfinity(num3) && !double.IsInfinity(num4))
+                num3 = num4;
+            if (double.IsInfinity(num4) && !double.IsInfinity(num3))
+                num4 = num3;
+
             if (double.IsInfinity(num3) && double.IsInfinity(num4))
             {
                 Debug.Log("CheckEncounter: both intercept UTs are infinite");
@@ -91,26 +98,13 @@ namespace SigmaBinaryPlugin
             p.secondaryPosAtTransition1 = orbit.getPositionAtUT(num3);
             Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.secondaryPosAtTransition1), Color.yellow);
             p.timeToTransition2 = dTforTrueAnomaly2;
-
-            // In case num4 is infinity then use num3 instead
-            p.secondaryPosAtTransition2 = orbit.getPositionAtUT(double.IsNaN(num4) ? num3 : num4);
-
+            p.secondaryPosAtTransition2 = orbit.getPositionAtUT(num4);
             Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.secondaryPosAtTransition2), Color.red);
             p.nearestTT = p.timeToTransition1;
             p.nextTT = p.timeToTransition2;
             if (double.IsNaN(p.nearestTT))
             {
-                Debug.Log(string.Concat(new object[]
-                {
-            "nearestTT is NaN! t1: ",
-            p.timeToTransition1,
-            ", t2: ",
-            p.timeToTransition2,
-            ", FEVp: ",
-            p.FEVp,
-            ", SEVp: ",
-            p.SEVp
-                }));
+                Debug.Log(string.Concat(new object[] { "nearestTT is NaN! t1: ", p.timeToTransition1, ", t2: ", p.timeToTransition2, ", FEVp: ", p.FEVp, ", SEVp: ", p.SEVp }));
             }
             p.UTappr = startEpoch;
             p.ClAppr = PatchedConics.GetClosestApproach(p, orbit, startEpoch, p.nearestTT * 0.5, pars);
