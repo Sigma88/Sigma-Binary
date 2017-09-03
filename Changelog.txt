@@ -1,3 +1,9 @@
+**v1.6.5**
+
+- Fixed log spam on binary system flybys
+- Blocked generation of undesired contracts
+
+
 **v1.6.4**
 
 - Updated to Kopernicus 1.3.0-4

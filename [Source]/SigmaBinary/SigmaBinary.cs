@@ -5,6 +5,7 @@ using UnityEngine;
 using Kopernicus.Components;
 using Kopernicus.Configuration;
 using Kopernicus;
+using Contracts;
 
 
 namespace SigmaBinaryPlugin
@@ -270,12 +271,6 @@ namespace SigmaBinaryPlugin
                 Debug.Log("\nSigmaBinaryLog:\n\n--- BINARY SYSTEM LOADED ---\nReferenceBody: " + sbReference.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + sbSecondary.name);
 
             }
-        }
-
-        public static int FindClosestPointsReverted(Orbit p, Orbit s, ref double CD, ref double CCD, ref double FFp, ref double FFs, ref double SFp, ref double SFs, double epsilon, int maxIterations, ref int iterationCount)
-        {
-            Orbit.FindClosestPoints_old(p, s, ref CD, ref CCD, ref FFp, ref FFs, ref SFp, ref SFs, epsilon, maxIterations, ref iterationCount);
-            return 2;
         }
 
         public string OrbitPatcher(Body body)
