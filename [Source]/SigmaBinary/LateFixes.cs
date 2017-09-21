@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
 using Kopernicus;
-using Kopernicus.Components;
 using Kopernicus.Configuration;
 using Kopernicus.OnDemand;
 
