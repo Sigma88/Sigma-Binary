@@ -5,10 +5,15 @@ using UnityEngine;
 
 namespace SigmaBinaryPlugin
 {
-    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    [KSPAddon(KSPAddon.Startup.Instantly, true)]
     public class KerbinxFixer : MonoBehaviour
     {
         public void Start()
+        {
+            Kopernicus.Events.OnPostFixing.Add(FixKerbins);
+        }
+
+        public void FixKerbins()
         {
             Debug.Log("KerbinFixer", "'kerbinFixer' contains " + (SigmaBinary.kerbinFixer?.Count > 0 ? SigmaBinary.kerbinFixer.Count.ToString() : "no") + " bodies.");
 
@@ -86,6 +91,7 @@ namespace SigmaBinaryPlugin
                         }
                     }
                 }
+
                 PlanetariumCamera.fetch.targets.Clear();
                 PlanetariumCamera.fetch.targets.AddRange(trackingstation);
             }
