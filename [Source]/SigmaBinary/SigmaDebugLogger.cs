@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace SigmaBinaryPlugin
+﻿namespace SigmaBinaryPlugin
 {
     internal static class Debug
     {

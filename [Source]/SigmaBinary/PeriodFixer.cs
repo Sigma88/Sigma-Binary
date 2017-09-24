@@ -5,14 +5,14 @@ using UnityEngine;
 namespace SigmaBinaryPlugin
 {
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
-    public class PeriodFxixer : MonoBehaviour
+    class PeriodFxixer : MonoBehaviour
     {
-        public void Start()
+        void Start()
         {
             Kopernicus.Events.OnPostFixing.Add(FixPeriods);
         }
 
-        public void FixPeriods()
+        void FixPeriods()
         {
             var bodies = FlightGlobals.Bodies;
 

@@ -6,14 +6,14 @@ using UnityEngine;
 namespace SigmaBinaryPlugin
 {
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
-    public class KerbinxFixer : MonoBehaviour
+    class KerbinxFixer : MonoBehaviour
     {
-        public void Start()
+        void Start()
         {
             Kopernicus.Events.OnPostFixing.Add(FixKerbins);
         }
 
-        public void FixKerbins()
+        void FixKerbins()
         {
             Debug.Log("KerbinFixer", "'kerbinFixer' contains " + (SigmaBinary.kerbinFixer?.Count > 0 ? SigmaBinary.kerbinFixer.Count.ToString() : "no") + " bodies.");
 
@@ -32,7 +32,7 @@ namespace SigmaBinaryPlugin
     }
 
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class TrackingStationFixer : MonoBehaviour
+    class TrackingStationFixer : MonoBehaviour
     {
         void Start()
         {
@@ -86,7 +86,7 @@ namespace SigmaBinaryPlugin
                         if (target == parent)
                         {
                             trackingstation.AddRange(children);
-                            Debug.Log(children.Count + " child MapObjects added to 'trackingstation'.");
+                            Debug.Log("TrackingStationFixer", children.Count + " child MapObjects added to 'trackingstation'.");
                             Debug.Log("TrackingStationFixer", "New count of elements in 'trackingstation' = " + trackingstation.Count);
                         }
                     }

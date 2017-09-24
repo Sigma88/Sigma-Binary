@@ -10,26 +10,42 @@ using Kopernicus.Configuration;
 namespace SigmaBinaryPlugin
 {
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
-    public class SigmaBinary : MonoBehaviour
+    internal class SigmaBinary : MonoBehaviour
     {
-        public static List<Body> ListOfBodies = new List<Body>();
-        public static Dictionary<string, Body> ListOfBinaries = new Dictionary<string, Body>();
+        /// <summary> List of all objects of type 'Body'. </summary>
+        internal static List<Body> ListOfBodies = new List<Body>();
+        /// <summary> Dictionary of all secondary bodies. (Body.name, Body). </summary>
+        internal static Dictionary<string, Body> ListOfBinaries = new Dictionary<string, Body>();
 
-        public static Dictionary<PSystemBody, PSystemBody> archivesFixerList = new Dictionary<PSystemBody, PSystemBody>();
-        public static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
-        public static Dictionary<CelestialBody, CelestialBody> mapViewFixerList = new Dictionary<CelestialBody, CelestialBody>();
-        public static Dictionary<string, string> kerbinFixer = new Dictionary<string, string>();
-        public static bool IamSad = (Environment.GetCommandLineArgs().Contains("-nyan-nyan") && Environment.GetCommandLineArgs().Contains("-NoFun"));
+        /// <summary> Dictionary storing the names of the primary and reference bodies for postspawn fixes. <para>Only used for planets with a Kerbin Template.</para> </summary>
+        internal static Dictionary<string, string> kerbinFixer = new Dictionary<string, string>();
+        /// <summary> Dictionary holding the name of a body and the orbital period that needs to be assigned to that body. </summary>
+        internal static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
+        /// <summary> Dictionary holding primary and barycenter, needed for fixing the science archives post spawn. </summary>
+        internal static Dictionary<PSystemBody, PSystemBody> archivesFixerList = new Dictionary<PSystemBody, PSystemBody>();
+        /// <summary> Dictionary holding the CelestialBody of the orbital marker and the secondary body to fix the behaviour of the orbit lines. </summary>
+        internal static Dictionary<CelestialBody, CelestialBody> mapViewFixerList = new Dictionary<CelestialBody, CelestialBody>();
+        /// <summary> You should never want this to be true. </summary>
+        internal static bool IamSad = (Environment.GetCommandLineArgs().Contains("-nyan-nyan") && Environment.GetCommandLineArgs().Contains("-NoFun"));
 
-        public static Dictionary<string, Body> sigmabinaryLoadAfter = new Dictionary<string, Body>();
-        public static Dictionary<Body, string> sigmabinarySBName = new Dictionary<Body, string>();
-        public static List<Body> sigmabinaryPrimaryLocked = new List<Body>();
-        public static List<Body> sigmabinaryRedrawOrbit = new List<Body>();
-        public static Dictionary<Body, string> sigmabinaryDescription = new Dictionary<Body, string>();
-        public static Dictionary<Body, Color> sigmabinaryOrbitColor = new Dictionary<Body, Color>();
-        public static Dictionary<Body, Color> sigmabinaryIconColor = new Dictionary<Body, Color>();
-        public static Dictionary<Body, EnumParser<OrbitRenderer.DrawMode>> sigmabinaryMode = new Dictionary<Body, EnumParser<OrbitRenderer.DrawMode>>();
-        public static Dictionary<Body, EnumParser<OrbitRenderer.DrawIcons>> sigmabinaryIcon = new Dictionary<Body, EnumParser<OrbitRenderer.DrawIcons>>();
+        /// <summary> Dictionary holding the names of two different secondary bodies. <para>The binary system of the first body needs to be processed before the one of the second body.</para> </summary>
+        internal static Dictionary<string, Body> sigmabinaryLoadAfter = new Dictionary<string, Body>();
+        /// <summary> Dictionary holding the secondary Body and the barycenter name. </summary>
+        internal static Dictionary<Body, string> sigmabinarySBName = new Dictionary<Body, string>();
+        /// <summary> List of secondary bodies in a binary system where the primary is tidally locked to the reference. </summary>
+        internal static List<Body> sigmabinaryPrimaryLocked = new List<Body>();
+        /// <summary> List of secondary bodies for which an orbit marker is required. </summary>
+        internal static List<Body> sigmabinaryRedrawOrbit = new List<Body>();
+        /// <summary> Dictionary holding the secondary Body and the description for the barycenter. </summary>
+        internal static Dictionary<Body, string> sigmabinaryDescription = new Dictionary<Body, string>();
+        /// <summary> Dictionary holding the secondary Body and the orbit line color of the barycenter. </summary>
+        internal static Dictionary<Body, Color> sigmabinaryOrbitColor = new Dictionary<Body, Color>();
+        /// <summary> Dictionary holding the secondary Body and the orbit icon color of the barycenter. </summary>
+        internal static Dictionary<Body, Color> sigmabinaryIconColor = new Dictionary<Body, Color>();
+        /// <summary> Dictionary holding the secondary Body and the orbit draw mode of the barycenter. </summary>
+        internal static Dictionary<Body, EnumParser<OrbitRenderer.DrawMode>> sigmabinaryMode = new Dictionary<Body, EnumParser<OrbitRenderer.DrawMode>>();
+        /// <summary> Dictionary holding the secondary Body and the orbit icon mode of the barycenter. </summary>
+        internal static Dictionary<Body, EnumParser<OrbitRenderer.DrawIcons>> sigmabinaryIcon = new Dictionary<Body, EnumParser<OrbitRenderer.DrawIcons>>();
 
         void Start()
         {
@@ -124,6 +140,8 @@ namespace SigmaBinaryPlugin
 
                 /// Set Barycenter
 
+                sbBarycenter.generatedBody.orbitDriver.orbit = new Orbit(sbPrimary.generatedBody.orbitDriver.orbit);
+                sbBarycenter.orbit.referenceBody = sbPrimary.orbit.referenceBody;
                 cbBarycenter.GeeASL = (cbPrimary.Mass + cbSecondary.Mass) / 1e5 * 6.674e-11d / Math.Pow(cbBarycenter.Radius, 2) / 9.80665d;
                 cbBarycenter.rotationPeriod = 0;
                 Debug.Log("SigmaBinary.SetBarycenter", "Printing orbital parameters of primary " + sbPrimary.name + " for reference.");
@@ -420,48 +438,21 @@ namespace SigmaBinaryPlugin
                         }
                     }
 
-                    Debug.Log("Orbit patch = " + patch + ", nr of values = " + patch?.values?.Count);
-
                     // Patch orbit using the original 'PostSpawnOrbit' node
                     if (patch?.values?.Count > 0)
                     {
-                        if (body.generatedBody.celestialBody.orbit != null)
-                        {
-                            // Create a new loader
-                            OrbitLoader loader = new OrbitLoader(body.generatedBody.celestialBody);
-                            loader.currentBody = body.generatedBody;
+                        // Create a new loader
+                        OrbitLoader loader = new OrbitLoader(body.generatedBody);
 
-                            // Apply the patch to the loader
-                            Parser.LoadObjectFromConfigurationNode(loader, patch, "Kopernicus");
+                        // Apply the patch to the loader
+                        Parser.LoadObjectFromConfigurationNode(loader, patch, "Kopernicus");
+                        Debug.Log("SigmaBinary.OrbitPatcher", "Patched orbit of body " + body.name + " using 'PostSpawnOrbit' node");
 
-                            // Update the orbit of the body
-                            body.generatedBody.orbitDriver.orbit = new Orbit(loader.orbit);
-                            Debug.Log("SigmaBinary.OrbitPatcher", "Patched orbit of body " + body.name + " using 'PostSpawnOrbit' node");
-                        }
-                        // This 'else' is here to make sure stars don't give us trouble
-                        else
-                        {
-                            OrbitLoader loader = new OrbitLoader();
-                            loader.orbit = new Orbit();
-                            loader.orbit.referenceBody = body.generatedBody.orbitDriver.orbit.referenceBody;
-                            loader.currentBody = body.generatedBody;
-                            Parser.LoadObjectFromConfigurationNode(loader, patch, "Kopernicus");
-                            if (!patch.HasValue("inclination")) loader.orbit.inclination = 0;
-                            if (!patch.HasValue("eccentricity")) loader.orbit.eccentricity = 0;
-                            if (!patch.HasValue("semiMajorAxis")) loader.orbit.semiMajorAxis = 0;
-                            if (!patch.HasValue("longitudeOfAscendingNode")) loader.orbit.LAN = 0;
-                            if (!patch.HasValue("argumentOfPeriapsis")) loader.orbit.argumentOfPeriapsis = 0;
-                            if (!patch.HasValue("meanAnomalyAtEpoch") && !patch.HasValue("meanAnomalyAtEpochD")) loader.orbit.meanAnomalyAtEpoch = 0;
-                            if (!patch.HasValue("epoch")) loader.orbit.epoch = 0;
-                            Debug.Log("SigmaBinary.OrbitPatcher", "Set missing orbit parameters of body " + body.name);
-
-                            body.generatedBody.orbitDriver.orbit = new Orbit(loader.orbit);
-                            Debug.Log("SigmaBinary.OrbitPatcher", "Patched orbit of body " + body.name + " using 'PostSpawnOrbit' node");
-                        }
-
+                        // Remove 'PostSpawnOrbit' node
                         body.generatedBody.Remove("orbitPatches");
                         Debug.Log("SigmaBinary.OrbitPatcher", "Body " + body.name + " 'PostSpawnOrbit' node removed.");
 
+                        // If the patch is used to reparent the body
                         if (patch.HasValue("referenceBody"))
                         {
                             body.orbit.referenceBody = patch.GetValue("referenceBody");
