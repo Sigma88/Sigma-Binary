@@ -7,6 +7,9 @@ namespace SigmaBinaryPlugin
     [ParserTargetExternal("Body", "SigmaBinary", "Kopernicus")]
     public class SigmaBinaryLoader : BaseLoader, IParserEventSubscriber
     {
+        public PeriodFixer periodFixer { get; set; }
+        public KerbinFixer kerbinFixer { get; set; }
+
         [ParserTarget("name", optional = true)]
         public string sbName
         {
@@ -57,6 +60,8 @@ namespace SigmaBinaryPlugin
         {
             Orbit.FindClosestPoints = new Orbit.FindClosestPointsDelegate(EncounterMathFixer.FindClosestPointsRevertedCauseNewOneSucks);
             PatchedConics.CheckEncounter = new PatchedConics.CheckEncounterDelegate(EncounterMathFixer.CheckEncounterButDontBitchAboutIt);
+            periodFixer = generatedBody.celestialBody.gameObject.AddComponent<PeriodFixer>();
+            kerbinFixer = generatedBody.celestialBody.gameObject.AddComponent<KerbinFixer>();
         }
 
         void IParserEventSubscriber.PostApply(ConfigNode node)
@@ -108,7 +113,6 @@ namespace SigmaBinaryPlugin
         {
         }
     }
-
     public class SigmaBinaryOrbitLoader : BaseLoader, IParserEventSubscriber
     {
         // Orbit Draw Mode

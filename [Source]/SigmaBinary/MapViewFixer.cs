@@ -1,5 +1,5 @@
-using System.Linq;
 using System.Reflection;
+using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens.Mapview;
 using KSP.UI.Screens.Mapview.MapContextMenuOptions;
@@ -40,9 +40,9 @@ namespace SigmaBinaryPlugin
 
                         CelestialBody body = PSystemManager.Instance.localBodies.Find(b => b.name == cast.or.discoveryInfo.name.Value);
 
-                        if (SigmaBinary.mapViewFixerList.ContainsKey(body))
+                        if (SigmaBinary.mapViewFixerList.ContainsKey(body.transform.name))
                         {
-                            CelestialBody body2 = SigmaBinary.mapViewFixerList[body];
+                            CelestialBody body2 = PSystemManager.Instance.localBodies.Find(b => b.transform.name == SigmaBinary.mapViewFixerList[body.transform.name]);
 
                             ((MapContextMenu)fields[1].GetValue(targeter)).Dismiss();
 

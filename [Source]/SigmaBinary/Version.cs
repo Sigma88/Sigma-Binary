@@ -8,7 +8,7 @@ namespace SigmaBinaryPlugin
     {
         void Awake()
         {
-            UnityEngine.Debug.Log("[SigmaLog] Version Check:   Sigma Binary v1.6.6");
+            Debug.Log("[SigmaLog] Version Check:   Sigma Binary v1.6.5");
         }
     }
 }

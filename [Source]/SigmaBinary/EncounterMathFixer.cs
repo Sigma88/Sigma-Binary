@@ -53,7 +53,7 @@ namespace SigmaBinaryPlugin
 
             if (double.IsInfinity(num3) && double.IsInfinity(num4))
             {
-                UnityEngine.Debug.Log("CheckEncounter: both intercept UTs are infinite");
+                Debug.Log("CheckEncounter: both intercept UTs are infinite");
                 return false;
             }
             if ((num3 < p.StartUT || num3 > p.EndUT) && (num4 < p.StartUT || num4 > p.EndUT))
@@ -96,15 +96,15 @@ namespace SigmaBinaryPlugin
             }
             p.timeToTransition1 = dTforTrueAnomaly;
             p.secondaryPosAtTransition1 = orbit.getPositionAtUT(num3);
-            UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.secondaryPosAtTransition1), Color.yellow);
+            Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.secondaryPosAtTransition1), Color.yellow);
             p.timeToTransition2 = dTforTrueAnomaly2;
             p.secondaryPosAtTransition2 = orbit.getPositionAtUT(num4);
-            UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.secondaryPosAtTransition2), Color.red);
+            Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.secondaryPosAtTransition2), Color.red);
             p.nearestTT = p.timeToTransition1;
             p.nextTT = p.timeToTransition2;
             if (double.IsNaN(p.nearestTT))
             {
-                UnityEngine.Debug.Log(string.Concat(new object[] { "nearestTT is NaN! t1: ", p.timeToTransition1, ", t2: ", p.timeToTransition2, ", FEVp: ", p.FEVp, ", SEVp: ", p.SEVp }));
+                Debug.Log(string.Concat(new object[] { "nearestTT is NaN! t1: ", p.timeToTransition1, ", t2: ", p.timeToTransition2, ", FEVp: ", p.FEVp, ", SEVp: ", p.SEVp }));
             }
             p.UTappr = startEpoch;
             p.ClAppr = PatchedConics.GetClosestApproach(p, orbit, startEpoch, p.nearestTT * 0.5, pars);
@@ -116,14 +116,14 @@ namespace SigmaBinaryPlugin
             {
                 p.closestEncounterLevel = Orbit.EncounterSolutionLevel.SOI_INTERSECT_2;
                 p.closestEncounterBody = sec.celestialBody;
-                UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.getPositionAtUT(p.UTappr)), ScaledSpace.LocalToScaledSpace(orbit.getPositionAtUT(p.UTappr)), XKCDColors.Orange * 0.5f);
+                Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.getPositionAtUT(p.UTappr)), ScaledSpace.LocalToScaledSpace(orbit.getPositionAtUT(p.UTappr)), XKCDColors.Orange * 0.5f);
                 p.UTappr = startEpoch + p.nearestTT;
                 p.ClAppr = PatchedConics.GetClosestApproach(p, orbit, startEpoch, (p.nextTT - p.nearestTT) * 0.5, pars);
                 if (PatchedConics.EncountersBody(p, orbit, nextPatch, sec, startEpoch, pars))
                 {
                     return true;
                 }
-                UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.getPositionAtUT(p.UTappr)), ScaledSpace.LocalToScaledSpace(orbit.getPositionAtUT(p.UTappr)), XKCDColors.Orange);
+                Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.getPositionAtUT(p.UTappr)), ScaledSpace.LocalToScaledSpace(orbit.getPositionAtUT(p.UTappr)), XKCDColors.Orange);
             }
             if (sec.celestialBody == targetBody)
             {
