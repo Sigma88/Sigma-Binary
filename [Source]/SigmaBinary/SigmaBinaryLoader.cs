@@ -7,6 +7,16 @@ namespace SigmaBinaryPlugin
     [ParserTargetExternal("Body", "SigmaBinary", "Kopernicus")]
     public class SigmaBinaryLoader : BaseLoader, IParserEventSubscriber
     {
+        [ParserTarget("debug", optional = true)]
+        public NumericParser<bool> debug
+        {
+            set
+            {
+                if (!Debug.debug)
+                    Debug.debug = value?.value == true;
+            }
+        }
+
         [ParserTarget("name", optional = true)]
         public string sbName
         {
