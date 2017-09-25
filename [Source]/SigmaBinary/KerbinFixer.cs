@@ -1,58 +1,93 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
 namespace SigmaBinaryPlugin
 {
-    public class KerbinFixer : MonoBehaviour
+    [KSPAddon(KSPAddon.Startup.Instantly, true)]
+    class KerbinxFixer : MonoBehaviour
     {
         void Start()
         {
-            if (SigmaBinary.kerbinFixer != null)
-                FlightGlobals.Bodies.Find(k => k.transform.name == "Kerbin").orbitDriver.orbit.referenceBody = FlightGlobals.Bodies.Find(rb => rb.transform.name == SigmaBinary.kerbinFixer);
+            Kopernicus.Events.OnPostFixing.Add(FixKerbins);
+        }
+
+        void FixKerbins()
+        {
+            Debug.Log("KerbinFixer", "'kerbinFixer' contains " + (SigmaBinary.kerbinFixer?.Count > 0 ? SigmaBinary.kerbinFixer.Count.ToString() : "no") + " bodies.");
+
+            for (int i = 0; i < SigmaBinary.kerbinFixer?.Count; i++)
+            {
+                KeyValuePair<string, string> pair = SigmaBinary.kerbinFixer.ElementAt(i);
+                CelestialBody body = FlightGlobals.Bodies.FirstOrDefault(cb => cb.transform.name == pair.Key);
+                CelestialBody parent = FlightGlobals.Bodies.FirstOrDefault(cb => cb.transform.name == pair.Value);
+                Debug.Log("KerbinFixer", "Body #" + (i + 1) + " = " + body + ", old parent = " + body.referenceBody + ", new parent = " + parent);
+
+                body.orbit.referenceBody = parent;
+                body.orbitDriver.orbit.referenceBody = parent;
+                Debug.Log("KerbinFixer", "Changed 'referenceBody' of body " + body + " to " + body.referenceBody);
+            }
         }
     }
 
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class TrackingStationFixer : MonoBehaviour
+    class TrackingStationFixer : MonoBehaviour
     {
         void Start()
         {
-            if (SigmaBinary.kerbinFixer != null)
+            var targets = PlanetariumCamera.fetch.targets;
+
+            for (int i = 0; i < SigmaBinary.kerbinFixer?.Count; i++)
             {
+                KeyValuePair<string, string> pair = SigmaBinary.kerbinFixer.ElementAt(i);
+                MapObject body = targets.FirstOrDefault(obj => obj.celestialBody.transform.name == pair.Key);
+                MapObject parent = targets.FirstOrDefault(obj => obj.celestialBody.transform.name == pair.Value);
+
                 List<MapObject> trackingstation = new List<MapObject>();
-                List<string> children = new List<string>();
+                List<MapObject> children = new List<MapObject>();
+                children.Add(body);
+                Debug.Log("TrackingStationFixer", "Body MapObject " + body + " added to 'children'.");
 
-                children.Add("Kerbin");
-
-                for (int count = 1; count > 0;)
+                for (int j = 0; j < targets?.Count; j++)
                 {
-                    foreach (CelestialBody b in FlightGlobals.Bodies)
+                    MapObject target = targets[j];
+
+                    // If the MapObject is not null
+                    if (target != null)
                     {
-                        count = 0;
-                        if (children.Contains(b.referenceBody.transform.name))
+                        // And the MapObject has not already been added to the list
+                        if (!children.Any(obj => obj.celestialBody == target.celestialBody))
                         {
-                            children.Add(b.transform.name);
-                            count++;
+                            // And the MapObject is a child of any MapObject already in the list
+                            if (children.Any(obj => obj.celestialBody == target.celestialBody.referenceBody))
+                            {
+                                children.Add(target);
+                                Debug.Log("TrackingStationFixer", "Child MapObject " + target.celestialBody + " added to 'children'.");
+                            }
                         }
                     }
                 }
 
-                foreach (MapObject m in PlanetariumCamera.fetch.targets)
+                // Reorder the tracking station targets
+                Debug.Log("TrackingStationFixer", "Count of elements in 'trackingstation' = " + trackingstation.Count);
+                for (int j = 0; j < targets.Count; j++)
                 {
-                    if (m != null)
-                    {
-                        if (!children.Contains(m.celestialBody.transform.name))
-                        {
-                            trackingstation.Add(m);
-                        }
+                    MapObject target = targets[j];
 
-                        if (m.celestialBody.transform.name == SigmaBinary.kerbinFixer)
+                    if (target != null)
+                    {
+                        if (!children.Contains(target))
                         {
-                            foreach (string c in children)
-                            {
-                                trackingstation.Add(PlanetariumCamera.fetch.targets.Find(t => t.celestialBody.transform.name == c));
-                            }
+                            trackingstation.Add(target);
+                            Debug.Log("TrackingStationFixer", "Target MapObject " + target.celestialBody + " added to 'trackingstation'.");
+                            Debug.Log("TrackingStationFixer", "New count of elements in 'trackingstation' = " + trackingstation.Count);
+                        }
+                        if (target == parent)
+                        {
+                            trackingstation.AddRange(children);
+                            Debug.Log("TrackingStationFixer", children.Count + " child MapObjects added to 'trackingstation'.");
+                            Debug.Log("TrackingStationFixer", "New count of elements in 'trackingstation' = " + trackingstation.Count);
                         }
                     }
                 }

@@ -1,5 +1,5 @@
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using KSP.UI.Screens.Mapview;
 using KSP.UI.Screens.Mapview.MapContextMenuOptions;
@@ -9,9 +9,9 @@ using Kopernicus.Components;
 namespace SigmaBinaryPlugin
 {
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class MapViewFixer : MonoBehaviour
+    class MapViewFixer : MonoBehaviour
     {
-        private FieldInfo[] fields;
+        FieldInfo[] fields;
 
         void Awake()
         {
@@ -25,10 +25,17 @@ namespace SigmaBinaryPlugin
                 if (fields == null)
                 {
                     FieldInfo mode_f = typeof(OrbitTargeter).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(f => f.FieldType.Name.EndsWith("MenuDrawMode"));
+                    Debug.Log("MapViewFixer", "Name of FieldInfo 'mode_f' should be 'MenuDrawMode'. The name is = " + mode_f?.Name);
+
                     FieldInfo context_f = typeof(OrbitTargeter).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(f => f.FieldType == typeof(MapContextMenu));
+                    Debug.Log("MapViewFixer", "Name of FieldInfo 'context_f' should be 'ContextMenu'. The name is = " + context_f?.Name);
+
                     FieldInfo cast_f = typeof(OrbitTargeter).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(f => f.FieldType == typeof(OrbitRenderer.OrbitCastHit));
+                    Debug.Log("MapViewFixer", "Name of FieldInfo 'cast_f' should be 'orbitCastHit'. The name is = " + cast_f?.Name);
+
                     fields = new FieldInfo[] { mode_f, context_f, cast_f };
                 }
+
                 if (FlightGlobals.ActiveVessel != null)
                 {
                     OrbitTargeter targeter = FlightGlobals.ActiveVessel.orbitTargeter;
@@ -40,9 +47,9 @@ namespace SigmaBinaryPlugin
 
                         CelestialBody body = PSystemManager.Instance.localBodies.Find(b => b.name == cast.or.discoveryInfo.name.Value);
 
-                        if (SigmaBinary.mapViewFixerList.ContainsKey(body.transform.name))
+                        if (SigmaBinary.mapViewFixerList.ContainsKey(body))
                         {
-                            CelestialBody body2 = PSystemManager.Instance.localBodies.Find(b => b.transform.name == SigmaBinary.mapViewFixerList[body.transform.name]);
+                            CelestialBody body2 = SigmaBinary.mapViewFixerList[body];
 
                             ((MapContextMenu)fields[1].GetValue(targeter)).Dismiss();
 

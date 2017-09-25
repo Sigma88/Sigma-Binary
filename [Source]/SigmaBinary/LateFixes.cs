@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
 using Kopernicus;
-using Kopernicus.Components;
 using Kopernicus.Configuration;
 using Kopernicus.OnDemand;
 
@@ -12,9 +11,9 @@ using Kopernicus.OnDemand;
 namespace SigmaBinaryPlugin
 {
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class LateFixes : MonoBehaviour
+    class LateFixes : MonoBehaviour
     {
-        public static void TextureFixer(Body body1, Body body2, List<Body> list)
+        internal static void TextureFixer(Body body1, Body body2, List<Body> list)
         {
             if (!SigmaBinary.IamSad)
             {
@@ -155,9 +154,9 @@ namespace SigmaBinaryPlugin
         }
     }
     [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-    public class UpdateFixes : MonoBehaviour
+    class UpdateFixes : MonoBehaviour
     {
-        public string cd = null;
+        string cd = null;
         void Update()
         {
             if (!SigmaBinary.IamSad)
