@@ -185,23 +185,10 @@ namespace SigmaBinaryPlugin
                 }
 
                 // Description
-                if (!sigmabinaryDescription.ContainsKey(sbSecondary))
+                if (sigmabinaryDescription.ContainsKey(sbSecondary))
                 {
-                    cbBarycenter.bodyDescription = "This is the barycenter of the ";
-                    if (cbPrimary.GetComponent<NameChanger>() != null)
-                        cbBarycenter.bodyDescription = cbBarycenter.bodyDescription + cbPrimary.GetComponent<NameChanger>().newName;
-                    else
-                        cbBarycenter.bodyDescription = cbBarycenter.bodyDescription + sbPrimary.name;
-                    if (cbSecondary.GetComponent<NameChanger>() != null)
-                        cbBarycenter.bodyDescription = cbBarycenter.bodyDescription + "-" + cbSecondary.GetComponent<NameChanger>().newName + " system.";
-                    else
-                        cbBarycenter.bodyDescription = cbBarycenter.bodyDescription + "-" + cbSecondary.name + " system.";
-                    Debug.Log("SigmaBinary.SetBarycenter", "Barycenter " + sbBarycenter.name + " description automatically generated.");
-                }
-                else
-                {
-                    cbBarycenter.bodyDescription = sigmabinaryDescription[sbSecondary];
-                    Debug.Log("SigmaBinary.SetBarycenter", "Barycenter " + sbBarycenter.name + " custom description loaded.");
+                    cbBarycenter.bodyDescription = sigmabinaryDescription[sbSecondary].Replace("<name>", nameof(sbBarycenter)).Replace("<primary>", nameof(sbPrimary)).Replace("<secondary>", nameof(sbSecondary));
+                    Debug.Log("SigmaBinary.SetBarycenter", "Barycenter " + sbBarycenter.name + " description loaded.");
                 }
                 Debug.Log("SigmaBinary.SetBarycenter", "description = " + cbBarycenter.bodyDescription);
 
@@ -392,6 +379,14 @@ namespace SigmaBinaryPlugin
                 UnityEngine.Debug.Log("[SigmaLog]: Binary System Completed\nReferenceBody: " + sbReference.name + "\n   Barycenter: " + sbBarycenter.name + "\n      Primary: " + sbPrimary.name + "\n    Secondary: " + sbSecondary.name + (Debug.debug ? "\n        Orbit: " + sbOrbit?.name : ""));
             }
             Debug.Log("SigmaBinary.ProcessBinaries", "Completed the set up of all binary systems.");
+        }
+
+        /// <summary>
+        /// Gets the final name of a body
+        /// </summary>
+        string nameof(Body body)
+        {
+            return string.IsNullOrEmpty(body.cbNameLater) ? body.name : body.cbNameLater;
         }
 
         /// <summary>
