@@ -6,10 +6,10 @@ namespace SigmaBinaryPlugin
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
     public class Version : MonoBehaviour
     {
-        public static readonly string number = "v1.6.7";
+        public static readonly System.Version number = new System.Version("1.6.8");
         void Awake()
         {
-            UnityEngine.Debug.Log("[SigmaLog] Version Check:   Sigma Binary " + number);
+            UnityEngine.Debug.Log("[SigmaLog] Version Check:   Sigma Binary v" + number);
         }
     }
 }
