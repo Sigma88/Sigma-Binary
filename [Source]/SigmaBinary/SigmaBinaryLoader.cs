@@ -66,6 +66,7 @@ namespace SigmaBinaryPlugin
         void IParserEventSubscriber.Apply(ConfigNode node)
         {
             Orbit.FindClosestPoints = new Orbit.FindClosestPointsDelegate(EncounterMathFixer.FindClosestPointsRevertedCauseNewOneSucks);
+            Orbit.SolveClosestApproach = new Orbit.SolveClosestApproachDelegate(EncounterMathFixer.SolveClosestApproachWithoutComplaining);
             PatchedConics.CheckEncounter = new PatchedConics.CheckEncounterDelegate(EncounterMathFixer.CheckEncounterButDontBitchAboutIt);
         }
 
