@@ -4,8 +4,83 @@ using UnityEngine;
 
 namespace SigmaBinaryPlugin
 {
-    public class EncounterMathFixer
+    public static class EncounterMathFixer
     {
+        public static Vector3d getPositionAtUTSigma(this Orbit orbit, double UT)
+        {
+            return orbit.getPositionAtT(orbit.getObtAtUTSigma(UT));
+        }
+
+        public static double getObtAtUTSigma(this Orbit orbit, double UT)
+        {
+            double num;
+            if (orbit.eccentricity < 1.0)
+            {
+                if (double.IsPositiveInfinity(UT))
+                    UT = double.MaxValue;
+                if (double.IsNegativeInfinity(UT))
+                    UT = double.MinValue;
+                if (double.IsNaN(UT))
+                    UT = 0;
+
+                num = (UT - orbit.epoch + orbit.ObTAtEpoch) % orbit.period;
+
+                if (num > orbit.period / 2.0)
+                {
+                    num -= orbit.period;
+                }
+            }
+            else
+            {
+                if (double.IsInfinity(UT))
+                {
+                    return UT;
+                }
+                num = orbit.ObTAtEpoch + (UT - orbit.epoch);
+            }
+            return num;
+        }
+
+        public static double SolveClosestApproachWithoutComplaining(Orbit p, Orbit s, ref double UT, double dT, double threshold, double MinUT, double MaxUT, double epsilon, int maxIterations, ref int iterationCount)
+        {
+            if (UT < MinUT)
+            {
+                return -1.0;
+            }
+            if (UT > MaxUT)
+            {
+                return -1.0;
+            }
+            iterationCount = 0;
+            double num = Math.Abs((p.getPositionAtUTSigma(UT) - s.getPositionAtUTSigma(UT)).sqrMagnitude);
+            while (dT > epsilon && iterationCount < maxIterations)
+            {
+                double num2 = (p.getPositionAtUTSigma(UT + dT) - s.getPositionAtUTSigma(UT + dT)).sqrMagnitude;
+                double num3 = (p.getPositionAtUTSigma(UT - dT) - s.getPositionAtUTSigma(UT - dT)).sqrMagnitude;
+                if (UT - dT < MinUT)
+                {
+                    num3 = 1.7976931348623157E+308;
+                }
+                if (UT + dT > MaxUT)
+                {
+                    num2 = 1.7976931348623157E+308;
+                }
+                num = Math.Min(num, Math.Min(num2, num3));
+                if (num == num3)
+                {
+                    UT -= dT;
+                }
+                else if (num == num2)
+                {
+                    UT += dT;
+                }
+                dT /= 2.0;
+                iterationCount++;
+                UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.getPositionAtUTSigma(UT)), XKCDColors.Lime * 0.5f);
+            }
+            return Math.Sqrt(num);
+        }
+
         public static int FindClosestPointsRevertedCauseNewOneSucks(Orbit p, Orbit s, ref double CD, ref double CCD, ref double FFp, ref double FFs, ref double SFp, ref double SFs, double epsilon, int maxIterations, ref int iterationCount)
         {
             Orbit.FindClosestPoints_old(p, s, ref CD, ref CCD, ref FFp, ref FFs, ref SFp, ref SFs, epsilon, maxIterations, ref iterationCount);
@@ -35,7 +110,7 @@ namespace SigmaBinaryPlugin
             double fEVs = p.FEVs;
             double sEVp = p.SEVp;
             double sEVs = p.SEVs;
-            int num2 = Orbit.FindClosestPoints(p, orbit, ref clEctr, ref clEctr2, ref fEVp, ref fEVs, ref sEVp, ref sEVs, 0.0001, pars.maxGeometrySolverIterations, ref pars.GeoSolverIterations);
+            int num2 = FindClosestPointsRevertedCauseNewOneSucks(p, orbit, ref clEctr, ref clEctr2, ref fEVp, ref fEVs, ref sEVp, ref sEVs, 0.0001, pars.maxGeometrySolverIterations, ref pars.GeoSolverIterations);
             if (num2 < 1)
             {
                 return false;
@@ -95,10 +170,10 @@ namespace SigmaBinaryPlugin
                 p.closestEncounterBody = sec.celestialBody;
             }
             p.timeToTransition1 = dTforTrueAnomaly;
-            p.secondaryPosAtTransition1 = orbit.getPositionAtUT(num3);
+            p.secondaryPosAtTransition1 = orbit.getPositionAtUTSigma(num3);
             UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.secondaryPosAtTransition1), Color.yellow);
             p.timeToTransition2 = dTforTrueAnomaly2;
-            p.secondaryPosAtTransition2 = orbit.getPositionAtUT(num4);
+            p.secondaryPosAtTransition2 = orbit.getPositionAtUTSigma(num4);
             UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.referenceBody.position), ScaledSpace.LocalToScaledSpace(p.secondaryPosAtTransition2), Color.red);
             p.nearestTT = p.timeToTransition1;
             p.nextTT = p.timeToTransition2;
@@ -116,14 +191,14 @@ namespace SigmaBinaryPlugin
             {
                 p.closestEncounterLevel = Orbit.EncounterSolutionLevel.SOI_INTERSECT_2;
                 p.closestEncounterBody = sec.celestialBody;
-                UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.getPositionAtUT(p.UTappr)), ScaledSpace.LocalToScaledSpace(orbit.getPositionAtUT(p.UTappr)), XKCDColors.Orange * 0.5f);
+                UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.getPositionAtUTSigma(p.UTappr)), ScaledSpace.LocalToScaledSpace(orbit.getPositionAtUTSigma(p.UTappr)), XKCDColors.Orange * 0.5f);
                 p.UTappr = startEpoch + p.nearestTT;
                 p.ClAppr = PatchedConics.GetClosestApproach(p, orbit, startEpoch, (p.nextTT - p.nearestTT) * 0.5, pars);
                 if (PatchedConics.EncountersBody(p, orbit, nextPatch, sec, startEpoch, pars))
                 {
                     return true;
                 }
-                UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.getPositionAtUT(p.UTappr)), ScaledSpace.LocalToScaledSpace(orbit.getPositionAtUT(p.UTappr)), XKCDColors.Orange);
+                UnityEngine.Debug.DrawLine(ScaledSpace.LocalToScaledSpace(p.getPositionAtUTSigma(p.UTappr)), ScaledSpace.LocalToScaledSpace(orbit.getPositionAtUTSigma(p.UTappr)), XKCDColors.Orange);
             }
             if (sec.celestialBody == targetBody)
             {
