@@ -196,7 +196,7 @@ namespace SigmaBinaryPlugin
                 if (sigmabinaryMode.ContainsKey(sbSecondary))
                 {
                     cbBarycenter.Set("drawMode", sigmabinaryMode[sbSecondary]);
-                    Debug.Log("SigmaBinary.SetBarycenter", "Barycenter " + sbBarycenter.name + " custom orbit 'drawMode' loaded. drawMode = " + sigmabinaryMode[sbSecondary].value);
+                    Debug.Log("SigmaBinary.SetBarycenter", "Barycenter " + sbBarycenter.name + " custom orbit 'drawMode' loaded. drawMode = " + sigmabinaryMode[sbSecondary].Value);
                 }
                 else if (cbPrimary.Has("drawMode"))
                 {
@@ -208,7 +208,7 @@ namespace SigmaBinaryPlugin
                 if (sigmabinaryIcon.ContainsKey(sbSecondary))
                 {
                     cbPrimary.Set("drawIcons", sigmabinaryIcon[sbSecondary]);
-                    Debug.Log("SigmaBinary.SetBarycenter", "Primary " + sbPrimary.name + " custom orbit 'drawIcons' loaded. drawIcons = " + sigmabinaryIcon[sbSecondary].value);
+                    Debug.Log("SigmaBinary.SetBarycenter", "Primary " + sbPrimary.name + " custom orbit 'drawIcons' loaded. drawIcons = " + sigmabinaryIcon[sbSecondary].Value);
                 }
                 else if (cbPrimary.Has("drawIcons"))
                 {
@@ -437,7 +437,7 @@ namespace SigmaBinaryPlugin
                     if (patch?.values?.Count > 0)
                     {
                         // Create a new loader
-                        OrbitLoader loader = new OrbitLoader(body.generatedBody);
+                        OrbitLoader loader = new SigmaOrbitLoader(body.generatedBody);
 
                         // Apply the patch to the loader
                         Parser.LoadObjectFromConfigurationNode(loader, patch, "Kopernicus");

@@ -7,17 +7,17 @@ namespace SigmaBinaryPlugin
     [ParserTargetExternal("Body", "SigmaBinary", "Kopernicus")]
     public class SigmaBinaryLoader : BaseLoader, IParserEventSubscriber
     {
-        [ParserTarget("debug", optional = true)]
+        [ParserTarget("debug", Optional = true)]
         public NumericParser<bool> debug
         {
             set
             {
                 if (!Debug.debug)
-                    Debug.debug = value?.value == true;
+                    Debug.debug = value?.Value == true;
             }
         }
 
-        [ParserTarget("name", optional = true)]
+        [ParserTarget("name", Optional = true)]
         public string sbName
         {
             set
@@ -27,7 +27,7 @@ namespace SigmaBinaryPlugin
             }
         }
 
-        [ParserTarget("after", optional = true)]
+        [ParserTarget("after", Optional = true)]
         public string after
         {
             set
@@ -37,7 +37,7 @@ namespace SigmaBinaryPlugin
             }
         }
 
-        [ParserTarget("primaryLocked", optional = true)]
+        [ParserTarget("primaryLocked", Optional = true)]
         public NumericParser<bool> primaryLocked
         {
             set
@@ -47,7 +47,7 @@ namespace SigmaBinaryPlugin
             }
         }
 
-        [ParserTarget("redrawOrbit", optional = true)]
+        [ParserTarget("redrawOrbit", Optional = true)]
         public NumericParser<bool> redrawOrbit
         {
             set
@@ -57,10 +57,10 @@ namespace SigmaBinaryPlugin
             }
         }
 
-        [ParserTarget("Properties", optional = true, allowMerge = true)]
+        [ParserTarget("Properties", Optional = true, AllowMerge = true)]
         public SigmaBinaryPropertiesLoader sigmabinaryproperties { get; set; }
 
-        [ParserTarget("Orbit", optional = true, allowMerge = true)]
+        [ParserTarget("Orbit", Optional = true, AllowMerge = true)]
         public SigmaBinaryOrbitLoader sigmabinaryorbit { get; set; }
 
         void IParserEventSubscriber.Apply(ConfigNode node)
@@ -98,7 +98,7 @@ namespace SigmaBinaryPlugin
     public class SigmaBinaryPropertiesLoader : BaseLoader, IParserEventSubscriber
     {
         // description for the body
-        [ParserTarget("description", optional = true)]
+        [ParserTarget("description", Optional = true)]
         public string description
         {
             set
@@ -123,7 +123,7 @@ namespace SigmaBinaryPlugin
     public class SigmaBinaryOrbitLoader : BaseLoader, IParserEventSubscriber
     {
         // Orbit Draw Mode
-        [ParserTarget("mode", optional = true)]
+        [ParserTarget("mode", Optional = true)]
         public EnumParser<OrbitRenderer.DrawMode> mode
         {
             set
@@ -133,7 +133,7 @@ namespace SigmaBinaryPlugin
         }
 
         // Orbit Icon Mode
-        [ParserTarget("icon", optional = true)]
+        [ParserTarget("icon", Optional = true)]
         public EnumParser<OrbitRenderer.DrawIcons> icon
         {
             set
@@ -143,22 +143,22 @@ namespace SigmaBinaryPlugin
         }
 
         // Orbit Color
-        [ParserTarget("color", optional = true)]
+        [ParserTarget("color", Optional = true)]
         public ColorParser color
         {
             set
             {
-                SigmaBinary.sigmabinaryOrbitColor.Add(Loader.currentBody, value.value);
+                SigmaBinary.sigmabinaryOrbitColor.Add(Loader.currentBody, value.Value);
             }
         }
 
         // Orbit iconColor
-        [ParserTarget("iconColor", optional = true)]
+        [ParserTarget("iconColor", Optional = true)]
         public ColorParser iconColor
         {
             set
             {
-                SigmaBinary.sigmabinaryIconColor.Add(Loader.currentBody, value.value);
+                SigmaBinary.sigmabinaryIconColor.Add(Loader.currentBody, value.Value);
             }
         }
 

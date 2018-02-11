@@ -46,11 +46,11 @@ namespace SigmaBinaryPlugin
                     Debug.Log("ArchivesFixer", "Failed to remove primary " + primary.name + " from the children list of oldParent " + (string.IsNullOrEmpty(oldParent?.name) ? "(null)" : oldParent.name) + ".");
                     continue;
                 }
-                
+
                 //PSystemBody newParent = ParentOf(barycenter);
                 barycenter.children.Add(primary);
             }
-            
+
             Kopernicus.RnDFixer.AddPlanets();
         }
 
