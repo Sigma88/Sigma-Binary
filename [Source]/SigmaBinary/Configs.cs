@@ -6,22 +6,33 @@ namespace SigmaBinaryPlugin
 {
     public class Configs
     {
+        static bool ready = false;
         static UrlDir.UrlConfig oldKopernicus;
         static ConfigNode newKopernicus;
         static ConfigNode[] oldBodies;
 
         public static void ModuleManagerPostLoad()
         {
+            TimingManager.UpdateAdd(TimingManager.TimingStage.Normal, LoadKopernicus);
             LoadKopernicus();
         }
 
         static void LoadKopernicus()
         {
-            oldKopernicus = GameDatabase.Instance?.GetConfigs("Kopernicus")?.FirstOrDefault();
+            if (ready)
+            {
+                TimingManager.UpdateRemove(TimingManager.TimingStage.Normal, LoadKopernicus);
 
-            if (oldKopernicus == null) return;
+                oldKopernicus = GameDatabase.Instance?.GetConfigs("Kopernicus")?.FirstOrDefault();
 
-            LoadBodies();
+                if (oldKopernicus == null) return;
+
+                LoadBodies();
+            }
+            else
+            {
+                ready = true;
+            }
         }
 
         static void LoadBodies()
