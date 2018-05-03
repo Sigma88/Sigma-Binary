@@ -87,7 +87,7 @@ namespace SigmaBinaryPlugin
             return 2;
         }
 
-        public static bool CheckEncounterButDontBitchAboutIt(Orbit p, Orbit nextPatch, double startEpoch, OrbitDriver sec, CelestialBody targetBody, PatchedConics.SolverParameters pars)
+        public static bool CheckEncounterButDontBitchAboutIt(Orbit p, Orbit nextPatch, double startEpoch, OrbitDriver sec, CelestialBody targetBody, PatchedConics.SolverParameters pars, bool logErrors)
         {
             Orbit orbit = sec.orbit;
             double num = 1.1;
