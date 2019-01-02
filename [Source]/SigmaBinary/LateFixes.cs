@@ -27,8 +27,8 @@ namespace SigmaBinaryPlugin
                 }
                 if (DateTime.Today.Day == 25 && DateTime.Today.Month == 05)
                 {
-                    list.Find(x => x.name == "Sun").generatedBody.celestialBody.bodyDescription = "\n\n\n                        DON'T\n                        PANIC";
-                    list.Find(x => x.name == "Kerbin").generatedBody.celestialBody.bodyDescription = "Mostly harmless.";
+                    list.Find(x => x.generatedBody.name == "Sun").generatedBody.celestialBody.bodyDescription = "\n\n\n                        DON'T\n                        PANIC";
+                    list.Find(x => x.generatedBody.name == "Kerbin").generatedBody.celestialBody.bodyDescription = "Mostly harmless.";
                 }
                 if (DateTime.Today.Day == 31 && DateTime.Today.Month == 10)
                 {
