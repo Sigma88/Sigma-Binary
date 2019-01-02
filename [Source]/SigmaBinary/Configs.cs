@@ -6,33 +6,15 @@ namespace SigmaBinaryPlugin
 {
     public class Configs
     {
-        static bool ready = false;
         static UrlDir.UrlConfig oldKopernicus;
         static ConfigNode newKopernicus;
         static ConfigNode[] oldBodies;
 
         public static void ModuleManagerPostLoad()
         {
-            TimingManager.UpdateAdd(TimingManager.TimingStage.Normal, LoadKopernicus);
-            LoadKopernicus();
-        }
-
-        static void LoadKopernicus()
-        {
-            if (ready)
-            {
-                TimingManager.UpdateRemove(TimingManager.TimingStage.Normal, LoadKopernicus);
-
-                oldKopernicus = GameDatabase.Instance?.GetConfigs("Kopernicus")?.FirstOrDefault();
-
-                if (oldKopernicus == null) return;
-
-                LoadBodies();
-            }
-            else
-            {
-                ready = true;
-            }
+            oldKopernicus = GameDatabase.Instance?.GetConfigs("Kopernicus")?.FirstOrDefault();
+            if (oldKopernicus == null) return;
+            LoadBodies();
         }
 
         static void LoadBodies()
@@ -56,7 +38,7 @@ namespace SigmaBinaryPlugin
                     ConfigNode Orbit = oldBodies[i].GetNode("Orbit");
                     string referenceBody = Orbit.GetValue("referenceBody");
 
-                    if (!string.IsNullOrEmpty("referenceBody") && referenceBody != "Sun")
+                    if (!string.IsNullOrEmpty(SigmaBinary?.GetValue("name")) && !string.IsNullOrEmpty("referenceBody") && referenceBody != "Sun")
                     {
                         if (!SigmaBinary.HasValue("name"))
                             SigmaBinary.AddValue("name", referenceBody + oldBodies[i].GetValue("name"));

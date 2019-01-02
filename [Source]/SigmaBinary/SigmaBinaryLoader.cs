@@ -22,8 +22,8 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                SigmaBinary.sigmabinarySBName.Add(Loader.currentBody, value);
-                SigmaBinary.sigmabinaryRedrawOrbit.Add(Loader.currentBody);
+                SigmaBinary.sigmabinarySBName.Add(Parser.GetState<Body>("Kopernicus:currentBody"), value);
+                SigmaBinary.sigmabinaryRedrawOrbit.Add(Parser.GetState<Body>("Kopernicus:currentBody"));
             }
         }
 
@@ -32,8 +32,8 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                if (!SigmaBinary.ListOfBinaries.ContainsValue(SigmaBinary.ListOfBodies.Find(b => b.name == value)))
-                    SigmaBinary.sigmabinaryLoadAfter.Add(value, Loader.currentBody);
+                if (!SigmaBinary.ListOfBinaries.ContainsValue(SigmaBinary.ListOfBodies.Find(b => b.generatedBody.name == value)))
+                    SigmaBinary.sigmabinaryLoadAfter.Add(value, Parser.GetState<Body>("Kopernicus:currentBody"));
             }
         }
 
@@ -43,7 +43,7 @@ namespace SigmaBinaryPlugin
             set
             {
                 if (value)
-                    SigmaBinary.sigmabinaryPrimaryLocked.Add(Loader.currentBody);
+                    SigmaBinary.sigmabinaryPrimaryLocked.Add(Parser.GetState<Body>("Kopernicus:currentBody"));
             }
         }
 
@@ -53,7 +53,7 @@ namespace SigmaBinaryPlugin
             set
             {
                 if (!value)
-                    SigmaBinary.sigmabinaryRedrawOrbit.Remove(Loader.currentBody);
+                    SigmaBinary.sigmabinaryRedrawOrbit.Remove(Parser.GetState<Body>("Kopernicus:currentBody"));
             }
         }
 
@@ -72,20 +72,20 @@ namespace SigmaBinaryPlugin
 
         void IParserEventSubscriber.PostApply(ConfigNode node)
         {
-            if (!SigmaBinary.sigmabinaryLoadAfter.ContainsValue(Loader.currentBody))
+            if (!SigmaBinary.sigmabinaryLoadAfter.ContainsValue(Parser.GetState<Body>("Kopernicus:currentBody")))
             {
-                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[Loader.currentBody], Loader.currentBody);
-                LoadAfter(Loader.currentBody);
+                SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[Parser.GetState<Body>("Kopernicus:currentBody")], Parser.GetState<Body>("Kopernicus:currentBody"));
+                LoadAfter(Parser.GetState<Body>("Kopernicus:currentBody"));
             }
         }
 
         public void LoadAfter(Body currentBody)
         {
-            if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(currentBody.name))
+            if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(currentBody.generatedBody.name))
             {
-                Body body = SigmaBinary.sigmabinaryLoadAfter[currentBody.name];
+                Body body = SigmaBinary.sigmabinaryLoadAfter[currentBody.generatedBody.name];
                 SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[body], body);
-                SigmaBinary.sigmabinaryLoadAfter.Remove(currentBody.name);
+                SigmaBinary.sigmabinaryLoadAfter.Remove(currentBody.generatedBody.name);
                 LoadAfter(body);
             }
         }
@@ -103,7 +103,7 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                SigmaBinary.sigmabinaryDescription.Add(Loader.currentBody, value);
+                SigmaBinary.sigmabinaryDescription.Add(Parser.GetState<Body>("Kopernicus:currentBody"), value);
             }
         }
 
@@ -128,7 +128,7 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                SigmaBinary.sigmabinaryMode.Add(Loader.currentBody, value);
+                SigmaBinary.sigmabinaryMode.Add(Parser.GetState<Body>("Kopernicus:currentBody"), value);
             }
         }
 
@@ -138,7 +138,7 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                SigmaBinary.sigmabinaryIcon.Add(Loader.currentBody, value);
+                SigmaBinary.sigmabinaryIcon.Add(Parser.GetState<Body>("Kopernicus:currentBody"), value);
             }
         }
 
@@ -148,7 +148,7 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                SigmaBinary.sigmabinaryOrbitColor.Add(Loader.currentBody, value.Value);
+                SigmaBinary.sigmabinaryOrbitColor.Add(Parser.GetState<Body>("Kopernicus:currentBody"), value.Value);
             }
         }
 
@@ -158,7 +158,7 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                SigmaBinary.sigmabinaryIconColor.Add(Loader.currentBody, value.Value);
+                SigmaBinary.sigmabinaryIconColor.Add(Parser.GetState<Body>("Kopernicus:currentBody"), value.Value);
             }
         }
 
