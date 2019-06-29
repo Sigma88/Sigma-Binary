@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="Configs.cs" />
     <Compile Include="EncounterMathFixer.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="MapViewFixer.cs" />
     <Compile Include="OrbitLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
