@@ -107,13 +107,13 @@ namespace SigmaBinaryPlugin
                 // Fix sphereOfInfluence where needed
                 if (cbPrimary.Has("SBfixSOI"))
                 {
-                    cbPrimary.sphereOfInfluence = sbPrimary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbPrimary.Mass / cbReference.Mass, 0.4);
+                    cbPrimary.sphereOfInfluence = sbPrimary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbPrimary.GetMass() / cbReference.GetMass(), 0.4);
                     cbPrimary.Remove("SBfixSOI");
                     Debug.Log("SigmaBinary.ProcessBinaries", "Fixed 'sphereOfInfluence' of primary " + sbPrimary.GeneratedBody.name + ". sphereOfInfluence = " + cbPrimary.sphereOfInfluence);
                 }
                 if (cbSecondary.Has("SBfixSOI"))
                 {
-                    cbSecondary.sphereOfInfluence = sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbSecondary.Mass / cbPrimary.Mass, 0.4);
+                    cbSecondary.sphereOfInfluence = sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbSecondary.GetMass() / cbPrimary.GetMass(), 0.4);
                     cbSecondary.Remove("SBfixSOI");
                     Debug.Log("SigmaBinary.ProcessBinaries", "Fixed 'sphereOfInfluence' of secondary " + sbSecondary.GeneratedBody.name + ". sphereOfInfluence = " + cbSecondary.sphereOfInfluence);
                 }
@@ -128,7 +128,7 @@ namespace SigmaBinaryPlugin
                     // Fix sphereOfInfluence
                     if (!cbSecondary.Has("sphereOfInfluence"))
                     {
-                        cbSecondary.Set("sphereOfInfluence", Math.Max(sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbSecondary.Mass / cbPrimary.Mass, 0.4), Math.Max(cbSecondary.Radius * Templates.SOI_MIN_RADIUS_MULTIPLIER, cbSecondary.Radius + Templates.SOI_MIN_ALTITUDE)));
+                        cbSecondary.Set("sphereOfInfluence", Math.Max(sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbSecondary.GetMass() / cbPrimary.GetMass(), 0.4), Math.Max(cbSecondary.Radius * Templates.SOI_MIN_RADIUS_MULTIPLIER, cbSecondary.Radius + Templates.SOI_MIN_ALTITUDE)));
                         Debug.Log("SigmaBinary.ProcessBinaries", "recalculated 'sphereOfInfluence' for secondary body " + sbSecondary.GeneratedBody.name);
                     }
                 }
@@ -139,7 +139,7 @@ namespace SigmaBinaryPlugin
                     // Fix sphereOfInfluence
                     if (!cbPrimary.Has("sphereOfInfluence"))
                     {
-                        cbPrimary.Set("sphereOfInfluence", Math.Max(sbPrimary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbPrimary.Mass / cbReference.Mass, 0.4), Math.Max(cbPrimary.Radius * Templates.SOI_MIN_RADIUS_MULTIPLIER, cbPrimary.Radius + Templates.SOI_MIN_ALTITUDE)));
+                        cbPrimary.Set("sphereOfInfluence", Math.Max(sbPrimary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbPrimary.GetMass() / cbReference.GetMass(), 0.4), Math.Max(cbPrimary.Radius * Templates.SOI_MIN_RADIUS_MULTIPLIER, cbPrimary.Radius + Templates.SOI_MIN_ALTITUDE)));
                         Debug.Log("SigmaBinary.ProcessBinaries", "recalculated 'sphereOfInfluence' for primary body " + sbPrimary.GeneratedBody.name);
                     }
                 }
@@ -150,7 +150,7 @@ namespace SigmaBinaryPlugin
 
                 sbBarycenter.GeneratedBody.orbitDriver.orbit = new Orbit(sbPrimary.GeneratedBody.orbitDriver.orbit);
                 sbBarycenter.Orbit.ReferenceBody = sbPrimary.Orbit.ReferenceBody;
-                cbBarycenter.GeeASL = (cbPrimary.Mass + cbSecondary.Mass) / 1e5 * 6.674e-11d / Math.Pow(cbBarycenter.Radius, 2) / 9.80665d;
+                cbBarycenter.GeeASL = (cbPrimary.GetMass() + cbSecondary.GetMass()) / 1e5 * 6.674e-11d / Math.Pow(cbBarycenter.Radius, 2) / 9.80665d;
                 cbBarycenter.rotationPeriod = 0;
                 Debug.Log("SigmaBinary.SetBarycenter", "Printing orbital parameters of primary " + sbPrimary.GeneratedBody.name + " for reference.");
                 Debug.Log("SigmaBinary.SetBarycenter", "referenceBody = " + sbPrimary.Orbit.ReferenceBody + ", semiMajorAxis = " + sbPrimary.GeneratedBody.orbitDriver.orbit.semiMajorAxis);
@@ -164,7 +164,7 @@ namespace SigmaBinaryPlugin
                 }
                 else
                 {
-                    periodFixerList.Add(sbBarycenter.GeneratedBody.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbPrimary.GeneratedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / cbReference.Mass));
+                    periodFixerList.Add(sbBarycenter.GeneratedBody.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbPrimary.GeneratedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / cbReference.GetMass()));
                     Debug.Log("SigmaBinary.SetBarycenter", "Added barycenter " + sbBarycenter.GeneratedBody.name + " to 'periodFixerList', calculated orbital period = " + periodFixerList[sbBarycenter.GeneratedBody.name]);
                 }
 
@@ -249,7 +249,7 @@ namespace SigmaBinaryPlugin
                     (
                         sbSecondary.GeneratedBody.orbitDriver.orbit.inclination,
                         sbSecondary.GeneratedBody.orbitDriver.orbit.eccentricity,
-                        sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * cbSecondary.Mass / (cbSecondary.Mass + cbPrimary.Mass),
+                        sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis * cbSecondary.GetMass() / (cbSecondary.GetMass() + cbPrimary.GetMass()),
                         sbSecondary.GeneratedBody.orbitDriver.orbit.LAN,
                         sbSecondary.GeneratedBody.orbitDriver.orbit.argumentOfPeriapsis + 180d,
                         sbSecondary.GeneratedBody.orbitDriver.orbit.meanAnomalyAtEpoch,
@@ -257,7 +257,7 @@ namespace SigmaBinaryPlugin
                         cbBarycenter
                     );
                 sbPrimary.Orbit.ReferenceBody = sbBarycenter.GeneratedBody.name;
-                Debug.Log("SigmaBinary.SetPrimary", "Printing masses of bodies for reference. primary = " + cbPrimary.Mass + ", secondary = " + cbSecondary.Mass + ", ratio = " + (cbPrimary.Mass / cbSecondary.Mass));
+                Debug.Log("SigmaBinary.SetPrimary", "Printing masses of bodies for reference. primary = " + cbPrimary.GetMass() + ", secondary = " + cbSecondary.GetMass() + ", ratio = " + (cbPrimary.GetMass() / cbSecondary.GetMass()));
                 Debug.Log("SigmaBinary.SetPrimary", "Printing orbital parameters of secondary " + sbSecondary.GeneratedBody.name + " for reference.");
                 Debug.Log("SigmaBinary.SetPrimary", "referenceBody = " + sbSecondary.Orbit.ReferenceBody + ", semiMajorAxis = " + sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis);
                 Debug.Log("SigmaBinary.SetPrimary", "Calculated new orbital parameters for primary " + sbPrimary.GeneratedBody.name);
@@ -268,7 +268,7 @@ namespace SigmaBinaryPlugin
                     periodFixerList.Remove(sbPrimary.GeneratedBody.name);
                     Debug.Log("SigmaBinary.SetPrimary", "Primary " + sbPrimary.GeneratedBody.name + " removed from 'periodFixerList'.");
                 }
-                periodFixerList.Add(sbPrimary.GeneratedBody.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / cbPrimary.Mass));
+                periodFixerList.Add(sbPrimary.GeneratedBody.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / cbPrimary.GetMass()));
                 Debug.Log("SigmaBinary.SetPrimary", "Primary " + sbPrimary.GeneratedBody.name + " added to 'periodFixerList'. calculated orbital period = " + periodFixerList[sbPrimary.GeneratedBody.name]);
 
                 // Primary Locked
@@ -317,7 +317,7 @@ namespace SigmaBinaryPlugin
                     sbOrbit.GeneratedBody.orbitRenderer.orbitColor = sbSecondary.GeneratedBody.orbitRenderer.orbitColor;
                     Debug.Log("SigmaBinary.SetMarker", "Orbit marker " + sbOrbit.GeneratedBody.name + " orbit line color set from secondary " + sbSecondary.GeneratedBody.name + ". color = " + sbOrbit.GeneratedBody.orbitRenderer.orbitColor);
 
-                    periodFixerList.Add(sbOrbit.GeneratedBody.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / cbPrimary.Mass));
+                    periodFixerList.Add(sbOrbit.GeneratedBody.name, 2 * Math.PI * Math.Sqrt(Math.Pow(sbSecondary.GeneratedBody.orbitDriver.orbit.semiMajorAxis, 3) / 6.67408E-11 / cbPrimary.GetMass()));
                     Debug.Log("SigmaBinary.SetMarker", "Orbit marker " + sbOrbit.GeneratedBody.name + " added to 'periodFixerList'. calculated orbital period = " + periodFixerList[sbOrbit.GeneratedBody.name]);
 
                     cbSecondary.Set("drawMode", DrawMode.OFF);
@@ -330,7 +330,7 @@ namespace SigmaBinaryPlugin
 
                 if (!cbPrimary.Has("sphereOfInfluence"))
                 {
-                    cbPrimary.Set("sphereOfInfluence", sbBarycenter.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbPrimary.Mass / cbReference.Mass, 0.4));
+                    cbPrimary.Set("sphereOfInfluence", sbBarycenter.GeneratedBody.orbitDriver.orbit.semiMajorAxis * Math.Pow(cbPrimary.GetMass() / cbReference.GetMass(), 0.4));
                     Debug.Log("SigmaBinary.SetSoI", "Calculated 'sphereOfInfluence' for primary " + sbPrimary.GeneratedBody.name + ". sphereOfInfluence = " + cbPrimary.Get<double>("sphereOfInfluence"));
                 }
                 cbBarycenter.Set("sphereOfInfluence", cbPrimary.Get<double>("sphereOfInfluence"));
