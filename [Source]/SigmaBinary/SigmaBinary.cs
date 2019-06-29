@@ -22,6 +22,8 @@ namespace SigmaBinaryPlugin
 
         /// <summary> Dictionary storing the names of the primary and reference bodies for postspawn fixes. <para>Only used for planets with a Kerbin Template.</para> </summary>
         internal static Dictionary<string, string> kerbinFixer = new Dictionary<string, string>();
+        /// <summary> List storing the celestialbodies to remove from the tracking station.</summary>
+        internal static List<CelestialBody> trackingStationFixer = new List<CelestialBody>();
         /// <summary> Dictionary holding the name of a body and the orbital period that needs to be assigned to that body. </summary>
         internal static Dictionary<string, double> periodFixerList = new Dictionary<string, double>();
         /// <summary> Dictionary holding primary and barycenter, needed for fixing the science archives post spawn. </summary>
@@ -292,6 +294,11 @@ namespace SigmaBinaryPlugin
 
                 if (sigmabinaryRedrawOrbit.Contains(sbSecondary))
                 {
+                    if (sbOrbit?.GeneratedBody?.celestialBody != null && !trackingStationFixer.Contains(sbOrbit.GeneratedBody.celestialBody))
+                    {
+                        trackingStationFixer.Add(sbOrbit.GeneratedBody.celestialBody);
+                    }
+
                     mapViewFixerList.Add(sbOrbit.GeneratedBody.celestialBody, cbSecondary);
 
                     sbOrbit.GeneratedBody.orbitDriver.orbit =

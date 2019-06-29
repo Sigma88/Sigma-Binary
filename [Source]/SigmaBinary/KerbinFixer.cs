@@ -37,6 +37,29 @@ namespace SigmaBinaryPlugin
         void Start()
         {
             var targets = PlanetariumCamera.fetch.targets;
+            Debug.Log("TrackingStationFixer", "targets.count before = " + targets.Count);
+            List<MapObject> validTargets = new List<MapObject>();
+
+            for (int i = 0; i < targets?.Count; i++)
+            {
+                Debug.Log("TrackingStationFixer", "targets[" + i + "] = " + targets[i] + ", celestialbody = " + targets[i]?.celestialBody + ", name = " + targets[i]?.celestialBody?.transform?.name);
+                Debug.Log("TrackingStationFixer", "list contains name = " + SigmaBinary.trackingStationFixer.Contains(targets[i]?.celestialBody));
+                if (SigmaBinary.trackingStationFixer.Contains(targets[i]?.celestialBody) != true)
+                {
+                    Debug.Log("TrackingStationFixer", "MapObject is valid.");
+                    validTargets.Add(targets[i]);
+                }
+                else
+                {
+                    Debug.Log("TrackingStationFixer", "MapObject is NOT valid.");
+                    DestroyImmediate(targets[i]);
+                }
+            }
+            Debug.Log("TrackingStationFixer", "validTargets.count = " + validTargets.Count);
+
+            PlanetariumCamera.fetch.targets.Clear();
+            PlanetariumCamera.fetch.targets.AddRange(validTargets);
+            Debug.Log("TrackingStationFixer", "targets.count after = " + targets.Count);
 
             for (int i = 0; i < SigmaBinary.kerbinFixer?.Count; i++)
             {

@@ -87,7 +87,7 @@ namespace SigmaBinaryPlugin
             Orbit.AddValue("mode", "3");
             SigmaOrbit.AddNode(Orbit);
 
-            string data = "barycenter = True\ncontractWeight = 0\nTemplate\n{\nname = Jool\n}\nProperties\n{\nradius = 61\nRnDVisibility = Hidden\n}\nAtmosphere\n{\nenabled = false\n}\nScaledVersion\n{\ntype = Vacuum\nfadeStart = 0\nfadeEnd = 0\nMaterial\n{\ncolor = 0,0,0,0\nshininess = 0\n}\n}\nDebug\n{\nexportMesh = false\n}";
+            string data = "contractWeight = 0\nTemplate\n{\nname = Jool\n}\nProperties\n{\nradius = 61\nRnDVisibility = Hidden\n}\nAtmosphere\n{\nenabled = false\n}\nScaledVersion\n{\ntype = Vacuum\nfadeStart = 0\nfadeEnd = 0\nMaterial\n{\ncolor = 0,0,0,0\nshininess = 0\n}\n}\nDebug\n{\nexportMesh = false\n}";
             SigmaOrbit.AddData(ConfigNode.Parse(data));
 
             newKopernicus.AddNode(SigmaOrbit);
