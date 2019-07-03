@@ -6,7 +6,8 @@
         {
             if (cb != null)
             {
-                return cb.GeeASL * cb.Radius * cb.Radius / 6.67408E-11;
+                Debug.Log("GetMass", "CelestialBody = " + cb + ", gravParameter = " + cb.gravParameter + ", Mass = " + cb.Mass + ", GeeASL = " + cb.GeeASL + ", Radius = " + cb.Radius);
+                return cb.GeeASL * 9.80665 * cb.Radius * cb.Radius / 6.67408E-11;
             }
 
             return 0;
