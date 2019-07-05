@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
-using Kopernicus;
 using Kopernicus.Configuration;
-using Kopernicus.OnDemand;
 
 
 namespace SigmaBinaryPlugin
@@ -21,22 +19,22 @@ namespace SigmaBinaryPlugin
                 {
                     foreach (Body b in list)
                     {
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(b.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_MainTex").x, -b.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_MainTex").y));
-                        b.generatedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_BumpMap", new Vector2(b.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_BumpMap").x, -b.generatedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_BumpMap").y));
+                        b.GeneratedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(b.GeneratedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_MainTex").x, -b.GeneratedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_MainTex").y));
+                        b.GeneratedBody.scaledVersion.GetComponent<Renderer>().material.SetTextureScale("_BumpMap", new Vector2(b.GeneratedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_BumpMap").x, -b.GeneratedBody.scaledVersion.GetComponent<Renderer>().material.GetTextureScale("_BumpMap").y));
                     }
                 }
                 if (DateTime.Today.Day == 25 && DateTime.Today.Month == 05)
                 {
-                    list.Find(x => x.generatedBody.name == "Sun").generatedBody.celestialBody.bodyDescription = "\n\n\n                        DON'T\n                        PANIC";
-                    list.Find(x => x.generatedBody.name == "Kerbin").generatedBody.celestialBody.bodyDescription = "Mostly harmless.";
+                    list.Find(x => x.GeneratedBody.name == "Sun").GeneratedBody.celestialBody.bodyDescription = "\n\n\n                        DON'T\n                        PANIC";
+                    list.Find(x => x.GeneratedBody.name == "Kerbin").GeneratedBody.celestialBody.bodyDescription = "Mostly harmless.";
                 }
                 if (DateTime.Today.Day == 31 && DateTime.Today.Month == 10)
                 {
                     foreach (Body b in list)
                     {
-                        if (b.generatedBody.orbitRenderer != null)
+                        if (b.GeneratedBody.orbitRenderer != null)
                         {
-                            b.generatedBody.orbitRenderer.SetColor(new Color(0.5f, 0.25f, 0f, 1f));
+                            b.GeneratedBody.orbitRenderer.SetColor(new Color(0.5f, 0.25f, 0f, 1f));
                         }
                     }
                 }

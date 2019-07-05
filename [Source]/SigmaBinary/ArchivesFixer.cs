@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using KSP.UI.Screens;
+using Kopernicus.RuntimeUtility;
 
 
 namespace SigmaBinaryPlugin
@@ -28,7 +30,7 @@ namespace SigmaBinaryPlugin
     {
         void Start()
         {
-            Debug.Log("SigmaLog: SigmaBinary ArchivesFixer");
+            Debug.Log("ArchivesFixer", "Start");
             for (int i = 0; i < SigmaBinary.archivesFixerList?.Count; i++)
             {
                 KeyValuePair<PSystemBody, PSystemBody> pair = SigmaBinary.archivesFixerList.ElementAt(i);
@@ -51,7 +53,10 @@ namespace SigmaBinaryPlugin
                 barycenter.children.Add(primary);
             }
 
-            Kopernicus.RnDFixer.AddPlanets();
+            MethodInfo AddPlanets = typeof(RnDFixer).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)?.Skip(2)?.FirstOrDefault();
+            Debug.Log("ArchivesFixer", "MethodInfo.Name is = '" + AddPlanets?.Name + "()', should be = 'AddPlanets()'");
+            AddPlanets.Invoke(Resources.FindObjectsOfTypeAll<RnDFixer>().FirstOrDefault().gameObject, null);
+            Debug.Log("ArchivesFixer", "End");
         }
 
         PSystemBody ParentOf(PSystemBody child)

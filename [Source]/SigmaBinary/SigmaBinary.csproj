@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="Configs.cs" />
     <Compile Include="EncounterMathFixer.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="MapViewFixer.cs" />
     <Compile Include="OrbitLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,14 +54,6 @@
     <Reference Include="Kopernicus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\[References]\Kopernicus\Kopernicus.dll</HintPath>
-    </Reference>
-    <Reference Include="Kopernicus.Components, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\[References]\Kopernicus\Kopernicus.Components.dll</HintPath>
-    </Reference>
-    <Reference Include="Kopernicus.OnDemand, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\[References]\Kopernicus\Kopernicus.OnDemand.dll</HintPath>
     </Reference>
     <Reference Include="Kopernicus.Parser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

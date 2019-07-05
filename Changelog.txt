@@ -1,3 +1,8 @@
+**v1.7.2**
+
+- Recompiled against KSP 1.7.1 and Kopernicus 1.7.1-4
+
+
 **v1.7.1**
 
 - Recompiled against KSP 1.6.0 and Kopernicus 1.6.0-1

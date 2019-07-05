@@ -1,5 +1,9 @@
-using Kopernicus;
+using Kopernicus.ConfigParser;
+using Kopernicus.ConfigParser.Attributes;
+using Kopernicus.ConfigParser.BuiltinTypeParsers;
+using Kopernicus.ConfigParser.Interfaces;
 using Kopernicus.Configuration;
+using Kopernicus.Configuration.Parsing;
 
 
 namespace SigmaBinaryPlugin
@@ -32,7 +36,7 @@ namespace SigmaBinaryPlugin
         {
             set
             {
-                if (!SigmaBinary.ListOfBinaries.ContainsValue(SigmaBinary.ListOfBodies.Find(b => b.generatedBody.name == value)))
+                if (!SigmaBinary.ListOfBinaries.ContainsValue(SigmaBinary.ListOfBodies.Find(b => b.GeneratedBody.name == value)))
                     SigmaBinary.sigmabinaryLoadAfter.Add(value, Parser.GetState<Body>("Kopernicus:currentBody"));
             }
         }
@@ -81,11 +85,11 @@ namespace SigmaBinaryPlugin
 
         public void LoadAfter(Body currentBody)
         {
-            if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(currentBody.generatedBody.name))
+            if (SigmaBinary.sigmabinaryLoadAfter.ContainsKey(currentBody.GeneratedBody.name))
             {
-                Body body = SigmaBinary.sigmabinaryLoadAfter[currentBody.generatedBody.name];
+                Body body = SigmaBinary.sigmabinaryLoadAfter[currentBody.GeneratedBody.name];
                 SigmaBinary.ListOfBinaries.Add(SigmaBinary.sigmabinarySBName[body], body);
-                SigmaBinary.sigmabinaryLoadAfter.Remove(currentBody.generatedBody.name);
+                SigmaBinary.sigmabinaryLoadAfter.Remove(currentBody.GeneratedBody.name);
                 LoadAfter(body);
             }
         }
