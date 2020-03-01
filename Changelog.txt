@@ -1,3 +1,9 @@
+**v1.7.3**
+
+- Updated to KSP 1.8.1 and Kopernicus 1.8.1-1
+- Fixed PeriodFixer
+
+
 **v1.7.2**
 
 - Recompiled against KSP 1.7.1 and Kopernicus 1.7.1-4
