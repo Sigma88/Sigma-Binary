@@ -6,7 +6,7 @@ namespace SigmaBinaryPlugin
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
     public class Version : MonoBehaviour
     {
-        public static readonly System.Version number = new System.Version("1.7.3");
+        public static readonly System.Version number = new System.Version("1.7.4");
 
         void Awake()
         {
