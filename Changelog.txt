@@ -1,3 +1,9 @@
+**v1.7.4**
+
+- Changed folder for better install automation (CurseForge client)
+- Updated to KSP 1.11.1 and Kopernicus 1.11.1_Release77
+
+
 **v1.7.3**
 
 - Updated to KSP 1.8.1 and Kopernicus 1.8.1-1
